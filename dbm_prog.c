@@ -5,33 +5,18 @@
 #include <limits.h>
 #include <string.h>
 #include <fcntl.h>
-#ifdef FBSD_DATABASE
-#include <db.h>
-#else
-#include <ndbm.h>
-#endif
 
-#ifdef FBSD_DATABASE	/* this needs to be explicit  */
-HASHINFO openinfo = {
-        128,           /* bsize */
-        8,             /* ffactor */
-        155000,         /* nelem */
-        2048 * 1024,   /* cachesize */
-        NULL,          /* hash */
-        0              /* lorder */
-};
+#ifdef BERKELEYDB4
+/* Some earlier versions might have this header too */
+#include <db3/db_185.h>
+#else
+#include <db.h>
 #endif
 
 int main(int argc, char *argv[])
 {
-#ifdef FBSD_DATABASE
 	DBT inKey, inVal;
 	DB * db;
-#else
-	DBM * db;
-	datum Key;
-	datum Val;
-#endif
 
 	FILE *ifd;
 	char line[256];
@@ -71,9 +56,7 @@ int main(int argc, char *argv[])
                 exit(1);
         }
 
-
-#ifdef FBSD_DATABASE
-        db = dbopen(optr,O_RDWR|O_CREAT, 0000644, DB_HASH, &openinfo);
+        db = dbopen(optr,O_RDWR|O_CREAT, 0000644, DB_HASH, NULL);
 
 	while(fgets(line,256,ifd)) {
 		inKey.data = strtok(line," ");
@@ -98,33 +81,6 @@ int main(int argc, char *argv[])
 	}
 
 	(void)(db->close)(db);
-#else
-        db = dbm_open(optr,O_RDWR|O_CREAT, 0000644);
-
-	while(fgets(line,256,ifd)) {
-		Key.dptr = strtok(line," ");
-		Key.dsize = strlen(Key.dptr)+1;
-		Val.dptr = strtok(NULL,"\n");
-		Val.dsize = strlen(Val.dptr)+1;
-		n++;
-		ret = dbm_store(db,Key,Val,DBM_INSERT);
-		switch(ret) {
-			case 0:
-				i++;
-				break;
-			case 1:
-				fprintf(stderr,"%s:%i: warning: Duplicate entry. Ignored.\n",iptr,n);
-				break;
-			default:
-				dbm_close(db);
-				fprintf(stderr,"%s:%i: error: storing error\n",iptr,n);
-				fprintf(stderr,"%d words processed.\n",i);
-				exit(1);
-		}
-	}
-
-	dbm_close(db);
-#endif
 
 	fprintf(stderr,"%d words processed.\n",i);
 
