@@ -5,16 +5,24 @@ OWNER = root.root
 
 # FreeBSD
 #DEFS = 
+#LIBS = 
 #OWNER = root:wheel
-#DBFILE = lexicon.db
+
+all: new lexicon
 
 lexicon: dbm_prog lexicon.dict
 	@rm -f lexicon
 	./dbm_prog -i lexicon.dict -o lexicon
 
 additions: /var/log/unknown.words
-	cat /var/log/unknown.words | sort | uniq | sed "s/.*/& &/g" >additions
+	cat /var/log/unknown.words | \
+	sort | \
+	uniq | \
+	sed "s/.*/& &/g" >>additions.raw
 	echo -n >/var/log/unknown.words
+	test "$EDITOR" && \
+	${EDITOR} additions.raw && \
+	mv -f additions.raw additions
 
 new: additions
 	mv -f lexicon.dict lexicon.dict.old
