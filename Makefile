@@ -9,6 +9,7 @@ OWNER = root.root
 #DBFILE = lexicon.db
 
 lexicon: dbm_prog lexicon.dict
+	@rm -f lexicon
 	./dbm_prog -i lexicon.dict -o lexicon
 
 additions: /var/log/unknown.words
