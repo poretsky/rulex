@@ -1,10 +1,10 @@
 # Linux
-DEFS = -DBERKELEYDB4
-LIBS = -ldb
+DEFS = -DBERKELEYDB
+LIBS = -ldb-3
 OWNER = root.root
 
 # FreeBSD
-#DEFS = 
+#DEFS = -DFBSD_DATABASE
 #LIBS = 
 #OWNER = root:wheel
 
