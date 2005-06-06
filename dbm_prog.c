@@ -86,13 +86,13 @@ int main(int argc, char *argv[])
 	while(fgets(line,256,ifd)) {
 #if defined(FBSD_DATABASE) || defined(BERKELEYDB)
 		inKey.data = strtok(line," ");
-		inKey.size = strlen(inKey.data)+1;
+		inKey.size = strlen(inKey.data);
 		inVal.data = strtok(NULL,"\n");
 		inVal.size = strlen(inVal.data)+1;
 		ret = (db->put)(db,&inKey,&inVal,R_NOOVERWRITE);
 #else
 		inKey.dptr = strtok(line," ");
-		inKey.dsize = strlen(Key.dptr)+1;
+		inKey.dsize = strlen(Key.dptr);
 		inVal.dptr = strtok(NULL,"\n");
 		inVal.dsize = strlen(Val.dptr)+1;
 		ret = dbm_store(db,Key,Val,DBM_INSERT);
