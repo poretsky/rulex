@@ -32,8 +32,8 @@ install: lexicon
 	chown ${OWNER} lexicon
 	mv -f lexicon /usr/local/lib/ru_tts
 
-dbm_prog: dbm_prog.c
-	gcc -s -O2 ${DEFS} -o $@ $< ${LIBS}
+dbm_prog: dbm_prog.c coder.c
+	gcc -s -O2 ${DEFS} -o $@ $^ ${LIBS}
 
 clean:
 	rm -f additions lexicon.dict.old lexicon
