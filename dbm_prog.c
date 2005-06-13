@@ -28,6 +28,15 @@ HASHINFO openinfo = {
 };
 #endif
 
+static void usage(char *name)
+{
+	(void)fprintf(stderr, "Usage: %s", name);
+	(void)fprintf(stderr, "\t[-v] -o output_file_without_extension -i input_file\n");
+	(void)fprintf(stderr, "Use \"-\" as an input file name for the standard input\n");
+	(void)fprintf(stderr, "-v means to be verbose about redundant records\n");
+	return;
+}
+
 int main(int argc, char *argv[])
 {
 #if defined(FBSD_DATABASE)
@@ -50,14 +59,15 @@ int main(int argc, char *argv[])
 
 	char c;
 	int  ret, key_size, data_size, n = 0, i = 0;
+	int redundant = 0, invalid = 0, verbose = 0;
+	int duplicate = 0;
 
 	/* read in file name  */
 	if(argc==1) {
-        (void)fprintf(stderr, "Usage: %s",argv[0]);
-        (void)fprintf(stderr,"\t-o output_file_without_extention -i input_file\n");
-                exit(2);
+                usage(argv[0]);
+		return EXIT_FAILURE;
 	}
-	while((c = getopt(argc,argv,"i:o:")) != -1) {
+	while((c = getopt(argc,argv,"i:o:v")) != -1) {
                 switch(c) {
                         case 'i':
                                 iptr = optarg;
@@ -65,10 +75,12 @@ int main(int argc, char *argv[])
                         case 'o':
                                 optr = optarg;
                                 break;
+			case 'v':
+				verbose = 1;
+				break;
 			default:
-				(void)fprintf(stderr, "Usage: %s",argv[0]);
-				(void)fprintf(stderr,"\t-o output_file_without_extention -i input_file\n");
-				exit(2);
+				usage(argv[0]);
+				return EXIT_FAILURE;
 		}
 	}
 
@@ -76,15 +88,30 @@ int main(int argc, char *argv[])
 		ifd = stdin;
         } else if ((ifd=fopen(iptr,"r")) == NULL) {
                 (void)fprintf(stderr,"Can't open file %s\n",iptr);
-                exit(1);
+                return EXIT_FAILURE;
         }
 
 #if defined(BERKELEYDB)
         db = dbopen(NULL,O_RDWR|O_CREAT, 0000644, DB_BTREE, NULL);
+	if (!db)
+	  {
+	    (void)fprintf(stderr, "Cannot initialize temporary database\n");
+	    return EXIT_FAILURE;
+	  }
 #elif defined(FBSD_DATABASE)
         db = dbopen(optr,O_RDWR|O_CREAT, 0000644, DB_HASH, &openinfo);
+	if (!db)
+	  {
+	    (void)fprintf(stderr, "Cannot initialize database %s\n", optr);
+	    return EXIT_FAILURE;
+	  }
 #else
 	db = dbm_open(optr,O_RDWR|O_CREAT, 0000644);
+	if (!db)
+	  {
+	    (void)fprintf(stderr, "Cannot initialize database %s\n", optr);
+	    return EXIT_FAILURE;
+	  }
 #endif
 
 	while(fgets(line,256,ifd)) {
@@ -93,18 +120,28 @@ int main(int argc, char *argv[])
 		key_size = pack_key(s, packed_key);
 		if (key_size < 0)
 			{
-				fprintf(stderr,"%s:%i: warning: Illegal symbols in key. Ignored.\n",iptr,n);
+				fprintf(stderr,
+					"%s:%i: warning: Illegal symbols in key. Ignored.\n",
+					iptr, n);
+				invalid++;
 				continue;
 			}
 		data_size = pack_data(s, strtok(NULL,"\n"), packed_data);
 		if (data_size < 0)
 			{
-				fprintf(stderr,"%s:%i: warning: Invalid record. Ignored.\n",iptr,n);
+				fprintf(stderr,
+					"%s:%i: warning: Invalid record. Ignored.\n",
+					iptr, n);
+				invalid++;
 				continue;
 			}
 		if (!data_size)
 			{
-				fprintf(stderr,"%s:%i: warning: Redundant record. Ignored.\n",iptr,n);
+				if (verbose)
+					fprintf(stderr,
+						"%s:%i: warning: Redundant entry. Ignored.\n",
+						iptr, n);
+				redundant++;
 				continue;
 			}
 #if defined(FBSD_DATABASE) || defined(BERKELEYDB)
@@ -125,7 +162,10 @@ int main(int argc, char *argv[])
 				i++;
 				break;
 			case RET_SPECIAL:
-				fprintf(stderr,"%s:%i: warning: Duplicate entry. Ignored.\n",iptr,n);
+				fprintf(stderr,
+					"%s:%i: warning: Duplicate entry. Ignored.\n",
+					iptr, n);
+				duplicate++;
 				break;
 			default:
 #if defined(FBSD_DATABASE) || defined(BERKELEYDB)
@@ -133,9 +173,10 @@ int main(int argc, char *argv[])
 #else
 				dbm_close(db);
 #endif
-				fprintf(stderr,"%s:%i: error: storing error\n",iptr,n);
-				fprintf(stderr,"%d words processed.\n",i);
-				exit(1);
+				fprintf(stderr,
+					"%s:%i: error: storing error\n",
+					iptr, n);
+				return EXIT_FAILURE;
 		}
 	}
 
@@ -144,16 +185,36 @@ int main(int argc, char *argv[])
 #elif defined(BERKELEYDB)
 	tmpdb = db;
         db = dbopen(optr,O_RDWR|O_CREAT, 0000644, DB_BTREE, NULL);
-	while(!tmpdb->seq(tmpdb, &inKey, &inVal, R_NEXT)) {
-		ret = (db->put)(db,&inKey,&inVal,R_NOOVERWRITE);
-	}
+	if (!db)
+	  {
+	    (void)fprintf(stderr, "Cannot initialize database %s\n", optr);
+	    (void)(tmpdb->close)(tmpdb);
+	    return EXIT_FAILURE;
+	  }
+	(void)fprintf(stderr, "Dumping the database\n");
+	while(!tmpdb->seq(tmpdb, &inKey, &inVal, R_NEXT))
+	  if ((db->put)(db,&inKey,&inVal,R_NOOVERWRITE))
+	    {
+	      (void)fprintf(stderr, "Database write error\n");
+	      (void)(tmpdb->close)(tmpdb);
+	      (void)(db->close)(db);
+	      return EXIT_FAILURE;
+	    }
 	(void)(tmpdb->close)(tmpdb);
 	(void)(db->close)(db);
 #else
 	dbm_close(db);
 #endif
 
-	fprintf(stderr,"%d words processed.\n",i);
+	(void)fprintf(stderr, "%d total records processed.\n", n);
+	if (invalid)
+	  (void)fprintf(stderr, "Invalid records: %d\n", invalid);
+	if (duplicate)
+	  (void)fprintf(stderr, "Duplicates: %d\n", duplicate);
+	if (redundant)
+	  (void)fprintf(stderr, "Redundant entries: %d\n", redundant);
+	(void)fprintf(stderr,
+		      "%d records have been put into the database\n", i);
 
-	return(0);
+	return EXIT_SUCCESS;
 }
