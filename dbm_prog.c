@@ -17,6 +17,9 @@
 #define RET_SPECIAL 1
 #endif
 
+#define MAX_KEY_SIZE 50
+#define MAX_RECORD_SIZE 120
+
 #ifdef FBSD_DATABASE	/* this needs to be explicit  */
 HASHINFO openinfo = {
         128,           /* bsize */
@@ -116,7 +119,23 @@ int main(int argc, char *argv[])
 
 	while(fgets(line,256,ifd)) {
 		n++;
+		if (strlen(line) > MAX_RECORD_SIZE)
+			{
+				fprintf(stderr,
+					"%s:%i: warning: Record too long. Ignored.\n",
+					iptr, n);
+				invalid++;
+				continue;
+			}
 		s = strtok(line," ");
+		if (strlen(s) > MAX_KEY_SIZE)
+			{
+				fprintf(stderr,
+					"%s:%i: warning: Too long key. Ignored.\n",
+					iptr, n);
+				invalid++;
+				continue;
+			}
 		key_size = pack_key(s, packed_key);
 		if (key_size < 0)
 			{
