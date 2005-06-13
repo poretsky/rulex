@@ -58,6 +58,18 @@ static SYMBOL letter[] =
   };
 static unsigned short int scale = 2390;
 
+static int validate_pair(char prev, char next)
+     /*
+      * This routine checks validness of the letter pairs in words,
+      * Returns 0 on valid pair or -1 otherwise.
+      */
+{
+  if (next && index("ÿﬂ", next))
+    if (index("+-=¡≈£… œ’ﬂŸÿ‹¿—", prev))
+      return -1;
+  return 0;
+}
+
 int pack_key(char *s, char *t)
      /*
       * This routine packs string pointed by s using arithmetic coding
@@ -79,9 +91,16 @@ int pack_key(char *s, char *t)
 
   /* Packing data */
   t[0] = 0;
-  for (i = 0; i < strlen(s) + 1; i++)
+  for (i = 0; i <= strlen(s); i++)
     {
       /* Get the next symbol and check it's validity */
+      if (i)
+	{
+	  if (validate_pair(s[i - 1], s[i]))
+	    return -1;
+	}
+      else if (index("ÿŸﬂ", s[i]))
+	return -1;
       j = (int)table[s[i] & 0xff];
       if (j < 0)
 	return -1;
@@ -138,6 +157,13 @@ int pack_data(char *s, char *t, char *r)
 {
   int i, k, l = 0;
   char *w;
+
+  /* Detect some illegal sequences in t */
+  if (index("ÿ-ﬂ", t[0]))
+    return -1;
+  for (i = 1; i < strlen(t); i++)
+    if (validate_pair(t[i - 1], t[i]))
+      return -1;
 
   /* Detect legal non-alphabetical characters */
   w = t;
