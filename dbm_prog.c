@@ -33,10 +33,16 @@ HASHINFO openinfo = {
 
 static void usage(char *name)
 {
-	(void)fprintf(stderr, "Usage: %s", name);
-	(void)fprintf(stderr, "\t[-v] -o output_file_without_extension -i input_file\n");
-	(void)fprintf(stderr, "Use \"-\" as an input file name for the standard input\n");
-	(void)fprintf(stderr, "-v means to be verbose about redundant records\n");
+	(void)fprintf(stderr, "Usage:\t%s [-h] [-a] [-v] ", name);
+	(void)fprintf(stderr, "-o output_file_without_extension");
+	(void)fprintf(stderr, " -i input_file\n");
+	(void)fprintf(stderr, "Use \"-\" as an input file name");
+	(void)fprintf(stderr, " for the standard input\n");
+	(void)fprintf(stderr, "-a Forces storing redundant records");
+	(void)fprintf(stderr, " in the database\n");
+	(void)fprintf(stderr, "-v Means to be verbose");
+	(void)fprintf(stderr, " about redundant records\n");
+	(void)fprintf(stderr, "-h Prints this help\n");
 	return;
 }
 
@@ -62,15 +68,15 @@ int main(int argc, char *argv[])
 
 	char c;
 	int  ret, key_size, data_size, n = 0, i = 0;
-	int redundant = 0, invalid = 0, verbose = 0;
-	int duplicate = 0;
+	int redundant = 0, invalid = 0, duplicate = 0;
+	int verbose = 0, allrecs = 0;
 
 	/* read in file name  */
 	if(argc==1) {
                 usage(argv[0]);
 		return EXIT_FAILURE;
 	}
-	while((c = getopt(argc,argv,"i:o:v")) != -1) {
+	while((c = getopt(argc,argv,"i:o:avh")) != -1) {
                 switch(c) {
                         case 'i':
                                 iptr = optarg;
@@ -78,9 +84,15 @@ int main(int argc, char *argv[])
                         case 'o':
                                 optr = optarg;
                                 break;
+			case 'a':
+				allrecs = 1;
+				break;
 			case 'v':
 				verbose = 1;
 				break;
+			case 'h':
+				usage(argv[0]);
+				return EXIT_SUCCESS;
 			default:
 				usage(argv[0]);
 				return EXIT_FAILURE;
@@ -156,12 +168,20 @@ int main(int argc, char *argv[])
 			}
 		if (!data_size)
 			{
+				redundant++;
 				if (verbose)
 					fprintf(stderr,
-						"%s:%i: warning: Redundant entry. Ignored.\n",
+						"%s:%i: warning: Redundant entry.",
 						iptr, n);
-				redundant++;
-				continue;
+				if (!allrecs)
+				  {
+				    if (verbose)
+				      fprintf(stderr, " Ignored.\n");
+				    continue;
+				  }
+				else packed_data[data_size++] = 0;
+				if (verbose)
+				  fprintf(stderr, "\n");
 			}
 #if defined(FBSD_DATABASE) || defined(BERKELEYDB)
 		inKey.data = packed_key;
