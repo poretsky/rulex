@@ -12,7 +12,7 @@ all: new lexicon
 
 lexicon: dbm_prog lexicon.dict
 	@rm -f lexicon
-	./dbm_prog -i lexicon.dict -o lexicon
+	./dbm_prog -v -i lexicon.dict -o lexicon
 
 additions: /var/log/unknown.words
 	cat /var/log/unknown.words | \
