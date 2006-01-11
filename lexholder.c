@@ -32,7 +32,7 @@
 #elif defined(BERKELEYDB)
 #include <db_185.h>
 #else
-#include <ndbm.h>
+#include <gdbm-ndbm.h>
 #define RET_SUCCESS 0
 #define RET_SPECIAL 1
 #endif

@@ -3,6 +3,7 @@
 # Linux
 DEFS = -DBERKELEYDB
 LIBS = -ldb-3
+#LIBS = -lgdbm_compat
 OWNER = root.root
 
 # FreeBSD
@@ -38,7 +39,7 @@ lexholder: lexholder.o coder.o
 	gcc -s -o $@ $^ ${LIBS}
 
 clean:
-	rm -f *.o additions lexicon.dict.old lexicon
+	rm -f *.o *.old *.dir *.pag *.db additions lexicon
 
 %.o:%.c
 	gcc -c -O2 ${DEFS} -o $@ $<
