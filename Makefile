@@ -1,3 +1,5 @@
+# Makefile for the lexical database compiling
+
 # Linux
 DEFS = -DBERKELEYDB
 LIBS = -ldb-3
@@ -10,9 +12,9 @@ OWNER = root.root
 
 all: new lexicon
 
-lexicon: dbm_prog lexicon.dict
+lexicon: lexholder lexicon.dict
 	@rm -f lexicon
-	./dbm_prog -v -i lexicon.dict -o lexicon
+	./lexholder -f lexicon.dict -v lexicon
 
 additions: /var/log/unknown.words
 	cat /var/log/unknown.words | \
@@ -32,8 +34,14 @@ install: lexicon
 	chown ${OWNER} lexicon
 	mv -f lexicon /usr/local/lib/ru_tts
 
-dbm_prog: dbm_prog.c coder.c
-	gcc -s -O2 ${DEFS} -o $@ $^ ${LIBS}
+lexholder: lexholder.o coder.o
+	gcc -s -o $@ $^ ${LIBS}
 
 clean:
-	rm -f additions lexicon.dict.old lexicon
+	rm -f *.o additions lexicon.dict.old lexicon
+
+%.o:%.c
+	gcc -c -O2 ${DEFS} -o $@ $<
+
+coder.o: coder.c coder.h
+lexholder.o: lexholder.c coder.h
