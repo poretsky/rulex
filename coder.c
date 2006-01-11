@@ -1,4 +1,29 @@
-/* Data coding routines */
+/* coder.c
+ *
+ * Lexical data coding routines
+ *
+ * These routines provide transition between external and internal
+ * data representation in the lexical database.
+ *
+ * In the database key fields are packed by the arithmetic coding algorithm
+ * based on the static statistical model. Value fields are represented
+ * by differences relative to the corresponding keys.
+ */
+
+/*
+ * Copyright (C) 2006 Igor B. Poretsky <master@goga.energo.ru>
+ * 
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ */
+
 
 #include <string.h>
 #include "coder.h"
@@ -69,6 +94,7 @@ static int validate_pair(char prev, char next)
       return -1;
   return 0;
 }
+
 
 int pack_key(char *s, char *t)
      /*
@@ -144,6 +170,86 @@ int pack_key(char *s, char *t)
     l++;
   return l;
 }
+
+int unpack_key(char *key, unsigned int keylen, char *t, unsigned int reslen)
+     /*
+      * This routine unpacks given key and stores the resulting string
+      * in memory pointed by t. The reslen holds the size of this area.
+      *
+      * Returns 0 on success, or -1 when allocated memory is insufficient
+      * for result string.
+      */
+{
+  long int range;
+  unsigned short int code, count, low = 0, high = 0xffff, mask = 0x80;
+  int i, k, l;
+
+  l = 0;
+  if (keylen)
+    {
+      /* Get initial portion of packed data */
+      code = key[0];
+      code <<= 8;
+      k = 1;
+      if (keylen > 1)
+	code += (unsigned char)key[k++];
+      while (l < reslen) /* Decoding loop */
+	{
+	  /* Calculate current count */
+	  range = (long int)(high - low) + 1;
+	  count = (short int)((((long int)(code - low) + 1) * scale - 1)
+			      / range);
+	  /* Find the corresponding symbol */
+	  for (i = strlen(alphabet) + 1; i > 0; i--)
+	    if (count >= letter[i].low)
+	      break;
+	  if (!alphabet[i]) /* End of string */
+	    break; /* Finish decoding process */
+	  t[l++] = alphabet[i];
+	  /* Calculate new low and high values */
+	  high = low + (unsigned short int)((range * letter[i].high)
+					    / scale - 1);
+	  low += (unsigned short int)((range * letter[i].low) / scale);
+	  /* Get next bits of code */
+	  while (1)
+	    {
+	      if ((high ^ low) & 0x8000)
+		{
+		  if ((low & 0x4000) && !(high & 0x4000))
+		    {
+		      code ^= 0x4000;
+		      low &= 0x3fff;
+		      high |= 0x4000;
+		    }
+		  else break;
+		}
+	      low <<= 1;
+	      high <<= 1;
+	      high |= 1;
+	      code <<= 1;
+	      if (k < keylen)
+		{
+		  if (key[k] & mask) code++;
+		  mask >>= 1;
+		  if (!mask)
+		    {
+		      k++;
+		      mask = 0x80;
+		    }
+		}
+	    }
+	}
+    }
+
+  /* Finalization */
+  if (l < reslen)
+    {
+      t[l] = 0;
+      return 0;
+    }
+  else return -1;
+}
+
 
 int pack_data(char *s, char *t, char *r)
      /*
@@ -302,4 +408,78 @@ int pack_data(char *s, char *t, char *r)
       else break;
     }
   return l;
+}
+
+void unpack_data(char *s, unsigned char *diffs, int diffs_size)
+     /*
+      * This routine unpacks data field for corresponding key.
+      * It takes the original key string pointer as it's first argument
+      * and transforms it according to given diffs.
+      */
+{
+  int i, k, l;
+
+  if (!diffs_size) return;
+
+  /*
+   * The transition description may consist of two parts
+   * and we have to apply it in the reverse order.
+   */
+
+  /* At first let's locate the second part */
+  l = diffs_size;
+  for (i = 0; i < diffs_size; i++)
+    if (!(diffs[i] & ACTION_MASK))
+      {
+	l = i;
+	break;
+      }
+
+  /* Applying the second part if any */
+  k = 0;
+  for (i = l; i < diffs_size; i++)
+    switch (diffs[i] & ACTION_MASK)
+      { /* letters replacing, inserting and removing */
+	case REPLACE_CHAR:
+	  s[k++] = alphabet[diffs[i] & ~ACTION_MASK];
+	  break;
+	case INSERT_CHAR:
+	  (void)memmove(&s[k + 1], &s[k], strlen(&s[k]) + 1);
+	  s[k++] = alphabet[diffs[i] & ~ACTION_MASK];
+	  break;
+	case REMOVE_CHAR:
+	  (void)memmove(&s[k], &s[k + (diffs[i] & ~ACTION_MASK)],
+			strlen(&s[k + (diffs[i] & ~ACTION_MASK)]) + 1);
+	  break;
+	default:
+	  k += diffs[i];
+	  break;
+      }
+
+  /* Now applying the first part of diffs if any */
+  k = 0;
+  for (i = 0; i < l; i++)
+    {
+      /* Stress marking */
+      k += diffs[i] & ~ACTION_MASK;
+      (void)memmove(&s[k + 1], &s[k], strlen(&s[k]) + 1);
+      switch (diffs[i] & ACTION_MASK)
+	{
+	  case MAJOR_STRESS:
+	    s[k++] = '+';
+	    break;
+	  case MINOR_STRESS:
+	    s[k++] = '=';
+	    break;
+	  case SPACE_BAR:
+	    s[k++] = '-';
+	    break;
+	  default:
+	    s[k++] = ' ';
+	    break;
+	}
+    }
+
+  /* That's all */
+  return;
 }
