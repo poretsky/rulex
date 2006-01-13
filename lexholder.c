@@ -28,13 +28,58 @@
 #include "coder.h"
 
 #if defined(FBSD_DATABASE)
+
 #include <db.h>
+
+static int db_access(const char *path, int mode)
+{
+  int status;
+  char *db_file = malloc(strlen(path) + 4);
+  if (!db_file)
+    {
+      (void)fprintf(stderr, "Memory allocation error\n");
+      exit(EXIT_FAILURE);
+    }
+  (void)strcpy(db_file, path);
+  (void)strcat(db_file, ".db");
+  status = access(db_file, mode);
+  free(db_file);
+  return status;
+}
+
 #elif defined(BERKELEYDB)
+
 #include <db_185.h>
+
+#define db_access access
+
 #else
+
 #include <gdbm-ndbm.h>
+
 #define RET_SUCCESS 0
 #define RET_SPECIAL 1
+
+static int db_access(const char *path, int mode)
+{
+  int status;
+  char *dir_file = malloc(strlen(path) + 8);
+  char *pag_file = malloc(strlen(path) + 8);
+  if ((!dir_file) || (!pag_file))
+    {
+      (void)fprintf(stderr, "Memory allocation error\n");
+      exit(EXIT_FAILURE);
+    }
+  (void)strcpy(dir_file, path);
+  (void)strcpy(pag_file, path);
+  (void)strcat(dir_file, ".dir");
+  (void)strcat(pag_file, ".pag");
+  status = access(dir_file, mode) || access(pag_file, mode);
+  free(dir_file);
+  free(pag_file);
+  return status;
+}
+
 #endif
 
 #define RET_FAILURE -1
@@ -167,7 +212,7 @@ int main(int argc, char *argv[])
 
   if (s) /* Database reading actions */
     {
-      if (access(db_path, F_OK | R_OK))
+      if (db_access(db_path, F_OK | R_OK))
 	{
 	  perror(db_path);
 	  return EXIT_FAILURE;
@@ -281,7 +326,7 @@ int main(int argc, char *argv[])
     }
   else if (d) /* Delete record for specified key */
     {
-      if (access(db_path, F_OK | R_OK | W_OK))
+      if (db_access(db_path, F_OK | R_OK | W_OK))
 	{
 	  perror(db_path);
 	  return EXIT_FAILURE;
@@ -326,9 +371,9 @@ int main(int argc, char *argv[])
     }
   else /* Put new records into the database */
     {
-      if (!access(db_path, F_OK))
+      if (!db_access(db_path, F_OK))
 	{
-	  if (access(db_path, R_OK | W_OK))
+	  if (db_access(db_path, R_OK | W_OK))
 	    {
 	      perror(db_path);
 	      return EXIT_FAILURE;
@@ -348,7 +393,7 @@ int main(int argc, char *argv[])
 	    return EXIT_FAILURE;
 	  }
 #if defined(BERKELEYDB)
-      if (access(db_path, F_OK))
+      if (db_access(db_path, F_OK))
 	{
 	  db = dbopen(NULL, O_RDWR | O_CREAT,
 		      S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH,
@@ -541,7 +586,7 @@ int main(int argc, char *argv[])
   (void)(db->close)(db);
 #elif defined(BERKELEYDB)
   /* Dumping the database if needed */
-  if (access(db_path, F_OK))
+  if (db_access(db_path, F_OK))
     {
       tmpdb = db;
       db = dbopen(db_path, O_RDWR | O_CREAT,
