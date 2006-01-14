@@ -106,20 +106,42 @@ HASHINFO openinfo =
   };
 #endif
 
-static void usage(char *name)
+static void usage(const char *name)
 {
-  (void)fprintf(stderr, "Usage:\t%s [-h] [-l|-s <key>|-d <key>]", name);
-  (void)fprintf(stderr, "[-q|-v] [-a] [-r] [-f <file>] <db_file>\n\n");
+  (void)fprintf(stderr, "Lexical database holding utility.\n");
+  (void)fprintf(stderr, "Use it as follows:\n");
+  (void)fprintf(stderr, "Filling the DB:\t");
+  (void)fprintf(stderr, "%s [-q|-v] [-a] [-r] [-f <file>] <db_path>\n",
+		name);
+  (void)fprintf(stderr, "Extracting the DB content:\t");
+  (void)fprintf(stderr, "%s -l [-f <file>] <db_path>\n", name);
+  (void)fprintf(stderr, "Searching the DB:\t");
+  (void)fprintf(stderr, "%s -s <key> [-q] [-f <file>] <db_path>\n", name);
+  (void)fprintf(stderr, "Deleting entry:\t");
+  (void)fprintf(stderr, "%s -d <key> <db_path>\n", name);
+  (void)fprintf(stderr, "Getting this help:\t");
+  (void)fprintf(stderr, "%s -h\n\n", name);
+  (void)fprintf(stderr, "When filling and updating the database,\n");
+  (void)fprintf(stderr, "new records are read from the standard input.\n");
+  (void)fprintf(stderr, "When extracting data from the database,\n");
+  (void)fprintf(stderr, "The result is printed to the standard output.\n");
+  (void)fprintf(stderr,
+		"This behaviour can be changed by the \"-f\" switch.\n\n");
   (void)fprintf(stderr, "options:\n");
   (void)fprintf(stderr, "-l -- List database content\n");
   (void)fprintf(stderr, "-s <key> -- Search specified key\n");
   (void)fprintf(stderr, "-d <key> -- Delete record for specified key\n");
   (void)fprintf(stderr, "-f <file> -- Use specified file ");
   (void)fprintf(stderr, "instead of standard input or output\n");
-  (void)fprintf(stderr, "-a -- Store all records (redundant too)");
+  (void)fprintf(stderr, "-a -- Store all records (redundant too)\n");
   (void)fprintf(stderr, "-r -- Replace mode\n");
-  (void)fprintf(stderr, "-q -- Be more quiet\n");
-  (void)fprintf(stderr, "-v -- Be more verbose\n");
+  (void)fprintf(stderr, "-q -- Be more quiet than usual\n");
+  (void)fprintf(stderr, "      (don't print search results as well\n");
+  (void)fprintf(stderr, "      as warnings about redundant ");
+  (void)fprintf(stderr, "and duplicate records)\n");
+  (void)fprintf(stderr, "-v -- Be more verbose than usual\n");
+  (void)fprintf(stderr, "      (Print messages about work stages\n");
+  (void)fprintf(stderr, "      and final statistical information)\n");
   (void)fprintf(stderr, "-h -- This help\n\n");
   return;
 }
