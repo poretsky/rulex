@@ -1,3 +1,154 @@
+		   RUSSIAN PRONUNCIATION DICTIONARY
+
+If you prefer reading this info in Russian, you find it below. Please,
+skip this and enjoy.
+
+Russian pronunciation dictionary RuLex is aimed primarily for use
+together 		     with the Russian TTS engine Ru_tts. When
+it is installed you can instruct Ru_tts to use the dictionary by the
+command line switch "-s /usr/local/lib/ru_tts/lexicon".
+
+
+Dictionary source format is as follows:
+
+The dictionary source must be represented by a text file in koi8-r.
+Each entry occupies exactly one line consisting of two fields
+separated by space. The first field contains word itself and is used
+as a key. The second field tells how this word should be
+uttered. Stresses are denoted by the "+" sign following the stressed
+letter. In such a manner you can use the "=" sign as well to denote
+so-called weak stresses where it is appropriate, for instance, in some
+complex words. In the key field only lowercase Russian letters are
+allowed. In the utterance field additional characters "+", "=" and "-"
+may be used as well. The "-" sign can serve as a separator in some
+complex words.
+
+For Ru_tts synthesizer could use the dictionary it must be
+compiled. This is as simple as
+
+make db
+
+The Makefile is quite simple, but, anyway, I'll give some hints how
+this stuff should be used to update and extend the dictionary.
+
+Let's suggest that Ru_tts dumps all unknown words into the file
+/var/log/unknown.words. This can be achieved by adding
+"-l /var/log/unknown.words" to the Ru_tts command line. These words
+should be extracted by command
+
+make additions
+
+File additions.draft will be created in the current directory. This
+file will contain drafts of new entries where both fields are quite
+identical. If the environment variable EDITOR is not empty, this file
+will be immediately opened for editing by the denoted editor. After
+the editing process is finished this file will be renamed to
+"additions". If the environment variable EDITOR is not set, the make
+process exits unsuccessfully, but file additions.draft remains in the
+working directory. It can be viewed and edited appropriately by any
+text editor, and then it should be renamed to "additions" by
+hands. New entries should be inserted into the dictionary by command
+
+make new
+
+Previous version of the dictionary source will be stored in file
+lexicon.dict.old. After that updated dictionary should be compiled by
+command
+
+make db
+
+The dictionary compilation process can emit warnings about invalid,
+duplicate and redundant entries. These entries are happily ignored, so
+there is no danger, but I'd recommend to give attention to these
+warnings and get rid of them fixing the dictionary source.
+
+All this work can be performed in one stage by command "make" or
+"make all".
+
+After extracting words from /var/log/unknown.words it's content is
+cleaned. This file should have read and write permissions for all
+those users who would use it either for dumping words by Ru_tts or for
+compiling the pronunciation dictionary.
+
+Compiled dictionary can be installed on it's appropriate place by
+command
+
+make install-db
+
+Of course, it can be done only by the superuser.
+
+Full package can be installed by command
+
+make install
+
+Along with the lexical database itself it includes some supporting
+tools, such as utility lexholder-ru, which allows updating and
+extending the lexical database as well as extracting the database
+content in textual form. This utility can be used either from command
+line or from a shell-script. For information about it's using try
+
+lexholder-ru -h
+
+Or see the detailed description in Russian below. Anyway, I think, it
+would scarcely be useful for those who do not speak Russian.
+
+Note 1. If you wish Ru_tts to make use of the lexical database created
+by the lexholder-ru utility, they both must use the same database
+support library. The version also makes sense. Usually it is expected
+that the new version library routines can read the files created by
+the ones of older versions, but it is not necessarily true. The
+distributed versions of Ru_tts are linked against Berkeley DB library
+version 3 or later. Detailed information about used libraries for
+dynamically linked binaries can be obtained by the "ldd" command.
+
+Note 2. The lexical data storage format was changed in RuLex version
+1.0. The new format can not be used by Ru_tts older than 1.0.
+
+Note 3. The lexholder-ru utility does not free disk space when
+deleting and modifying records in the database. Moreover, the database
+size can grow dramatically during multiple updates. More compact
+representation in this case can be achieved by the command
+
+lexholder-ru -l lexicon-old | lexholder-ru lexicon-new
+
+
+A little history
+
+This dictionary was initially created as an attempt to provide some
+stressing capability to the Ru_tts speech engine. My search through
+the internet for some Russian stress dictionary had no practical
+result. But then I've remembered that one of freely distributed
+versions of Mueller's English-Russian dictionary actually contains the
+desired information. I've extracted this stuff and got stress
+dictionary about 60000 entries. It was not so much, but, anyway, I
+already could see how the idea works. It became clear soon that there
+are many special cases: some words should not be stressed at all and
+the dictionary should contain not only stressing information. So, now
+it is positioned as a pronunciation dictionary (not only stressing)
+and it had grown dramatically since that time.
+
+
+Now I'd like to thank all who helped me in this work:
+
+The authors and publishers of the electronic version of Mueller's
+dictionary with stress information, from which I obtained the initial
+portion of stressed words;
+
+Ivanov Guennady and my sister Tatyana, who had accomplished a lot of
+hard work fixing and extending the dictionary at the beginning time;
+
+Serge Fleytin, who provided me a bunch of new entries;
+
+Dmitry Paduchih, who not only provided me new entries for the
+dictionary, but had also developed the Emacs extension helping to
+generate ones. This extension is included into the package and
+Dmitry's comments about it are at the end of this file (in the Russian
+section).
+
+Igor B. Poretsky <master@goga.energo.ru>
+____________________________________________________________
+
+
 		     СЛОВАРЬ РУССКИХ ПРОИЗНОШЕНИЙ
 
 Словарь русских произношений RuLex предназначен в первую очередь для
@@ -9,17 +160,21 @@
 
 Формат исходного текста словаря.
 
+Исходный текст словаря должен быть представлен в кодировке koi8-r.
 Каждое вхождение представляет собою одну строку, состоящую из двух
 полей: Собственно слово и его произношение. Ударная гласная отмечается
 знаком "+" непосредственно после нее. Можно использовать также знак
 "=" для обозначения так называемых слабых ударений там, где это
 представляется целесообразным, например, в некоторых составных
-словах. Поля отделены друг от друга одним пробелом.
+словах. Поля отделены друг от друга одним пробелом. В первом поле
+допускаются лишь малые буквы русского алфавита. Второе может содержать
+кроме того знаки "+", "=" и "-". Знак "-" используется для разделения
+некоторых сложных слов.
 
 Чтобы скомпилировать словарь, то есть преобразовать его к виду,
 пригодному для использования синтезатором, достаточно выдать команду
 
-make lexicon
+make db
 
 Makefile достаточно примитивен и обозрим, но все же я позволю себе
 дать здесь несколько намеков как использовать этот материал для
@@ -30,14 +185,14 @@ Makefile достаточно примитивен и обозрим, но все же я позволю себе
 
 make additions
 
-При этом в текущем каталоге образуется файл по имени additions.raw,
+При этом в текущем каталоге образуется файл по имени additions.draft,
 содержащий заготовки новых словарных статей, в которых оба поля имеют
 совершенно одинаковое содержание. Если окружение содержит непустую
 переменную EDITOR, то этот файл предлагается отредактировать при
 помощи заявленного в ней редактора, после чего файл переименовывается
 в additions. Если переменная EDITOR пуста или просто отсутствует в
 окружении, то процесс завершается с ошибкой. Тем не менее, файл
-additions.raw остается в рабочем каталоге. Его можно просмотреть при
+additions.draft остается в рабочем каталоге. Его можно просмотреть при
 помощи любого удобного текстового редактора, удалить лишние вхождения
 и отредактировать соответствующим образом второе поле, а затем вручную
 переименовать в additions. После этого, новые слова вводятся в
@@ -48,7 +203,7 @@ make new
 Предыдущая версия словаря при этом сохраняется в файле
 lexicon.dict.old. А теперь можно выдать команду
 
-make lexicon
+make db
 
 для компиляции обновленного словаря. При компиляции могут возникать
 замечания о повторных вхождениях. Ничего страшного в них нет, - на
@@ -73,9 +228,100 @@ make all
 
 И, наконец, установить обновленный словарь на его законное место можно, посредством команды
 
-make install
+make install-db
 
 Это, разумеется, следует уже делать от имени пользователя root.
+
+При помощи команды
+
+make install
+
+можно установить не только сам словарь, но и кое-какие дополнительные
+средства поддержки.
+
+Утилита lexholder-ru позволяет модифицировать, удалять и добавлять
+новые записи в базе данных словаря из командной строки или
+скрипта. При помощи этой утилиты можно также извлекать данные из
+словаря. Формат вызова утилиты lexholder-ru следующий:
+
+lexholder-ru [options] <DB_path>
+
+Параметр <DB_path> - обязательный. Он должен указывать путь к базе
+данных словаря. Если других параметров в командной строке нет,
+программа читает новые записи из потока стандартного ввода и вносит их
+в базу данных словаря. Записи с уже существующими в базе ключами
+игнорируются.
+
+Вот описание ключей, принимаемых утилитой lexholder-ru в командной
+строке:
+
+-s <key> - Ищет в словаре запись по заданному ключу и, в случае
+ успеха, выводит содержимое поля, описывающего произношение, в поток
+ стандартного вывода. Если в командной строке при этом присутствует
+ еще и ключ "-q", в поток стандартного вывода ничего не выводится, но
+ о наличии в словаре записи с данным ключом можно судить по коду
+ завершения.
+
+-d <key> - Удаляет из базы данных словаря статью с заданным ключом.
+
+-l - Выводит в поток стандартного вывода содержимое базы данных
+ словаря в текстовой форме.
+
+Описанные три ключа являются взаимоисключающими и, соответственно,
+одновременное их присутствие в командной строке не допускается.
+
+-f <src_file> - Позволяет задать файл, который будет использоваться
+ вместо потока стандартного ввода или стандартного вывода для операций
+ извлечения.
+
+-h - Выводит краткую справку об использовании программы.
+
+Следующие два ключа модифицируют поведение программы при модификации
+базы данных словаря.
+
+-r - Режим замены. По умолчанию записи с повторными ключами
+ игнорируются. Этот ключ заставляет программу заменять существующие
+ записи новыми.
+
+-a - Позволяет включать в словарь так называемые "лишние"
+ записи. Таковыми считаются записи, в которых оба поля совершенно
+ одинаковы. Они не несут дополнительной информации о произношении и
+ лишь обеспечивают факт наличия данного слова в словаре. По-умолчанию
+ такие записи игнорируются.
+
+Следующие два взаимоисключающих ключа влияют на "разговорчивость"
+программы.
+
+-q - Заставляет программу быть более молчаливой, чем обычно: не
+ выводится результат поиска статьи по ключу и не выдаются замечания о
+ повторных и "лишних" записях.
+
+-v - Вызывает дополнительную словоохотливость: Программа выдает
+ сообщения о стадиях своей работы и статистическую информацию по
+ завершении.
+
+Замечание 1. Чтобы словарь, изготовленный утилитой Lexholder-ru
+воспринимался синтезатором Ru_tts, обе программы должны использовать
+одни и те же библиотеки поддержки баз данных. Версии тоже имеют
+значение. Вообще говоря, логично ожидать, что файл, изготовленный при
+помощи библиотеки более старой версии будет читаться процедурами той
+же библиотеки более новой версии, но это вполне может оказаться и не
+так. Распространяемые версии синтезатора Ru_tts используют библиотеку
+Berkeley DB версии не ниже 3. Для динамически скомпилированных
+исполняемых файлов точную информацию об используемых библиотеках можно
+получить при помощи команды "ldd".
+
+Замечание 2. В версиях RuLex начиная с 1.0 используется новый формат
+базы данных словаря. Синтезатор Ru_tts версий ниже 1.0 с ним работать
+не будет.
+
+Замечание 3. При удалении записей из словаря занятое базой данных
+дисковое пространство не освобождается. Более того, при добавлении
+новых записей размер базы может неоправданно возрастать. Более
+компактного представления базы после множественных модификаций можно
+добиться при помощи команды:
+
+lexholder-ru -l lexicon-old | lexholder-ru lexicon-new
 
 
 А теперь немного истории.
@@ -106,8 +352,9 @@ make install
 Теперь же я хочу выразить глубочайшую благодарность тем, кто не
 поленился расставить ударения в словаре Мюллера, а также склонить
 голову в благодарном поклоне Иванову Геннадию Григорьевичу и своей
-сестренке Татьяне, которые самоотверженно взяли на себя львиную долю самой
-черновой технической работы по корректировке и пополнению словаря.
+сестренке Татьяне, которые на начальном этапе самоотверженно взяли на
+себя львиную долю самой черновой технической работы по корректировке и
+пополнению словаря.
 
 Не могу так же не выразить глубокую признательность Сергею Флейтину за
 новые слова и замечания и, разумеется, Дмитрию Падучих, который не
