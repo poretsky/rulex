@@ -140,7 +140,7 @@ static void usage(const char *name)
   (void)fprintf(stderr, "      as warnings about redundant ");
   (void)fprintf(stderr, "and duplicate records)\n");
   (void)fprintf(stderr, "-v -- Be more verbose than usual\n");
-  (void)fprintf(stderr, "      (Print messages about work stages\n");
+  (void)fprintf(stderr, "      (print messages about work stages\n");
   (void)fprintf(stderr, "      and final statistical information)\n");
   (void)fprintf(stderr, "-h -- This help\n\n");
   return;
