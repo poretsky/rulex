@@ -97,9 +97,9 @@ by the lexholder-ru utility, they both must use the same database
 support library. The version also makes sense. Usually it is expected
 that the new version library routines can read the files created by
 the ones of older versions, but it is not necessarily true. The
-distributed versions of Ru_tts are linked against Berkeley DB library
-version 3 or later. Detailed information about used libraries for
-dynamically linked binaries can be obtained by the "ldd" command.
+distributed versions of Ru_tts for Linuxare linked against Berkeley DB
+library version 3 or later. Detailed information about used libraries
+for dynamically linked binaries can be obtained by the "ldd" command.
 
 Note 2. The lexical data storage format was changed in RuLex version
 1.0. The new format can not be used by Ru_tts older than 1.0.
@@ -274,7 +274,9 @@ lexholder-ru [options] <DB_path>
  вместо потока стандартного ввода или стандартного вывода для операций
  извлечения.
 
--h - Выводит краткую справку об использовании программы.
+-h - Выводит краткую справку об использовании программы. При
+ использовании этого ключа указание пути к базе данных не требуется,
+ так как никаких действий с ней при этом не производится.
 
 Следующие два ключа модифицируют поведение программы при модификации
 базы данных словаря.
@@ -306,10 +308,10 @@ lexholder-ru [options] <DB_path>
 значение. Вообще говоря, логично ожидать, что файл, изготовленный при
 помощи библиотеки более старой версии будет читаться процедурами той
 же библиотеки более новой версии, но это вполне может оказаться и не
-так. Распространяемые версии синтезатора Ru_tts используют библиотеку
-Berkeley DB версии не ниже 3. Для динамически скомпилированных
-исполняемых файлов точную информацию об используемых библиотеках можно
-получить при помощи команды "ldd".
+так. Распространяемые версии синтезатора Ru_tts для Linux используют
+библиотеку Berkeley DB версии не ниже 3. Для динамически
+скомпилированных исполняемых файлов точную информацию об используемых
+библиотеках можно получить при помощи команды "ldd".
 
 Замечание 2. В версиях RuLex начиная с 1.0 используется новый формат
 базы данных словаря. Синтезатор Ru_tts версий ниже 1.0 с ним работать
