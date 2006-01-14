@@ -65,7 +65,7 @@ lexholder: lexholder.o coder.o
 	gcc -s -o $@ $^ ${LIBS}
 
 clean:
-	rm -f *.o *.old additions ${DBF}
+	rm -f *.o *.old additions ${DBF} lexholder
 
 %.o:%.c
 	gcc -c -O2 ${DEFS} -o $@ $<
