@@ -1,0 +1,76 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH LEXHOLDER\-RU 1 "January 14, 2006"
+.SH NAME
+lexholder\-ru \- lexical database holding utility
+.SH SYNOPSIS
+.B lexholder\-ru
+.RI [\-q|\-v] [\-a] [\-r] [\-f <file>] <db_path>
+.br
+.B lexholder\-ru
+.RI \-l [\-f <file>] <db_path>
+.br
+.B lexholder\-ru
+.RI \-s <key> [\-q] [\-f <file>] <db_path>
+.br
+.B lexholder\-ru
+.RI \-d <key> <db_path>
+.br
+.B lexholder\-ru
+.RI \-h
+.SH DESCRIPTION
+\fBlexholder\-ru\fP is a small utility intended for use from the
+command line or shell-scripts. It allows to create lexical database,
+update it and extract it's content in textual form.
+.PP
+When filling and updating the database,
+new records are read from the standard input.
+When extracting data from the database,
+The result is printed to the standard output.
+This behaviour can be changed by the "\fB\-f\fP" switch.
+.SH OPTIONS
+This utility recognizes following command line options:
+.TP
+.B \-a
+.br
+Store all records (redundant too).
+.TP
+.B \-r
+.br
+Replace mode. In this mode new records replace existing ones
+with the same key. By default such records are ignored.
+.TP
+.B \-d <key>
+.br
+Delete record for specified key.
+.TP
+.B \-s <key>
+.br
+Search specified key in the lexical database. If specified word
+was found program exits successfully and (if the \fB\-q\fP switch
+is not specified) outputs it's pronunciation.
+.TP
+.B \-l
+.br
+List database content in textual form.
+.TP
+.B \-f <file>
+.br
+Use specified file instead of standard input or output.
+.TP
+.B \-q
+.br
+Be more quiet than usual: don't print search results as well
+as warnings about redundant and duplicate records.
+.TP
+.B \-v
+.br
+Be more verbose than usual: print messages about work stages
+and final statistical information when finishing.
+.TP
+.B \-h
+.br
+Show summary of options and exit.
+.SH SEE ALSO
+.BR ru_tts (1).
+.SH AUTHOR
+Igor B. Poretsky <master@goga.energo.ru>.
