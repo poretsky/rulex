@@ -4,9 +4,9 @@ If you prefer reading this info in Russian, you find it below. Please,
 skip this and enjoy.
 
 Russian pronunciation dictionary RuLex is aimed primarily for use
-together 		     with the Russian TTS engine Ru_tts. When
-it is installed you can instruct Ru_tts to use the dictionary by the
-command line switch "-s /usr/local/lib/ru_tts/lexicon".
+together with the Russian TTS engine Ru_tts. When it is installed you
+can instruct Ru_tts to use the dictionary by the command line switch
+"-s /usr/local/share/ru_tts/lexicon".
 
 
 Dictionary source format is as follows:
@@ -154,7 +154,7 @@ ____________________________________________________________
 Словарь русских произношений RuLex предназначен в первую очередь для
 совместного использования с синтезатором речи Ru_tts. После его
 установки достаточно добавлять в строку вызова Ru_tts ключ
-"-s /usr/local/lib/ru_tts/lexicon" и содержимое словаря будет
+"-s /usr/local/share/ru_tts/lexicon" и содержимое словаря будет
 приниматься во внимание при синтезе речи.
 
 

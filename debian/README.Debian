@@ -5,11 +5,11 @@ This package contains Russian pronunciation dictionary along with the
 lexical database holding utility lexholder-ru. It is primarily
 intended for use along with the Ru_tts software speech
 synthesizer. For Ru_tts to make use of the pronunciation dictionary
-call it with "-s /usr/lib/ru_tts/lexicon" switch in the command line.
+call it with "-s /usr/share/ru_tts/lexicon" switch in the command line.
 
 This package also contains a light-weight Emacs extension helping to
 construct new entries for the lexical database.
 
 See README file and lexholder-ru man page for more info.
 
- -- Igor B. Poretsky <master@goga.energo.ru>, Sat, 14 Jan 2006 14:09:54 +0300
+ -- Igor B. Poretsky <master@goga.energo.ru>, Mon Jan 16 20:05:43 2006

@@ -25,7 +25,7 @@ DBF = ${DBNAME}
 # Installation paths
 prefix = /usr/local
 bindir = ${prefix}/bin
-libdir = ${prefix}/lib/ru_tts
+datadir = ${prefix}/lib/ru_tts
 lispdir = ${prefix}/share/emacs/site-lisp
 docdir = ${prefix}/share/doc/rulex
 
@@ -52,8 +52,8 @@ new: additions
 	cat lexicon.dict.old additions | sort | uniq >lexicon.dict
 
 install-db: db
-	install -d ${libdir}
-	install -g ${GROUP} -o root -m 0644 -p ${DBF} ${libdir}
+	install -d ${datadir}
+	install -g ${GROUP} -o root -m 0644 -p ${DBF} ${datadir}
 
 install: lexholder install-db
 	install -d ${bindir} ${lispdir} ${docdir}
