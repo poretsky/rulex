@@ -45,9 +45,12 @@ Delete record for specified key.
 .TP
 .B \-s <key>
 .br
-Search specified key in the lexical database. If specified word
-was found program exits successfully and (if the \fB\-q\fP switch
-is not specified) outputs it's pronunciation.
+Search specified key in the lexical database. If the word is found
+program exits successfully and outputs it's pronunciation, otherwise
+prints the original word and exits with non-zero return code.
+If the \fB\-q\fP switch is specified in the command line, nothing
+will be printed on the standard output, but return code still
+can be used to find out wether the word was found or not.
 .TP
 .B \-l
 .br

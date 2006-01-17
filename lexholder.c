@@ -324,17 +324,17 @@ int main(int argc, char *argv[])
 		    break;
 		  case RET_SPECIAL:
 		    if (!quiet)
-		      (void)fprintf(stderr, "No match\n");
+		      (void)printf("%s\n", s);
 		    break;
 		  default:
 		    break;
 		}
 	      if (ret < 0)
-		perror("DB search:");
+		(void)fprintf(stderr, "DB search error\n");
 	    }
 	  else
 	    {
-	      (void)fprintf(stderr, "Invalid key\n");
+	      (void)fprintf(stderr, "Invalid key: %s\n", s);
 	      ret = RET_FAILURE;
 	    }
 	}
@@ -380,7 +380,7 @@ int main(int argc, char *argv[])
 	}
       else
 	{
-	  (void)fprintf(stderr, "Invalid key\n");
+	  (void)fprintf(stderr, "Invalid key: %s\n", d);
 	  ret = RET_FAILURE;
 	}
 #if defined(BERKELEYDB) || defined(FBSD_DATABASE)
