@@ -25,7 +25,7 @@ DBF = ${DBNAME}
 # Installation paths
 prefix = /usr/local
 bindir = ${prefix}/bin
-datadir = ${prefix}/lib/ru_tts
+datadir = ${prefix}/share/ru_tts
 lispdir = ${prefix}/share/emacs/site-lisp
 docdir = ${prefix}/share/doc/rulex
 
