@@ -1,5 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH LEXHOLDER\-RU 1 "January 14, 2006"
+.TH LEXHOLDER\-RU 1 "January 18, 2006"
 .SH NAME
 lexholder\-ru \- lexical database holding utility
 .SH SYNOPSIS
@@ -50,7 +50,8 @@ Delete record for specified key.
 .br
 Search specified key in the lexical database. If the word is found
 program exits successfully and outputs it's pronunciation, otherwise
-prints the original word and exits with non-zero return code.
+prints the original word (it will be lowercased if the \fB\-i\fP
+switch is used) and exits with non-zero return code.
 If the \fB\-q\fP switch is specified in the command line, nothing
 will be printed on the standard output, but return code still
 can be used to find out wether the word was found or not.
@@ -60,7 +61,7 @@ can be used to find out wether the word was found or not.
 Ignore case in accepted info. All info (both keys and values)
 for the lexical database must not contain the uppercase letters.
 This option allows using of uppercase letters, all these will be
-automatically lowercased.
+automatically lowercased before using.
 .TP
 .B \-l
 .br
@@ -84,6 +85,6 @@ and final statistical information when finishing.
 .br
 Show summary of options and exit.
 .SH SEE ALSO
-.BR ru_tts (1).
+.BR ru_tts (1), /usr/share/doc/rulex/README.
 .SH AUTHOR
 Igor B. Poretsky <master@goga.energo.ru>.
