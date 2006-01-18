@@ -22,6 +22,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <locale.h>
+#include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -111,14 +113,15 @@ static void usage(const char *name)
   (void)fprintf(stderr, "Lexical database holding utility.\n");
   (void)fprintf(stderr, "Use it as follows:\n");
   (void)fprintf(stderr, "Filling the DB:\t");
-  (void)fprintf(stderr, "%s [-q|-v] [-a] [-r] [-f <file>] <db_path>\n",
+  (void)fprintf(stderr, "%s [-q|-v] [-i] [-a] [-r] [-f <file>] <db_path>\n",
 		name);
   (void)fprintf(stderr, "Extracting the DB content:\t");
-  (void)fprintf(stderr, "%s -l [-f <file>] <db_path>\n", name);
+  (void)fprintf(stderr, "%s -l [-q] [-f <file>] <db_path>\n", name);
   (void)fprintf(stderr, "Searching the DB:\t");
-  (void)fprintf(stderr, "%s -s <key> [-q] [-f <file>] <db_path>\n", name);
+  (void)fprintf(stderr, "%s -s <key> [-i] [-q] [-f <file>] <db_path>\n",
+		name);
   (void)fprintf(stderr, "Deleting entry:\t");
-  (void)fprintf(stderr, "%s -d <key> <db_path>\n", name);
+  (void)fprintf(stderr, "%s -d <key> [-i] <db_path>\n", name);
   (void)fprintf(stderr, "Getting this help:\t");
   (void)fprintf(stderr, "%s -h\n\n", name);
   (void)fprintf(stderr, "When filling and updating the database,\n");
@@ -133,6 +136,7 @@ static void usage(const char *name)
   (void)fprintf(stderr, "-d <key> -- Delete record for specified key\n");
   (void)fprintf(stderr, "-f <file> -- Use specified file ");
   (void)fprintf(stderr, "instead of standard input or output\n");
+  (void)fprintf(stderr, "-i -- Ignore case in accepted info\n");
   (void)fprintf(stderr, "-a -- Store all records (redundant too)\n");
   (void)fprintf(stderr, "-r -- Replace mode\n");
   (void)fprintf(stderr, "-q -- Be more quiet than usual\n");
@@ -163,9 +167,9 @@ int main(int argc, char *argv[])
   char *s = NULL, *d = NULL, line[256], packed_key[256], packed_data[256];
   char *db_path = NULL, *srcf = NULL;
 
-  int ret, key_size, data_size, n, i = 0;
+  int ret, key_size, data_size, n, k, i = 0;
   int redundant = 0, invalid = 0, duplicate = 0;
-  int verbose = 0, quiet = 0, replace_mode = 0, allrecs = 0;
+  int verbose = 0, quiet = 0, replace_mode = 0, allrecs = 0, igncase = 0;
 
   /* Parse command line */
   if(argc==1)
@@ -174,7 +178,7 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
   ret = NO_DB_FILE;
-  while((n = getopt(argc,argv,"f:d:s:larqvh")) != -1)
+  while((n = getopt(argc,argv,"f:d:s:lairqvh")) != -1)
     switch(n)
       {
 	case 'f':
@@ -195,6 +199,10 @@ int main(int argc, char *argv[])
 	  break;
 	case 'a':
 	  allrecs = 1;
+	  break;
+	case 'i':
+	  (void)setlocale(LC_CTYPE, "ru_RU.koi8r");
+	  igncase = 1;
 	  break;
 	case 'r':
 	  replace_mode = 1;
@@ -294,6 +302,10 @@ int main(int argc, char *argv[])
 	}
       else /* Search record for specified key */
 	{
+	  if (igncase)
+	    for (k = 0; s[k]; k++)
+	      if (isupper(s[k]))
+		s[k] = tolower(s[k]);
 	  key_size = pack_key(s, packed_key);
 	  if(key_size > 0)
 	    {
@@ -365,6 +377,10 @@ int main(int argc, char *argv[])
 	  (void)fprintf(stderr, "Cannot open database %s\n", db_path);
 	  return EXIT_FAILURE;
 	}
+      if (igncase)
+	for (k = 0; d[k]; k++)
+	  if (isupper(d[k]))
+	    d[k] = tolower(d[k]);
       key_size = pack_key(d, packed_key);
       if (key_size > 0)
 	{
@@ -476,6 +492,10 @@ int main(int argc, char *argv[])
 	  invalid++;
 	  continue;
 	}
+      if (igncase)
+	for (k = 0; line[k]; k++)
+	  if (isupper(line[k]))
+	    line[k] = tolower(line[k]);
       s = strtok(line," ");
       if (strlen(s) > MAX_KEY_SIZE)
 	{

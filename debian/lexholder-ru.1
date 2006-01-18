@@ -4,16 +4,16 @@
 lexholder\-ru \- lexical database holding utility
 .SH SYNOPSIS
 .B lexholder\-ru
-.RI [\-q|\-v] [\-a] [\-r] [\-f <file>] <db_path>
+.RI [\-q|\-v] [\-i] [\-a] [\-r] [\-f <file>] <db_path>
 .br
 .B lexholder\-ru
-.RI \-l [\-f <file>] <db_path>
+.RI \-l [\-q] [\-f <file>] <db_path>
 .br
 .B lexholder\-ru
-.RI \-s <key> [\-q] [\-f <file>] <db_path>
+.RI \-s <key> [\-i] [\-q] [\-f <file>] <db_path>
 .br
 .B lexholder\-ru
-.RI \-d <key> <db_path>
+.RI \-d <key> [\-i] <db_path>
 .br
 .B lexholder\-ru
 .RI \-h
@@ -32,7 +32,10 @@ This utility recognizes following command line options:
 .TP
 .B \-a
 .br
-Store all records (redundant too).
+Store all records (redundant too). In this case we use term
+"redundant" for the records where key and value are quite identical.
+Such record does not contain a pronunciation information, it only affects
+the fact of presence of certain word in the lexical database.
 .TP
 .B \-r
 .br
@@ -51,6 +54,13 @@ prints the original word and exits with non-zero return code.
 If the \fB\-q\fP switch is specified in the command line, nothing
 will be printed on the standard output, but return code still
 can be used to find out wether the word was found or not.
+.TP
+.B \-i
+.br
+Ignore case in accepted info. All info (both keys and values)
+for the lexical database must not contain the uppercase letters.
+This option allows using of uppercase letters, all these will be
+automatically lowercased.
 .TP
 .B \-l
 .br
