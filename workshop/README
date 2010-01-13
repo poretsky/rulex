@@ -1,0 +1,5 @@
+This directory contains some additional helper scripts to simplify the
+task of maintaining lexical data. These scripts use the lexholder
+utility from the ../src directory. Also, it is assumed that all
+working data files along with the lexical database itself are kept in
+the current directory. The database file should be named lexicon.

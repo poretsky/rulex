@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# This script reads dictionary in it's textual representation
+# from the file lexicon.dump and outputs comprehensive
+# classification info for each word into the file lexicon.add.
+
+exec <lexicon.dump >lexicon.add
+
+while read key desc; do
+    echo $key $desc
+    ../src/lexholder -b $key lexicon
+done
+
+exit 0

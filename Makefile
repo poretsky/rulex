@@ -1,26 +1,16 @@
 # Makefile for the lexical database compiling
 
-# Database name
-DBNAME = lexicon
+# Database file name
+DBF = lexicon.db
+
+# Utility executable name
+UTILITY = lexholder-ru
 
 # Linux
 GROUP = root
-#
-# Using Berkeley DB:
-DEFS = -DBERKELEYDB
-LIBS = -ldb
-DBF = ${DBNAME}
-#
-# Using GDBM:
-#DEFS = 
-#LIBS = -lgdbm_compat
-#DBF = ${DBNAME}.dir ${DBNAME}.pag
 
 # FreeBSD
 #GROUP = wheel
-#DEFS = -DFBSD_DATABASE
-#LIBS = 
-#DBF = ${DBNAME}.db
 
 # Installation paths
 prefix = /usr/local
@@ -29,46 +19,36 @@ datadir = ${prefix}/share/ru_tts
 lispdir = ${prefix}/share/emacs/site-lisp
 docdir = ${prefix}/share/doc/rulex
 
-all: new db
+# Compiling options
+export CC = gcc
+export CFLAGS = -O2
+export LFLAGS = -s
+export LIBS = -ldb
 
-db: ${DBF}
+all: lexholder db
 
-${DBF}: lexholder lexicon.dict
-	@rm -f ${DBNAME}
-	./lexholder -f lexicon.dict -v ${DBNAME}
+.PHONY: lexholder
+lexholder:
+	$(MAKE) -C src all
 
-additions: /var/log/unknown.words
-	cat /var/log/unknown.words | \
-	sort | \
-	uniq | \
-	sed "s/.*/& &/g" >>additions.draft
-	echo -n >/var/log/unknown.words
-	test "$EDITOR" && \
-	${EDITOR} additions.draft && \
-	mv -f additions.draft additions
-
-new: additions
-	mv -f lexicon.dict lexicon.dict.old
-	cat lexicon.dict.old additions | sort | uniq >lexicon.dict
-
-install-db: db
-	install -d ${datadir}
-	install -g ${GROUP} -o root -m 0644 -p ${DBF} ${datadir}
+.PHONY: db
+db: lexholder 
+	$(MAKE) -C data all
 
 install: lexholder install-db
 	install -d ${bindir} ${lispdir} ${docdir}
-	install -g ${GROUP} -o root -m 0755 -p lexholder ${bindir}/lexholder-ru
+	install -g ${GROUP} -o root -m 0755 -p src/lexholder ${bindir}/${UTILITY}
 	install -g ${GROUP} -o root -m 0644 -p rulex.el ${lispdir}
 	install -g ${GROUP} -o root -m 0644 -p README ${docdir}
 
-lexholder: lexholder.o coder.o
-	gcc -s -o $@ $^ ${LIBS}
+install-db: db
+	install -d ${datadir}
+	install -g ${GROUP} -o root -m 0644 -p data/lexicon ${datadir}/${DBF}
 
+.PHONY: clean
 clean:
-	rm -f *.o *.old additions ${DBF} lexholder
+	$(MAKE) -C src clean
+	$(MAKE) -C data clean
 
-%.o:%.c
-	gcc -c -O2 ${DEFS} -o $@ $<
-
-coder.o: coder.c coder.h
-lexholder.o: lexholder.c coder.h
+additions: unknown.words
+	cat $^ | sort | uniq | sed "s/.*/& &/g" >> $@

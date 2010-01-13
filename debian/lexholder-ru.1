@@ -1,71 +1,162 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.TH LEXHOLDER\-RU 1 "January 18, 2006"
+.TH LEXHOLDER\-RU 1 "October 28, 2006"
 .SH NAME
 lexholder\-ru \- lexical database holding utility
 .SH SYNOPSIS
 .B lexholder\-ru
-.RI [\-q|\-v] [\-i] [\-a] [\-r] [\-f <file>] <db_path>
-.br
-.B lexholder\-ru
-.RI \-l [\-q] [\-f <file>] <db_path>
-.br
-.B lexholder\-ru
-.RI \-s <key> [\-i] [\-q] [\-f <file>] <db_path>
-.br
-.B lexholder\-ru
-.RI \-d <key> [\-i] <db_path>
-.br
-.B lexholder\-ru
-.RI \-h
+.RI [ options ] <db_path>
 .SH DESCRIPTION
 \fBlexholder\-ru\fP is a small utility intended for use from the
-command line or shell-scripts. It allows to create lexical database,
-update it and extract it's content in textual form.
+command line or shell-scripts. It allows to construct, test, manage
+and query lexical database as well as extract it's content
+in textual form.
+.PP
+This database is primarily intended for use along with the Russian
+TTS engine \fBru_tts\fP to provide stressing and pronunciation
+information for the Russian words.
 .PP
 When filling and updating the database,
 new records are read from the standard input.
 When extracting data from the database,
 The result is printed to the standard output.
-This behaviour can be changed by the "\fB\-f\fP" switch.
+This behaviour can be changed by the \fB\-f\fP switch.
 .SH OPTIONS
-This utility recognizes following command line options:
+All options recognized in the command line are described below.
+For more convenience they are arranged into several groups
+by it's functionality.
+.PP
+The first group consists of options specifying an action to be done.
+These options are mutually exclusive. We can do only one action
+per invocation. If no action is specified, the program reads
+it's standard input (or a file specified by \fB\-f\fP option)
+and stores it's content in the database. Here are the other actions:
 .TP
-.B \-a
+.B \-h
 .br
-Store all records (redundant too). In this case we use term
-"redundant" for the records where key and value are quite identical.
-Such record does not contain a pronunciation information, it only affects
-the fact of presence of certain word in the lexical database.
+Print summary of options and exit. This option discards all other
+command line specifications. It is the only case when the database
+path is not required.
 .TP
-.B \-r
+.B \-l
 .br
-Replace mode. In this mode new records replace existing ones
-with the same key. By default such records are ignored.
-.TP
-.B \-d <key>
-.br
-Delete record for specified key.
+List database content in textual form. This action requires
+the dataset to be specified explicitly by one of the \fB\-X\fP,
+\fB\-M\fP, \fB\-G\fP, \fB\-L\fP or \fB\-C\fP options.
 .TP
 .B \-s <key>
 .br
 Search specified key in the lexical database. If the word is found
-program exits successfully and outputs it's pronunciation, otherwise
-prints the original word (it will be lowercased if the \fB\-i\fP
-switch is used) and exits with non-zero return code.
+program exits successfully and outputs it's pronunciation string,
+ otherwise prints the lowercased original word and exits
+with non-zero exit code. This action is affected by
+the search mode options described below.
 If the \fB\-q\fP switch is specified in the command line, nothing
 will be printed on the standard output, but return code still
 can be used to find out wether the word was found or not.
 .TP
-.B \-i
+.B \-b <key>
 .br
-Ignore case in accepted info. All info (both keys and values)
-for the lexical database must not contain the uppercase letters.
-This option allows using of uppercase letters, all these will be
-automatically lowercased before using.
+Treat specified word as an implicit form and discover basic forms
+(if any) which could be used in the \fBImplicit\fP dictionary.
+If quiet mode is not in use then all possible basic forms
+for the word will be printed to the standard output
+(or to the file specified by the \fB\-f\fP option)
+along with the numbers of corresponding \fBClassifiers\fP.
+Program exits successfully if it can suggest some basic forms
+for specified word and returns a non-zero exit code otherwise.
+In quiet mode nothing will be printed on the standard output,
+but the exit code still can be used to make a decision
+concerning the operation result.
 .TP
-.B \-l
+.B \-t <dictionary_file>
 .br
-List database content in textual form.
+Test the database against specified dictionary. Test dictionary file
+is read line by line. Each line is treated as a record consisting
+of two fields separated by space. The first field represents
+a key word and the second one gives it's pronunciation string.
+If this pronunciation string differs from the one obtained from
+the database, then this record is printed to the standard output
+or written to the file specified by \fB\-f\fP option. Specifying
+"\-" as test dictionary file name causes the testing records
+to be read from the standard input. This action is affected
+by the search mode options described below.
+.TP
+.B \-d <key>
+.br
+Delete record for specified key. This action requires the dataset
+to be specified explicitly by one of the \fB\-X\fP, \fB\-M\fP,
+\fB\-G\fP, \fB\-L\fP or \fB\-C\fP options. For rules it's number
+in the ruleset is used as a key.
+.TP
+.B \-D
+.br
+Discard the dataset. The dataset must be chosen by one of the
+\fB\-X\fP, \fB\-M\fP, \fB\-G\fP, \fB\-L\fP or \fB\-C\fP options.
+.TP
+.B \-c
+.br
+Clean the database removing redundant entries from dictionaries.
+If one of the \fB\-X\fP or \fB\-M\fP options is specified as well,
+then only that chosen dictionary will be cleaned.
+.PP
+The next group of options is responsible for choosing the dataset.
+These options are mutually exclusive and affect deletion, insertion
+and listing operations. For listing and deletion the dataset must be
+specified explicitly. If no one of these options is mentioned when
+inserting new data, an appropriate dataset will be chosen according
+to the input data. Only lexical data can be inserted in such a manner.
+For rules target dataset must be specified explicitly.
+.TP
+.B \-X
+.br
+Explicit dictionary.
+.TP
+.B \-M
+.br
+Implicit dictionary.
+.TP
+.B \-G
+.br
+General rules.
+.TP
+.B \-L
+.br
+Lexical classification rules.
+.TP
+.B \-C
+.br
+Correction rules.
+.PP
+The next group contains options devoted to search mode specification.
+ These options affect search and test operation. By default (no options)
+full search will be performed, otherwise only those stages specified
+explicitly will be included in the search process.
+.TP
+.B \-x
+.br
+Search in the explicit dictionary.
+.TP
+.B \-m
+.br
+Try to treat the word as an implicit form.
+.TP
+.B \-g
+.br
+Try to apply general rules.
+.PP
+The next group contains only one option that affects insertion
+new data into the lexical database.
+.TP
+.B \-r
+.br
+Replace mode. For a dictionary this mode causes that the new records
+replace existing ones with the same key. By default such records
+are ignored. For rules this mode means that the ruleset content
+should be fully replaced by the new data. Otherwise new rules
+are appended to the ruleset.
+.PP
+The last group contains several options affecting program behaviour
+in general.
 .TP
 .B \-f <file>
 .br
@@ -74,17 +165,75 @@ Use specified file instead of standard input or output.
 .B \-q
 .br
 Be more quiet than usual: don't print search results as well
-as warnings about redundant and duplicate records.
+as warnings about duplicate records.
 .TP
 .B \-v
 .br
 Be more verbose than usual: print messages about work stages
 and final statistical information when finishing.
-.TP
-.B \-h
-.br
-Show summary of options and exit.
+.SH DATA REPRESENTATION
+Externally all the data are represented textually. For the Russian
+letters the \fBkoi8\-r\fP character set is used and only lower case
+is allowed.
+.PP
+The database itself consists of two dictionaries and three sets
+of rules. The \fBExplicit\fP dictionary contains the words that
+are described individually and do not imply any information for
+other forms. This dictionary is looked up first if the search
+includes this stage. The \fBImplicit\fP dictionary contains
+words in some basic form. This dictionary is used to construct
+pronunciation string for various forms of these words. The basic
+form of a word is guessed according to the rules from the
+\fBClassifiers\fP ruleset. This is the second stage of search
+process. If these stages do not bring a result or are not performed
+the rules from the \fBGeneral\fP ruleset are used to guess stressing
+word. If no one of these rules can be applied than no guessing
+is made and search process fails. By default, all three stages
+are performed, but it can be specified explicitly which ones
+should be taken in account.
+.PP
+Externally dictionary data are represented by text lines
+consisting of two fields separated by space. The first field is
+a Russian word. It serves as a key when searching. Only lowercase
+Russian letters are allowed here. The second field provides
+pronunciation string for this word. The pronunciation string
+is the word itself, but written in such a manner as it should
+be pronounced. There are three additional symbols allowed
+in the pronunciation string along with the lowercase
+Russian letters. The "+" sign can be used to point the stressed
+letter. It should be placed just after that letter. The "=" sign
+is used in some cases just in the same manner to point so-called
+weak stress. The "-" sign can serve as a separator in some complex
+words. All other symbols are treated as illegal.
+.PP
+There are three rulesets in the database: \fBGeneral\fP rules,
+\fBClassifiers\fP and \fBCorrectors\fP. Externally all these rules
+are represented by strings consisting of one or two fields separated
+by space. The first field always contains a regular expression
+which is matched against the word to make a decision
+whether this rule can be applied.
+.PP
+The only task of \fBGeneral\fP rules is to guess stress
+in the words when dictionary lookup fails. The rules are tried
+sequentially until match or the list exhaustion. If match succeeds
+then the "+" sign is inserted into the word right after the first
+subexpression match to point stressing position.
+ These rules do not contain a second field.
+.PP
+For the \fBClassifiers\fP ruleset each rule is checked one by one
+until match occurs. Then the part from the beginning of the word
+through to the end of the first subexpression match is extracted
+and if a second field is present it is appended to the extracted
+part as a suffix. The resulting string is treated as a basic form
+of the word, so it is looked up in the \fBImplicit\fP dictionary.
+If nothing is found the process continues
+until the ruleset will be exceeded.
+.PP
+The rules from \fBCorrectors\fP ruleset are applied
+to the pronunciation strings instead of the original words.
+The second field in these rules specifies a regular replacement
+string where digits serve as subexpression numbers.
 .SH SEE ALSO
 .BR ru_tts (1), /usr/share/doc/rulex/README.
 .SH AUTHOR
-Igor B. Poretsky <master@goga.energo.ru>.
+Igor B. Poretsky <poretsky@mlbox.ru>.

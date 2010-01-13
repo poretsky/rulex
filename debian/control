@@ -1,7 +1,7 @@
 Source: rulex
 Section: text
 Priority: optional
-Maintainer: Igor B. Poretsky <master@goga.energo.ru>
+Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
 Build-Depends: debhelper (>= 4.0.0)
 Standards-Version: 3.6.1
 

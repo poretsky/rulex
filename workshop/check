@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# This script reads dictionary in it's textual representation
+# from the file lexicon.dump and outputs all the words that are
+# correctly resolved by general rules into the file words.list.
+
+exec <lexicon.dump >words.list
+
+while read key desc; do
+    if [ "$desc" = "`../src/lexholder -s $key -g lexicon`" ]
+    then echo $key
+    fi
+done
+
+exit 0

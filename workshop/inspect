@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# This script inspects the explicit word list produced by the script
+# rebuild and dumps the entries that could be treated as implicit
+# ones according to the specified rule number into the file
+# lexicon.dump.
+
+exec <explicit.list >lexicon.dump
+
+while read key desc; do
+    if ../src/lexholder -b $key lexicon | fgrep -q $1
+    then echo $key $desc
+    fi
+done
+
+exit 0

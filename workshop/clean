@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This script cleans out from the implicit dictionary
+# all the words listed in words.list.
+
+exec <words.list
+
+while read word
+do ../src/lexholder -d $word -M lexicon
+done
+
+exit 0

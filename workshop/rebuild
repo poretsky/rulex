@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# This script rebuilds the database according to the new set of
+# classification rules provided in the file lexicon.rules and tries
+# to handle correctly possible moving entries between dictionaries.
+# The words that were forcibly treated as the explicit entries
+# during the process are collected in the file explicit.list
+# and can be inspected afterwards.
+
+echo "Extracting original dictionaries"
+../src/lexholder -f implicit.dict -M -l lexicon
+../src/lexholder -f explicit.dict -X -l lexicon
+
+echo "Building temporary database for further comparison"
+../src/lexholder -f implicit.dict -X lexicon.tmp
+
+echo "Reinserting explicit dictionary"
+../src/lexholder -D -X lexicon
+../src/lexholder -f explicit.dict lexicon
+
+echo "Extracting new implicit dictionary"
+../src/lexholder -f lexicon.dump -M -l lexicon
+
+echo "Finding the words to be moved from implicit dictionary to the explicit one"
+while read key value
+do ../src/lexholder -q -s $key -x lexicon.tmp || echo "$key $value"
+done <lexicon.dump >explicit.list
+rm -f lexicon.tmp
+
+echo "Rebuilding the database according to the new rules"
+../src/lexholder -D -X lexicon
+../src/lexholder -D -M lexicon
+../src/lexholder -f lexicon.rules -L -r lexicon
+../src/lexholder -f implicit.dict -M lexicon
+../src/lexholder -f explicit.dict lexicon
+
+echo "Moving some words from implicit dictionary to the explicit one"
+while read key value
+do ../src/lexholder -d $key -M lexicon
+done <explicit.list
+../src/lexholder -f explicit.list -X lexicon
+
+echo "All done"
+echo "All the words that were forced to be treated as explicit"
+echo "are now listed in the file explicit.list."

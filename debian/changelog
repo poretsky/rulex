@@ -2,7 +2,7 @@ rulex (1.1) unstable; urgency=low
 
   * Initial Release for Debian.
 
- -- Igor B. Poretsky <master@goga.energo.ru>  Wed, 18 Jan 2006 15:22:45 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 18 Jan 2006 15:22:45 +0300
 
 Local variables:
 mode: debian-changelog
