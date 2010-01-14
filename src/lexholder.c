@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
 	      }
 	  if (verbose)
 	    (void)fputs("Testing the database\n", stderr);
-	  for (n = 0, i = 0; fgets(line, 256, stdin); n++)
+	  for (n = 1, i = 0; fgets(line, 256, stdin); n++)
 	    {
 	      if (strlen(line) > MAX_RECORD_SIZE)
 		{
@@ -396,6 +396,10 @@ int main(int argc, char *argv[])
 		      {
 			(void)printf("%s %s\n", key, s);
 			i++;
+                        if (t && verbose)
+                          (void)fprintf(stderr,
+                                        "%s:%i: warning: Mismatch found.\n",
+                                        t, n);
 		      }
 		    break;
 		  case LEXDB_EINVKEY:
