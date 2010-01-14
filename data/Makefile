@@ -1,11 +1,14 @@
 # Maintaining lexical database
 
+# Force KOI8-R coding system
+LANG = ru_RU.KOI8-R
+
 all: lexicon
 
 lexicon: explicit.dict implicit.dict \
  general.rules lexicon.rules correction.rules
 	@rm -f lexicon
-	@echo "Inserting xplicit dictionary:"
+	@echo "Inserting explicit dictionary:"
 	../src/lexholder -f explicit.dict -X lexicon
 	@echo "Inserting implicit dictionary:"
 	../src/lexholder -f implicit.dict -M lexicon
