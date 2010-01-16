@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# This script reads words from the file words.list
+# containing one word per line and produces the file dictionary.draft
+# that brings prepared dictionary draft in textual representation.
+
+LANG=ru_RU.KOI8-R
+cat words.list | sort | uniq | sed "s/.*/& &/g" > dictionary.draft
