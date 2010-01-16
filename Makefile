@@ -15,8 +15,7 @@ GROUP = root
 # Installation paths
 prefix = /usr/local
 bindir = ${prefix}/bin
-datadir = ${prefix}/share/ru_tts
-lispdir = ${prefix}/share/emacs/site-lisp
+datadir = ${prefix}/share/rulex
 docdir = ${prefix}/share/doc/rulex
 
 # Compiling options
@@ -36,10 +35,9 @@ db: lexholder
 	$(MAKE) -C data all
 
 install: lexholder install-db
-	install -d ${bindir} ${lispdir} ${docdir}
+	install -d ${bindir} ${docdir}
 	install -g ${GROUP} -o root -m 0755 -p src/lexholder ${bindir}/${UTILITY}
-	install -g ${GROUP} -o root -m 0644 -p rulex.el ${lispdir}
-	install -g ${GROUP} -o root -m 0644 -p README ${docdir}
+	install -g ${GROUP} -o root -m 0644 -p README README.ru rulex.el ${docdir}
 
 install-db: db
 	install -d ${datadir}
@@ -49,6 +47,3 @@ install-db: db
 clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C data clean
-
-additions: unknown.words
-	cat $^ | sort | uniq | sed "s/.*/& &/g" >> $@

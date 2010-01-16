@@ -9,9 +9,9 @@ Package: rulex
 Architecture: any
 Depends: ${shlibs:Depends}
 Suggests: ru-tts
-Conflicts: ru-tts (<< 1.0)
+Conflicts: ru-tts (<< 2.0)
 Description: Russian pronunciation dictionary
  This package is aimed primarily for use together with the Russian
  TTS engine Ru_tts. When it is installed you can instruct Ru_tts
  to use the pronunciation dictionary by the command line switch
- "-s /usr/share/ru_tts/lexicon".
+ "-s /usr/share/rulex/lexicon.db".
