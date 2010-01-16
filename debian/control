@@ -2,12 +2,12 @@ Source: rulex
 Section: text
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
-Build-Depends: debhelper (>= 4.0.0)
-Standards-Version: 3.6.1
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.3
 
 Package: rulex
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: ru-tts
 Conflicts: ru-tts (<< 2.0)
 Description: Russian pronunciation dictionary
