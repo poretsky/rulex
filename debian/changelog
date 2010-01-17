@@ -1,4 +1,4 @@
-rulex (2.0) hardy; urgency=low
+rulex (2.0ubuntu1) hardy; urgency=low
 
   * Switch to the new lexical database structure implementing some rules
     and implicit form construction mechanism.
