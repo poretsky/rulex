@@ -20,7 +20,7 @@ lexicon: explicit.dict implicit.dict \
 	../src/lexholder -f correction.rules -C lexicon
 
 test: lexicon lexicon.test
-	../src/lexholder -f lexicon.dump -t lexicon.test lexicon
+	../src/lexholder -v -f lexicon.dump -t lexicon.test lexicon
 
 dbcleanup: lexicon
 	../src/lexholder -c lexicon
