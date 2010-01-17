@@ -7,7 +7,7 @@ Standards-Version: 3.7.3
 
 Package: rulex
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}
 Suggests: ru-tts
 Conflicts: ru-tts (<< 2.0)
 Description: Russian pronunciation dictionary
