@@ -434,7 +434,8 @@ int main(int argc, char *argv[])
 	    }
 	  if (!quiet)
 	    {
-	      (void)fprintf(stderr, "%i word", n - invalid);
+              n -= invalid;
+	      (void)fprintf(stderr, "%i word", --n);
 	      if (n == 1)
 		(void)fputs(" has", stderr);
 	      else (void)fputs("s have", stderr);
