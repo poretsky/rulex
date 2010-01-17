@@ -1,4 +1,4 @@
-#!/usr/bin/make -sf
+#!/usr/bin/make -f
 # -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
