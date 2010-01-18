@@ -1,4 +1,4 @@
-rulex (2.0ubuntu1) hardy; urgency=low
+rulex (2.0) unstable; urgency=low
 
   * Switch to the new lexical database structure implementing some rules
     and implicit form construction mechanism.
@@ -12,8 +12,9 @@ rulex (2.0ubuntu1) hardy; urgency=low
   * Use default version of the Berkeley database support library instead
     of the explicit one.
   * Fixed directory structure to be more compliant with standards.
+  * Added libdb-dev to build dependencies.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 16 Jan 2010 10:34:21 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 18 Jan 2010 23:26:27 +0300
 
 rulex (1.1) unstable; urgency=low
 

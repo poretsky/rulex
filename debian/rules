@@ -20,17 +20,16 @@ build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
 
-	# Add here commands to compile the package.
 	$(MAKE) -s
 
 	touch $@
+
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
 
-	# Add here commands to clean up after the build process.
 	$(MAKE) -s clean
 
 	dh_clean 
@@ -42,7 +41,6 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/rulex.
 	$(MAKE) -s install prefix=$(CURDIR)/debian/rulex/usr
 
 
@@ -50,19 +48,17 @@ install: build
 binary-indep: build install
 # We have nothing to do by default.
 
+
 # Build architecture-dependent files here.
 binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
-	dh_installexamples
 	dh_installman
-	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
