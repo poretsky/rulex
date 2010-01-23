@@ -14,8 +14,9 @@ rulex (2.0) unstable; urgency=low
   * Fixed directory structure to be more compliant with standards.
   * Added libdb-dev to build dependencies.
   * Changed lexical database installation path.
+  * Changed package category to "sound".
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 23 Jan 2010 09:56:25 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 23 Jan 2010 15:27:14 +0300
 
 rulex (1.1) unstable; urgency=low
 
