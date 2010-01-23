@@ -1,7 +1,7 @@
 # Makefile for the lexical database compiling
 
 # Database file name
-DBF = lexicon.db
+DBF = rulex.db
 
 # Utility executable name
 UTILITY = lexholder-ru
@@ -15,7 +15,7 @@ GROUP = root
 # Installation paths
 prefix = /usr/local
 bindir = ${prefix}/bin
-datadir = ${prefix}/share/rulex
+datadir = ${prefix}/share/freespeech
 docdir = ${prefix}/share/doc/rulex
 
 # Compiling options
@@ -34,11 +34,13 @@ lexholder:
 db: lexholder 
 	$(MAKE) -C data all
 
+.PHONY: install
 install: lexholder install-db
 	install -d ${bindir} ${docdir}
 	install -g ${GROUP} -o root -m 0755 -p src/lexholder ${bindir}/${UTILITY}
 	install -g ${GROUP} -o root -m 0644 -p README README.ru rulex.el ${docdir}
 
+.PHONY: install-db
 install-db: db
 	install -d ${datadir}
 	install -g ${GROUP} -o root -m 0644 -p data/lexicon ${datadir}/${DBF}

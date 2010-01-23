@@ -6,7 +6,7 @@ separate file README.ru.
 Russian pronunciation dictionary RuLex is aimed primarily for use
 together with the Russian TTS engine Ru_tts. When it is installed you
 can instruct Ru_tts to use the dictionary by the command line switch
-"-s /usr/local/share/rulex/lexicon.db".
+"-s /usr/local/share/freespeech/rulex.db".
 
 
 The lexical database consists of two dictionaries and three sets of

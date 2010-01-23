@@ -5,7 +5,7 @@ This package contains Russian pronunciation dictionary along with the
 lexical database holding utility lexholder-ru. It is primarily
 intended for use along with the Ru_tts software speech
 synthesizer. For Ru_tts to make use of the pronunciation dictionary
-call it with "-s /usr/share/rulex/lexicon.db" switch in the command line.
+call it with "-s /usr/share/freespeech/rulex.db" switch in the command line.
 
 See README file and lexholder-ru man page for more details.
 
