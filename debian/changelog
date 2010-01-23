@@ -13,8 +13,9 @@ rulex (2.0) unstable; urgency=low
     of the explicit one.
   * Fixed directory structure to be more compliant with standards.
   * Added libdb-dev to build dependencies.
+  * Changed lexical database installation path.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 18 Jan 2010 23:26:27 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 23 Jan 2010 09:56:25 +0300
 
 rulex (1.1) unstable; urgency=low
 
