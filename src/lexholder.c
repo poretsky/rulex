@@ -44,7 +44,7 @@ static const char *usage =
 
 "When filling and updating the database, new records are read\n"
 "from the standard input. When extracting data from the database\n"
-"or testing operation, The result is printed to the standard\n"
+"or testing operation, the result is printed to the standard\n"
 "output. This behaviour can be changed by the \"-f\" switch.\n\n"
 
 "All command line options described below are arranged\n"
