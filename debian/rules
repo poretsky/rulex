@@ -39,7 +39,6 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
-	dh_installdirs
 
 	$(MAKE) -s install prefix=$(CURDIR)/debian/rulex/usr
 
@@ -56,6 +55,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installman
+	dh_installexamples
 	dh_strip
 	dh_compress
 	dh_fixperms

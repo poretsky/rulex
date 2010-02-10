@@ -38,7 +38,7 @@ db: lexholder
 install: lexholder install-db
 	install -d ${bindir} ${docdir}
 	install -g ${GROUP} -o root -m 0755 -p src/lexholder ${bindir}/${UTILITY}
-	install -g ${GROUP} -o root -m 0644 -p README README.ru rulex.el ${docdir}
+	install -g ${GROUP} -o root -m 0644 -p README README.ru ${docdir}
 
 .PHONY: install-db
 install-db: db
