@@ -1,3 +1,9 @@
+rulex (2.2) unstable; urgency=low
+
+  * Just a few additions to the lexical database.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 10 Jan 2011 14:23:36 +0300
+
 rulex (2.1) unstable; urgency=low
 
   * Minor lexical database improvements.
