@@ -8,7 +8,7 @@
 exec <explicit.list >lexicon.dump
 
 while read key desc; do
-    if ../src/lexholder -b $key lexicon | fgrep -q $1
+    if ../src/lexholder -b $key lexicon | grep -q "^$1[^0-9]"
     then echo $key $desc
     fi
 done
