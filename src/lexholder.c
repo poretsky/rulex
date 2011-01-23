@@ -267,6 +267,8 @@ int main(int argc, char *argv[])
 	      if (verbose)
 		(void)fprintf(stderr, "Listing %s dictionary\n",
 			      lexdb_dataset_name(dataset));
+              if (LEXDB_EXCEPTION == dataset)
+                dataset = LEXDB_EXCEPTION_RAW;
 	      for (ret = lexdb_seq(db, key, value, dataset, DB_FIRST);
 		   ret == LEXDB_SUCCESS;
 		   ret = lexdb_seq(db, key, value, dataset, DB_NEXT))

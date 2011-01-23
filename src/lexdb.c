@@ -1181,6 +1181,7 @@ const char *lexdb_dataset_name(int item_type)
   switch (item_type)
     {
       case LEXDB_EXCEPTION:
+      case LEXDB_EXCEPTION_RAW:
 	return exceptions_db_name;
       case LEXDB_LEXBASE:
 	return lexicon_db_name;
