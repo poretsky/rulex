@@ -1,3 +1,10 @@
+rulex (2.3) unstable; urgency=low
+
+  * Lexical database fixes, extensions and cleanups.
+  * Don't apply correction rules when dumping dictionary content.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 24 Jan 2011 03:24:17 +0300
+
 rulex (2.2) unstable; urgency=low
 
   * Just a few additions to the lexical database.
