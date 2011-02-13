@@ -1,3 +1,9 @@
+rulex (2.4) unstable; urgency=low
+
+  * Lexical database extension.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 13 Feb 2011 19:30:19 +0300
+
 rulex (2.3) unstable; urgency=low
 
   * Lexical database fixes, extensions and cleanups.
