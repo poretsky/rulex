@@ -1,9 +1,17 @@
 # Maintaining lexical database
 
+# Installation paths
+DESTDIR = 
+prefix = /usr/local
+datadir = ${prefix}/share/freespeech
+
 # Force KOI8-R coding system
 LANG = ru_RU.KOI8-R
 
 all: lexicon
+
+install: lexicon
+	install -D -m 0644 -p $< ${DESTDIR}${datadir}/rulex.db
 
 lexicon: explicit.dict implicit.dict \
  general.rules lexicon.rules correction.rules
