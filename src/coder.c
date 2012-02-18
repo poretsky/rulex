@@ -1,9 +1,9 @@
-/* coder.c
+/* This file is part of the rulexdb library.
  *
- * Lexical data coding routines
+ * Lexical data coding routines implementation.
  *
  * These routines provide transition between external and internal
- * data representation in the lexical database.
+ * data representation in the Rulex database.
  *
  * In the database key fields are packed by the arithmetic coding algorithm
  * based on the static statistical model. Value fields are represented
@@ -97,7 +97,7 @@ static int validate_pair(char prev, char next)
 }
 
 
-int pack_key(const char *s, char *t)
+int rulexdb_pack_key(const char *s, char *t)
      /*
       * This routine packs string pointed by s using arithmetic coding
       * and places result to the string pointed by t.
@@ -172,7 +172,7 @@ int pack_key(const char *s, char *t)
   return l;
 }
 
-int unpack_key(const char *key, unsigned int keylen, char *t, unsigned int reslen)
+int rulexdb_unpack_key(const char *key, unsigned int keylen, char *t, unsigned int reslen)
      /*
       * This routine unpacks given key and stores the resulting string
       * in memory pointed by t. The reslen holds the size of this area.
@@ -252,7 +252,7 @@ int unpack_key(const char *key, unsigned int keylen, char *t, unsigned int resle
 }
 
 
-int pack_data(const char *s, const char *t, char *r)
+int rulexdb_pack_data(const char *s, const char *t, char *r)
      /*
       * This routine packs data field for corresponding key.
       * It takes two strings s and t and forms a special string in r
@@ -424,7 +424,7 @@ int pack_data(const char *s, const char *t, char *r)
   return l;
 }
 
-void unpack_data(char *s, const char *diffs, int diffs_size)
+void rulexdb_unpack_data(char *s, const char *diffs, int diffs_size)
      /*
       * This routine unpacks data field for corresponding key.
       * It takes the original key string pointer as it's first argument

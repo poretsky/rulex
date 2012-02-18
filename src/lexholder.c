@@ -1,7 +1,4 @@
-/* lexholder.c
- *
- * Lexicon database holding utility.
- */
+/* Rulex database holding utility. */
 
 /*
  * Copyright (C) 2006 Igor B. Poretsky <poretsky@mlbox.ru>
@@ -100,16 +97,16 @@ static const char *usage =
 
 int main(int argc, char *argv[])
 {
-  LEXDB *db;
+  RULEXDB *db;
 
-  char key[LEXDB_BUFSIZE], value[LEXDB_BUFSIZE];
+  char key[RULEXDB_BUFSIZE], value[RULEXDB_BUFSIZE];
   char *s = NULL, *d = NULL, *t = NULL, line[256];
   char *db_path = NULL, *srcf = NULL;
 
   int ret, n, k, i = 0;
   int invalid = 0, duplicate = 0;
   int verbose = 0, quiet = 0, rules_data = 0;
-  int replace_mode = 0, dataset = LEXDB_DEFAULT, search_mode = 0;
+  int replace_mode = 0, dataset = RULEXDB_DEFAULT, search_mode = 0;
 
   (void)setlocale(LC_CTYPE, "ru_RU.koi8r");
 
@@ -124,41 +121,41 @@ int main(int argc, char *argv[])
     switch(n)
       {
 	case 'X':
-	  if (dataset != LEXDB_DEFAULT)
+	  if (dataset != RULEXDB_DEFAULT)
 	    ret = CS_CONFLICT;
-	  dataset = LEXDB_EXCEPTION;
+	  dataset = RULEXDB_EXCEPTION;
 	  break;
 	case 'x':
-	  search_mode |= LEXDB_EXCEPTIONS;
+	  search_mode |= RULEXDB_EXCEPTIONS;
 	  break;
 	case 'M':
-	  if (dataset != LEXDB_DEFAULT)
+	  if (dataset != RULEXDB_DEFAULT)
 	    ret = CS_CONFLICT;
-	  dataset = LEXDB_LEXBASE;
+	  dataset = RULEXDB_LEXBASE;
 	  break;
 	case 'm':
-	  search_mode |= LEXDB_FORMS;
+	  search_mode |= RULEXDB_FORMS;
 	  break;
 	case 'G':
-	  if (dataset != LEXDB_DEFAULT)
+	  if (dataset != RULEXDB_DEFAULT)
 	    ret = CS_CONFLICT;
 	  rules_data = 1;
-	  dataset = LEXDB_RULE;
+	  dataset = RULEXDB_RULE;
 	  break;
 	case 'g':
-	  search_mode |= LEXDB_RULES;
+	  search_mode |= RULEXDB_RULES;
 	  break;
 	case 'L':
-	  if (dataset != LEXDB_DEFAULT)
+	  if (dataset != RULEXDB_DEFAULT)
 	    ret = CS_CONFLICT;
 	  rules_data = 1;
-	  dataset = LEXDB_LEXCLASS;
+	  dataset = RULEXDB_LEXCLASS;
 	  break;
 	case 'C':
-	  if (dataset != LEXDB_DEFAULT)
+	  if (dataset != RULEXDB_DEFAULT)
 	    ret = CS_CONFLICT;
 	  rules_data = 1;
-	  dataset = LEXDB_CORRECTOR;
+	  dataset = RULEXDB_CORRECTOR;
 	  break;
 	case 'f':
 	  if (strcmp(optarg, "-"))
@@ -237,7 +234,7 @@ int main(int argc, char *argv[])
 	    (void)fprintf(stderr, "Cannot open %s for output\n", srcf);
 	    return EXIT_FAILURE;
 	  }
-      db = lexdb_open(db_path, LEXDB_SEARCH);
+      db = rulexdb_open(db_path, RULEXDB_SEARCH);
       if (!db)
 	{
 	  perror(db_path);
@@ -246,10 +243,10 @@ int main(int argc, char *argv[])
 
       if (s == line) /* List full dataset content */
 	{
-	  if (dataset == LEXDB_DEFAULT)
+	  if (dataset == RULEXDB_DEFAULT)
 	    {
 	      (void)fprintf(stderr, "Dataset must be specified explicitly\n");
-	      lexdb_close(db);
+	      rulexdb_close(db);
 	      return EXIT_FAILURE;
 	    }
 	  n = 0;
@@ -258,26 +255,26 @@ int main(int argc, char *argv[])
 	    {
 	      if (verbose)
 		(void)fprintf(stderr, "Listing %s ruleset\n",
-			      lexdb_dataset_name(dataset));
-	      for (n = 0; (s = lexdb_fetch_rule(db, dataset, n + 1)); n++)
+			      rulexdb_dataset_name(dataset));
+	      for (n = 0; (s = rulexdb_fetch_rule(db, dataset, n + 1)); n++)
 		(void)printf("%s\n", s);
 	    }
 	  else
 	    {
 	      if (verbose)
 		(void)fprintf(stderr, "Listing %s dictionary\n",
-			      lexdb_dataset_name(dataset));
-              if (LEXDB_EXCEPTION == dataset)
-                dataset = LEXDB_EXCEPTION_RAW;
-	      for (ret = lexdb_seq(db, key, value, dataset, DB_FIRST);
-		   ret == LEXDB_SUCCESS;
-		   ret = lexdb_seq(db, key, value, dataset, DB_NEXT))
+			      rulexdb_dataset_name(dataset));
+              if (RULEXDB_EXCEPTION == dataset)
+                dataset = RULEXDB_EXCEPTION_RAW;
+	      for (ret = rulexdb_seq(db, key, value, dataset, DB_FIRST);
+		   ret == RULEXDB_SUCCESS;
+		   ret = rulexdb_seq(db, key, value, dataset, DB_NEXT))
 		{
 		  (void)printf("%s %s\n", key, value);
 		  n++;
 		}
 	    }
-	  if (ret == LEXDB_SPECIAL)
+	  if (ret == RULEXDB_SPECIAL)
 	    ret = 0;
 	  if (ret)
 	    (void)fprintf(stderr, "Database corruption\n");
@@ -293,13 +290,13 @@ int main(int argc, char *argv[])
 
       else if (s == key) /* Discover basic forms */
 	{
-	  ret = LEXDB_SPECIAL;
+	  ret = RULEXDB_SPECIAL;
 	  for (k = 1; k > 0; k++)
 	    {
-	      k = lexdb_lexbase(db, t, key, k);
+	      k = rulexdb_lexbase(db, t, key, k);
 	      if (k > 0)
 		{
-		  ret = LEXDB_SUCCESS;
+		  ret = RULEXDB_SUCCESS;
 		  if (!quiet)
 		    (void)printf("%d\t%s\n", k, key);
 		}
@@ -315,32 +312,32 @@ int main(int argc, char *argv[])
 	      k = atoi(s);
 	      if (k)
 		{
-		  d = lexdb_fetch_rule(db, dataset, k);
+		  d = rulexdb_fetch_rule(db, dataset, k);
 		  if (d)
 		    {
 		      (void)strcpy(value, d);
-		      ret = LEXDB_SUCCESS;
+		      ret = RULEXDB_SUCCESS;
 		    }
-		  else ret = LEXDB_SPECIAL;
+		  else ret = RULEXDB_SPECIAL;
 		}
-	      else ret = LEXDB_EINVKEY;
+	      else ret = RULEXDB_EINVKEY;
 	    }
 	  else
 	    {
 	      for (k = 0; s[k]; k++)
 		if (isupper(s[k]))
 		  s[k] = tolower(s[k]);
-	      ret = lexdb_search(db, s, value, search_mode);
+	      ret = rulexdb_search(db, s, value, search_mode);
 	    }
 	  switch (ret)
 	    {
-	      case LEXDB_SPECIAL:
+	      case RULEXDB_SPECIAL:
 		if (rules_data) quiet = 1;
-	      case LEXDB_SUCCESS:
+	      case RULEXDB_SUCCESS:
 		if (!quiet)
 		  (void)printf("%s\n", value);
 		break;
-	      case LEXDB_EINVKEY:
+	      case RULEXDB_EINVKEY:
 		(void)fprintf(stderr, "Invalid key: %s\n", s);
 		break;
 	      default:
@@ -361,7 +358,7 @@ int main(int argc, char *argv[])
 	    (void)fputs("Testing the database\n", stderr);
 	  for (n = 1, i = 0; fgets(line, 256, stdin); n++)
 	    {
-	      if (strlen(line) > MAX_RECORD_SIZE)
+	      if (strlen(line) > RULEXDB_MAX_RECORD_SIZE)
 		{
 		  if (t)
 		    (void)fprintf(stderr,
@@ -377,7 +374,7 @@ int main(int argc, char *argv[])
 		if (isupper(line[k]))
 		  line[k] = tolower(line[k]);
 	      s = strtok(line, " ");
-	      if (strlen(s) > MAX_KEY_SIZE)
+	      if (strlen(s) > RULEXDB_MAX_KEY_SIZE)
 		{
 		  if (t)
 		    (void)fprintf(stderr,
@@ -389,11 +386,11 @@ int main(int argc, char *argv[])
 		}
 	      (void)strcpy(key, s);
 	      s = strtok(NULL, " \n");
-	      ret = lexdb_search(db, key, value, search_mode);
+	      ret = rulexdb_search(db, key, value, search_mode);
 	      switch (ret)
 		{
-		  case LEXDB_SUCCESS:
-		  case LEXDB_SPECIAL:
+		  case RULEXDB_SUCCESS:
+		  case RULEXDB_SPECIAL:
 		    if (strcmp(s, value))
 		      {
 			(void)printf("%s %s\n", key, s);
@@ -404,7 +401,7 @@ int main(int argc, char *argv[])
                                         t, n);
 		      }
 		    break;
-		  case LEXDB_EINVKEY:
+		  case RULEXDB_EINVKEY:
 		    if (t)
 		      (void)fprintf(stderr,
 				    "%s:%i: warning: Illegal symbols in key. Ignored.\n",
@@ -414,7 +411,7 @@ int main(int argc, char *argv[])
 				       key);
 		    invalid++;
 		    break;
-		  case LEXDB_EINVREC:
+		  case RULEXDB_EINVREC:
 		    if (t)
 		      (void)fprintf(stderr,
 				    "%s:%i: warning: Invalid record. Ignored.\n",
@@ -460,7 +457,7 @@ int main(int argc, char *argv[])
 	  ret = 0;
 	}
 
-      lexdb_close(db);
+      rulexdb_close(db);
       if (ret) return EXIT_FAILURE;
       else return EXIT_SUCCESS;
     }
@@ -472,7 +469,7 @@ int main(int argc, char *argv[])
 	  (void)fprintf(stderr, "Invalid dataset specification\n");
 	  return EXIT_FAILURE;
 	}
-      db = lexdb_open(db_path, LEXDB_UPDATE);
+      db = rulexdb_open(db_path, RULEXDB_UPDATE);
       if (!db)
 	{
 	  perror(db_path);
@@ -481,22 +478,22 @@ int main(int argc, char *argv[])
       if (verbose)
 	(void)fputs("Cleaning the database\n", stderr);
       n = 0;
-      search_mode = LEXDB_FORMS | LEXDB_RULES;
-      if ((dataset == LEXDB_DEFAULT) || (dataset == LEXDB_LEXBASE))
-	for (ret = lexdb_seq(db, key, value, LEXDB_LEXBASE, DB_FIRST);
-	     ret == LEXDB_SUCCESS;
-	     ret = lexdb_seq(db, key, value, LEXDB_LEXBASE, DB_NEXT))
-	  if (lexdb_classify(db, key) == LEXDB_SUCCESS)
-	    if (!lexdb_remove_this_item(db, LEXDB_LEXBASE))
+      search_mode = RULEXDB_FORMS | RULEXDB_RULES;
+      if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_LEXBASE))
+	for (ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_FIRST);
+	     ret == RULEXDB_SUCCESS;
+	     ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_NEXT))
+	  if (rulexdb_classify(db, key) == RULEXDB_SUCCESS)
+	    if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
 	      n++;
-      if ((dataset == LEXDB_DEFAULT) || (dataset == LEXDB_EXCEPTION))
-	for (ret = lexdb_seq(db, key, value, LEXDB_EXCEPTION, DB_FIRST);
-	     ret == LEXDB_SUCCESS;
-	     ret = lexdb_seq(db, key, value, LEXDB_EXCEPTION, DB_NEXT))
+      if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_EXCEPTION))
+	for (ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, DB_FIRST);
+	     ret == RULEXDB_SUCCESS;
+	     ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, DB_NEXT))
 	  {
-	    (void)lexdb_search(db, key, line, search_mode);
+	    (void)rulexdb_search(db, key, line, search_mode);
 	    if (!strcmp(line, value))
-	      if (!lexdb_remove_this_item(db, LEXDB_EXCEPTION))
+	      if (!rulexdb_remove_this_item(db, RULEXDB_EXCEPTION))
 		n++;
 	  }
       if (!quiet)
@@ -507,18 +504,18 @@ int main(int argc, char *argv[])
 	  else (void)fputs("s have", stderr);
 	  (void)fputs(" been removed from the database\n", stderr);
 	}
-      lexdb_close(db);
+      rulexdb_close(db);
       return EXIT_SUCCESS;
     }
 
   else if (d) /* Discarding data */
     {
-      if (dataset == LEXDB_DEFAULT)
+      if (dataset == RULEXDB_DEFAULT)
 	{
 	  (void)fprintf(stderr, "Dataset must be specified explicitly\n");
 	  return EXIT_FAILURE;
 	}
-      db = lexdb_open(db_path, LEXDB_UPDATE);
+      db = rulexdb_open(db_path, RULEXDB_UPDATE);
       if (!db)
 	{
 	  perror(db_path);
@@ -530,34 +527,34 @@ int main(int argc, char *argv[])
 	    {
 	      if (verbose)
 		(void)fprintf(stderr, "Discarding %s ruleset\n",
-			      lexdb_dataset_name(dataset));
-	      k = lexdb_discard_ruleset(db, dataset);
+			      rulexdb_dataset_name(dataset));
+	      k = rulexdb_discard_ruleset(db, dataset);
 	    }
 	  else /* Remove specific rule */
 	    {
 	      k = atoi(d);
 	      if (k)
-		ret = lexdb_remove_rule(db, dataset, k);
-	      else ret = LEXDB_EINVKEY;
+		ret = rulexdb_remove_rule(db, dataset, k);
+	      else ret = RULEXDB_EINVKEY;
 	    }
 	}
       else if (d == key) /* Discard dictionary */
 	{
 	  if (verbose)
 	    (void)fprintf(stderr, "Discarding %s dictionary\n",
-			  lexdb_dataset_name(dataset));
-	  k = lexdb_discard_dictionary(db, dataset);
+			  rulexdb_dataset_name(dataset));
+	  k = rulexdb_discard_dictionary(db, dataset);
 	}
       else /* Remove specific item from dictionary */
 	{
 	  for (k = 0; d[k]; k++)
 	    if (isupper(d[k]))
 	      d[k] = tolower(d[k]);
-	  ret = lexdb_remove_item(db, d, dataset);
+	  ret = rulexdb_remove_item(db, d, dataset);
 	}
       if (d == key)
 	{
-	  ret = LEXDB_SUCCESS;
+	  ret = RULEXDB_SUCCESS;
 	  if (!quiet)
 	    {
 	      (void)fprintf(stderr, "%d record", k);
@@ -567,9 +564,9 @@ int main(int argc, char *argv[])
 	      (void)fputs(" been removed from the database\n", stderr);
 	    }
 	}
-      if (ret == LEXDB_EINVKEY)
+      if (ret == RULEXDB_EINVKEY)
 	(void)fprintf(stderr, "Invalid key: %s\n", d);
-      lexdb_close(db);
+      rulexdb_close(db);
       if (ret) return EXIT_FAILURE;
       else return EXIT_SUCCESS;
     }
@@ -582,7 +579,7 @@ int main(int argc, char *argv[])
 	    (void)fprintf(stderr, "Cannot open %s for input\n", srcf);
 	    return EXIT_FAILURE;
 	  }
-      db = lexdb_open(db_path, LEXDB_CREATE);
+      db = rulexdb_open(db_path, RULEXDB_CREATE);
       if (!db)
 	{
 	  perror(db_path);
@@ -597,16 +594,16 @@ int main(int argc, char *argv[])
 	{
 	  if (verbose)
 	    (void)fprintf(stderr, "Replacing %s ruleset\n",
-			  lexdb_dataset_name(dataset));
-	  (void)lexdb_discard_ruleset(db, dataset);
+			  rulexdb_dataset_name(dataset));
+	  (void)rulexdb_discard_ruleset(db, dataset);
 	}
       else if (verbose)
 	(void)fprintf(stderr, "Adding rules to %s ruleset\n",
-		      lexdb_dataset_name(dataset));
+		      rulexdb_dataset_name(dataset));
     }
   for (n = 1; fgets(line, 256, stdin); n++)
     {
-      if (strlen(line) > MAX_RECORD_SIZE)
+      if (strlen(line) > RULEXDB_MAX_RECORD_SIZE)
 	{
 	  if (srcf)
 	    (void)fprintf(stderr,
@@ -622,7 +619,7 @@ int main(int argc, char *argv[])
       if (!rules_data)
 	{
 	  s = strtok(line, " ");
-	  if (strlen(s) > MAX_KEY_SIZE)
+	  if (strlen(s) > RULEXDB_MAX_KEY_SIZE)
 	    {
 	      if (srcf)
 		(void)fprintf(stderr,
@@ -633,16 +630,16 @@ int main(int argc, char *argv[])
 	      continue;
 	    }
 	  t = strtok(NULL, "\n");
-	  ret = lexdb_subscribe_item(db, s, t,
+	  ret = rulexdb_subscribe_item(db, s, t,
 				     dataset, replace_mode);
 	}
-      else ret = lexdb_subscribe_rule(db, strtok(line, "\n"), dataset, 0);
+      else ret = rulexdb_subscribe_rule(db, strtok(line, "\n"), dataset, 0);
       switch(ret)
 	{
-	  case LEXDB_SUCCESS:
+	  case RULEXDB_SUCCESS:
 	    i++;
 	    break;
-	  case LEXDB_SPECIAL:
+	  case RULEXDB_SPECIAL:
 	    if (replace_mode) i++;
 	    if (!(quiet || rules_data))
 	      {
@@ -665,7 +662,7 @@ int main(int argc, char *argv[])
 	      }
 	    duplicate++;
 	    break;
-	  case LEXDB_EINVKEY:
+	  case RULEXDB_EINVKEY:
 	  if (srcf)
 	    (void)fprintf(stderr,
 			  "%s:%d: warning: Illegal symbols in key. Ignored.\n",
@@ -675,7 +672,7 @@ int main(int argc, char *argv[])
 			     s);
 	  invalid++;
 	    break;
-	  case LEXDB_EINVREC:
+	  case RULEXDB_EINVREC:
 	    if (srcf)
 	      (void)fprintf(stderr,
 			    "%s:%d: warning: Invalid record. Ignored.\n",
@@ -690,7 +687,7 @@ int main(int argc, char *argv[])
 	    invalid++;
 	    break;
 	  default:
-	    lexdb_close(db);
+	    rulexdb_close(db);
 	    if (srcf)
 	      (void)fprintf(stderr,
 			    "%s:%d: error: data storing error\n",
@@ -701,7 +698,7 @@ int main(int argc, char *argv[])
     }
   n--;
 
-  lexdb_close(db);
+  rulexdb_close(db);
 
   if (!quiet)
     {

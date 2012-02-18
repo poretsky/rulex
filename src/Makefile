@@ -3,8 +3,10 @@
 # Installation paths
 DESTDIR = 
 prefix = /usr/local
+
 bindir = ${prefix}/bin
 libdir = ${prefix}/lib
+includedir = ${prefix}/include
 
 # Compiling options
 CC = gcc
@@ -22,7 +24,8 @@ librulexdb.la: coder.lo lexdb.lo
 
 install: lexholder librulexdb.la
 	libtool --mode=install install -D -p -s librulexdb.la ${DESTDIR}${libdir}/librulexdb.la
-	libtool --mode=install install -D -p -s lexholder ${DESTDIR}${bindir}/lexholder
+	libtool --mode=install install -D -p -s lexholder ${DESTDIR}${bindir}/lexholder-ru
+	install -D -m 0644 -p lexdb.h ${DESTDIR}${includedir}/rulexdb.h
 
 clean:
 	libtool --mode=clean rm -f *.lo *.la lexholder
