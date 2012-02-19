@@ -831,9 +831,9 @@ int rulexdb_lexbase(RULEXDB *rulexdb, const char *s, char *t, int n)
   int i, rc = 0;
   regmatch_t match[2];
 
-  if (n < 1) return RULEXDB_EPARM;
+  if ((n < 1) || (!rulexdb) || (!s) || (!t)) return RULEXDB_EPARM;
   if (rules_init(&rulexdb->lexclasses))
-    return RULEXDB_EACCESS;
+    return RULEXDB_FAILURE;
   for (i = n - 1; i < rulexdb->lexclasses.nrules; i++)
     if ((rc = rule_load(&rulexdb->lexclasses, i)))
       break;
