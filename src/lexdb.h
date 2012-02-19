@@ -337,8 +337,9 @@ extern int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type);
  * Discard the ruleset.
  *
  * This routine deletes all data from specified ruleset.
- * Returns number of deleted records. Rule type specifies
- * target ruleset (RULEXDB_RULE, RULEXDB_LEXCLASS or RULEXDB_CORRECTOR).
+ * Returns number of deleted records or negative error code.
+ * Rule type specifies target ruleset
+ * (RULEXDB_RULE, RULEXDB_LEXCLASS or RULEXDB_CORRECTOR).
  */
 
 extern const char *rulexdb_dataset_name(int item_type);

@@ -529,6 +529,7 @@ int main(int argc, char *argv[])
 		(void)fprintf(stderr, "Discarding %s ruleset\n",
 			      rulexdb_dataset_name(dataset));
 	      k = rulexdb_discard_ruleset(db, dataset);
+	      if ( k < 0) k = 0;
 	    }
 	  else /* Remove specific rule */
 	    {

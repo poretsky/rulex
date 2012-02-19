@@ -502,6 +502,7 @@ static RULEX_RULESET *choose_ruleset(RULEXDB *rulexdb, int rule_type)
 {
   RULEX_RULESET *rules;
 
+  if (!rulexdb) return NULL;
   switch (rule_type)
     {
       case RULEXDB_RULE:
@@ -652,8 +653,8 @@ int rulexdb_subscribe_rule(RULEXDB *rulexdb, const char *src,
   db_recno_t recno;
   RULEX_RULESET *rules = choose_ruleset(rulexdb, rule_type);
 
-  if (!rules) return RULEXDB_EACCESS;
-  if (!rules->db) return RULEXDB_FAILURE;
+  if (!rules) return RULEXDB_EPARM;
+  if (!rules->db) return RULEXDB_EACCESS;
   if (n) /* Explicit rule number */
     {
       rc = db_nrecs(rules->db);
@@ -722,7 +723,7 @@ int rulexdb_remove_rule(RULEXDB *rulexdb, int rule_type, int n)
   RULEX_RULESET *rules = choose_ruleset(rulexdb, rule_type);
 
   if (!rules) return RULEXDB_EPARM;
-  if (!rules->db) return RULEXDB_FAILURE;
+  if (!rules->db) return RULEXDB_EACCESS;
   (void)memset(&inKey, 0, sizeof(DBT));
   inKey.data = &recno;
   inKey.size = sizeof(db_recno_t);
@@ -1147,21 +1148,22 @@ int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type)
       * Discard the ruleset.
       *
       * This routine deletes all data from specified ruleset.
-      * Returns number of deleted records. Rule type specifies
-      * target ruleset (RULEXDB_RULE, RULEXDB_LEXCLASS or RULEXDB_CORRECTOR).
+      * Returns number of deleted records or negative error code.
+      * Rule type specifies target ruleset
+      * (RULEXDB_RULE, RULEXDB_LEXCLASS or RULEXDB_CORRECTOR).
       */
 {
   int rc;
   u_int32_t n;
   RULEX_RULESET *rules = choose_ruleset(rulexdb, rule_type);
 
-  if (!rules) return 0;
-  if (!rules->db) return 0;
+  if (!rules) return RULEXDB_EPARM;
+  if (!rules->db) return RULEXDB_EACCESS;
   rc = rules->db->truncate(rules->db, NULL, &n, 0);
   if (rc)
     {
       db_error(rules->db, rc, db_writing);
-      return 0;
+      return RULEXDB_FAILURE;
     }
   return n;
 }
