@@ -442,7 +442,7 @@ static void postcorrect(RULEXDB *rulexdb, char *s)
   return;
 }
 
-static DB *choose_dictionary(RULEXDB *rulexdb, const char *key, int item_type)
+static DB **choose_dictionary(RULEXDB *rulexdb, const char *key, int item_type)
      /*
       * Choose the dictionary and open it if necessary.
       * If item_type specified as RULEXDB_DEFAULT, then choosing is based
@@ -457,6 +457,7 @@ static DB *choose_dictionary(RULEXDB *rulexdb, const char *key, int item_type)
   const char *db_name;
   DB **db;
 
+  if (!rulexdb) return NULL;
   switch (item_type)
     {
       case RULEXDB_EXCEPTION:
@@ -489,7 +490,7 @@ static DB *choose_dictionary(RULEXDB *rulexdb, const char *key, int item_type)
     }
   if (!(*db))
     *db = db_open(rulexdb->env, db_name, LEXICON_DB_TYPE, rulexdb->mode);
-  return *db;
+  return db;
 }
 
 static RULEX_RULESET *choose_ruleset(RULEXDB *rulexdb, int rule_type)
@@ -771,9 +772,10 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
   int rc;
   char packed_key[RULEXDB_BUFSIZE], packed_data[RULEXDB_BUFSIZE];
   DBT inKey, inVal;
-  DB *db = choose_dictionary(rulexdb, key, item_type);
+  DB **db = choose_dictionary(rulexdb, key, item_type);
 
-  if (!db) return RULEXDB_EACCESS;
+  if (!db) return RULEXDB_EPARM;
+  if (!(*db)) return RULEXDB_EACCESS;
   (void)memset(&inKey, 0, sizeof(DBT));
   (void)memset(&inVal, 0, sizeof(DBT));
   inKey.size = rulexdb_pack_key(key, packed_key);
@@ -786,13 +788,14 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
     packed_data[inVal.size++] = 0;
   inKey.data = packed_key;
   inVal.data = packed_data;
-  rc = db->put(db, NULL, &inKey, &inVal, DB_NOOVERWRITE);
+  rc = (*db)->put(*db, NULL, &inKey, &inVal, DB_NOOVERWRITE);
   if ((item_type == RULEXDB_DEFAULT) && (rc == DB_KEYEXIST)
-      && (db == rulexdb->lexicon_db))
+      && (db == &rulexdb->lexicon_db))
     {
       db = choose_dictionary(rulexdb, NULL, RULEXDB_EXCEPTION);
-      if (!db) return RULEXDB_EACCESS;
-      rc = db->put(db, NULL, &inKey, &inVal, DB_NOOVERWRITE);
+      if (!db) return RULEXDB_EPARM;
+      if (!(*db)) return RULEXDB_EACCESS;
+      rc = (*db)->put(*db, NULL, &inKey, &inVal, DB_NOOVERWRITE);
     }
   switch (rc)
     {
@@ -801,7 +804,7 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
       case DB_KEYEXIST:
 	if (overwrite)
 	  {
-	    rc = db->put(db, NULL, &inKey, &inVal, 0);
+	    rc = (*db)->put(*db, NULL, &inKey, &inVal, 0);
 	    if (rc) break;
 	    else return RULEXDB_SPECIAL;
 	  }
@@ -809,7 +812,7 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
       default:
 	break;
     }
-  db_error(db, rc, db_writing);
+  db_error(*db, rc, db_writing);
   return RULEXDB_FAILURE;
 }
 
@@ -887,7 +890,7 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 {
   int i, j, rc = RULEXDB_SPECIAL;
   char *s;
-  DB *db;
+  DB **db;
 
   (void)strcpy(value, key);
 
@@ -895,15 +898,17 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
   if ((!flags) || (flags & RULEXDB_EXCEPTIONS))
     {
       db = choose_dictionary(rulexdb, NULL, RULEXDB_EXCEPTION);
-      if (db)
-	rc = db_get(db, key, value);
+      if (!db) return RULEXDB_EPARM;
+      if (*db)
+	rc = db_get(*db, key, value);
     }
 
   /* The second stage: treating the word as an implicit form */
   if ((rc == RULEXDB_SPECIAL) && ((!flags) || (flags & RULEXDB_FORMS)))
     {
       db = choose_dictionary(rulexdb, NULL, RULEXDB_LEXBASE);
-      if (db)
+      if (!db) return RULEXDB_EPARM;
+      if (*db)
 	{
 	  s = malloc(strlen(key) + 32);
 	  if (s)
@@ -919,7 +924,7 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 		    value[strlen(s)] = 0;
 		  }
 		else value[strlen(key)] = 0;
-		rc = db_get(db, s, value);
+		rc = db_get(*db, s, value);
 	      }
 	  else return RULEXDB_EMALLOC;
 	  free(s);
@@ -967,21 +972,22 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
   int rc;
   DBT inKey, inVal;
   DBC *dbc;
-  DB *db = choose_dictionary(rulexdb, NULL, item_type);
+  DB **db = choose_dictionary(rulexdb, NULL, item_type);
 
   if (!db) return RULEXDB_EPARM;
-  dbc = db->app_private;
+  if (!(*db)) return RULEXDB_FAILURE;
+  dbc = (*db)->app_private;
   /* Initialize cursor if it is not done already */
   if (!dbc)
     {
-      rc = db->cursor(db, NULL, &dbc, 0);
+      rc = (*db)->cursor(*db, NULL, &dbc, 0);
       if (rc)
 	{
 	  dbc = NULL;
-	  db_error(db, rc, db_reading);
+	  db_error(*db, rc, db_reading);
 	  return RULEXDB_FAILURE;
 	}
-      else db->app_private = dbc;
+      else (*db)->app_private = dbc;
     }
   (void)memset(&inKey, 0, sizeof(DBT));
   (void)memset(&inVal, 0, sizeof(DBT));
@@ -1001,7 +1007,7 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
       default:
 	break;
     }
-  db_error(db, rc, db_reading);
+  db_error(*db, rc, db_reading);
   return RULEXDB_FAILURE;
 }
 
@@ -1021,20 +1027,21 @@ int rulexdb_remove_item(RULEXDB *rulexdb, const char *key, int item_type)
   int rc;
   char packed_key[RULEXDB_BUFSIZE];
   DBT inKey;
-  DB *db = choose_dictionary(rulexdb, key, item_type);
+  DB **db = choose_dictionary(rulexdb, key, item_type);
 
   if (!db) return RULEXDB_EPARM;
+  if (!(*db)) return RULEXDB_EACCESS;
   (void)memset(&inKey, 0, sizeof(DBT));
   inKey.size = rulexdb_pack_key(key, packed_key);
   if ((signed int)(inKey.size) <= 0)
     return RULEXDB_EINVKEY;
   inKey.data = packed_key;
-  rc = db->del(db, NULL, &inKey, 0);
+  rc = (*db)->del(*db, NULL, &inKey, 0);
   if (rc)
     {
       if (rc == DB_NOTFOUND)
 	return RULEXDB_SPECIAL;
-      db_error(db, rc, db_writing);
+      db_error(*db, rc, db_writing);
       return RULEXDB_FAILURE;
     }
   return RULEXDB_SUCCESS;
@@ -1060,17 +1067,18 @@ int rulexdb_remove_this_item(RULEXDB *rulexdb, int item_type)
 {
   int rc;
   DBC *dbc;
-  DB *db = choose_dictionary(rulexdb, NULL, item_type);
+  DB **db = choose_dictionary(rulexdb, NULL, item_type);
 
   if (!db) return RULEXDB_EPARM;
-  dbc = db->app_private;
+  if (!(*db)) return RULEXDB_EACCESS;
+  dbc = (*db)->app_private;
   if(!dbc) return RULEXDB_EACCESS;
   rc = dbc->c_del(dbc, 0);
   if (rc)
     {
       if (rc == DB_NOTFOUND)
 	return RULEXDB_SPECIAL;
-      db_error(db, rc, db_writing);
+      db_error(*db, rc, db_writing);
       return RULEXDB_FAILURE;
     }
   return RULEXDB_SUCCESS;
@@ -1117,28 +1125,30 @@ int rulexdb_discard_dictionary(RULEXDB *rulexdb, int item_type)
       * Discard the dictionary.
       *
       * This routine deletes all data from specified dictionary.
-      * Returns number of deleted records. Item type specifies
-      * a dictionary (RULEXDB_EXCEPTION or RULEXDB_LEXBASE).
-      * ( RULEXDB_DEFAULT is not allowed here.
+      * Returns number of deleted records or negative error code.
+      * Item type specifies a dictionary
+      * (RULEXDB_EXCEPTION or RULEXDB_LEXBASE).
+      * RULEXDB_DEFAULT is not allowed here.
       */
 {
   int rc;
   u_int32_t n;
-  DB *db = choose_dictionary(rulexdb, NULL, item_type);
+  DB **db = choose_dictionary(rulexdb, NULL, item_type);
   DBC *dbc;
 
-  if (!db) return 0;
-  dbc = db->app_private;
+  if (!db) return RULEXDB_EPARM;
+  if (!(*db)) return RULEXDB_EACCESS;
+  dbc = (*db)->app_private;
   if (dbc) /* Close cursor at first if it was opened */
     {
       (void)dbc->c_close(dbc);
-      db->app_private = NULL;
+      (*db)->app_private = NULL;
     }
-  rc = db->truncate(db, NULL, &n, 0);
+  rc = (*db)->truncate(*db, NULL, &n, 0);
   if (rc)
     {
-      db_error(db, rc, db_writing);
-      return 0;
+      db_error(*db, rc, db_writing);
+      return RULEXDB_FAILURE;
     }
   return n;
 }

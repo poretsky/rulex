@@ -545,6 +545,7 @@ int main(int argc, char *argv[])
 	    (void)fprintf(stderr, "Discarding %s dictionary\n",
 			  rulexdb_dataset_name(dataset));
 	  k = rulexdb_discard_dictionary(db, dataset);
+	  if (k < 0) k = 0;
 	}
       else /* Remove specific item from dictionary */
 	{

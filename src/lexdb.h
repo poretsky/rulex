@@ -327,9 +327,10 @@ extern int rulexdb_discard_dictionary(RULEXDB *rulexdb, int item_type);
  * Discard the dictionary.
  *
  * This routine deletes all data from specified dictionary.
- * Returns number of deleted records. Item type specifies
- * a dictionary (RULEXDB_EXCEPTION or RULEXDB_LEXBASE).
- * ( RULEXDB_DEFAULT is not allowed here.
+ * Returns number of deleted records or negative error code.
+ * Item type specifies a dictionary
+ * (RULEXDB_EXCEPTION or RULEXDB_LEXBASE).
+ * RULEXDB_DEFAULT is not allowed here.
  */
 
 extern int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type);
