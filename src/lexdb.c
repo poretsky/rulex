@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -46,29 +45,8 @@ static const char *rules_db_name = "General";
 static const char *lexclasses_db_name = "Lexclasses";
 static const char *corrections_db_name = "Corrections";
 
-/* Error message prefixes */
-static const char *db_reading = "Reading";
-static const char *db_writing = "Writing";
-
 
 /* Local routines */
-
-static void *xcalloc(size_t nmemb, size_t size)
-     /*
-      * Allocate memory for nmemb data elements of given size
-      * and initialize it by zero.
-      *
-      * Abort program with error message if failed.
-      */
-{
-  void *ptr = calloc(nmemb, size);
-  if (!ptr)
-    {
-      (void)fprintf(stderr, "Memory allocation error\n");
-      exit(EXIT_FAILURE);
-    }
-  return ptr;
-}
 
 static DB *db_open(DB_ENV *env, const char *name, int type, int mode)
      /*
@@ -124,14 +102,6 @@ static DB *db_open(DB_ENV *env, const char *name, int type, int mode)
     }
   if (rc)
     {
-      if (rc != ENOENT)
-	/*
-	 * We don't want error message when the dataset doesn't exist.
-	 * We prefer that search silently fails with an appropriate
-	 * error code in this case. It is not crytical situation,
-	 * so we pass it to the caller.
-	 */
-	db->err(db, rc, "Opening database %s:%s", env->app_private, name);
       (void)db->close(db, 0);
       db = NULL;
     }
@@ -148,19 +118,6 @@ static void db_close(DB *db)
   if (dbc) /* Close cursor at first if it was opened */
     (void)dbc->c_close(dbc);
   (void)db->close(db, 0);
-  return;
-}
-
-static void db_error(DB *db, int errcode, const char *msg)
-     /*
-      * Generate and emit a database error message.
-      */
-{
-  const char *db_path, *db_name;
-
-  if (db->get_dbname(db, &db_path, &db_name))
-    db->err(db, errcode, "%s database", msg);
-  else db->err(db, errcode, "%s database %s:%s", msg, db_path, db_name);
   return;
 }
 
@@ -198,7 +155,6 @@ static int db_get(DB *db, const char *key, char *value)
       default:
 	break;
     }
-  db_error(db, rc, db_reading);
   return RULEXDB_FAILURE;
 }
 
@@ -212,11 +168,8 @@ static int db_nrecs(DB *db)
   DB_BTREE_STAT *sp;
 
   rc = db->stat(db, NULL, &sp, DB_FAST_STAT);
-  if (rc)
-    {
-      db_error(db, rc, db_reading);
-      return 0;
-    }
+  if (rc) return 0;
+
   rc = sp->bt_nkeys;
   free(sp);
   return rc;
@@ -240,18 +193,9 @@ static char *rule_get(DB *db, int n)
   inKey.data = &recno;
   inKey.size = sizeof(db_recno_t);
   rc = db->get(db, NULL, &inKey, &inVal, 0);
-  switch (rc)
-    {
-      case 0:
-	return inVal.data;
-      case DB_KEYEMPTY:
-      case DB_NOTFOUND:
-	break;
-      default:
-	db_error(db, rc, db_reading);
-	break;
-    }
-  return NULL;
+  if (rc)
+    return NULL;
+  return inVal.data;
 }
 
 static int rules_init(RULEX_RULESET *rules)
@@ -280,8 +224,23 @@ static int rules_init(RULEX_RULESET *rules)
   if (rules->nrules > 0) /* Not empty */
     {
       /* Allocate memory for pointers */
-      rules->pattern = xcalloc(rules->nrules, sizeof(regex_t *));
-      rules->replacement = xcalloc(rules->nrules, sizeof(char *));
+      rules->pattern = calloc(rules->nrules, sizeof(regex_t *));
+      if (!rules->pattern)
+	{
+	  db_close(rules->db);
+	  rules->db = NULL;
+	  rules->nrules = -1;
+	  return RULEXDB_EMALLOC;
+	}
+      rules->replacement = calloc(rules->nrules, sizeof(char *));
+      if (!rules->replacement)
+	{
+	  free(rules->pattern);
+	  db_close(rules->db);
+	  rules->db = NULL;
+	  rules->nrules = -1;
+	  return RULEXDB_EMALLOC;
+	}
     }
   return RULEXDB_SUCCESS;
 }
@@ -296,11 +255,11 @@ static int rule_load(RULEX_RULESET *rules, int n)
       * The ruleset itself must be initialized before.
       */
 {
-  int rc, emsgsize;
+  int rc;
   char *s, *rule_src;
 
   if (n >= rules->nrules) /* Specified rule number validation */
-    return RULEXDB_FAILURE;
+    return RULEXDB_EPARM;
   if (rules->pattern[n]) /* Already loaded */
     return RULEXDB_SUCCESS;
 
@@ -310,18 +269,15 @@ static int rule_load(RULEX_RULESET *rules, int n)
     return RULEXDB_FAILURE;
 
   /* Allocate memory for compiled pattern */
-  rules->pattern[n] = xcalloc(1, sizeof(regex_t));
+  rules->pattern[n] = calloc(1, sizeof(regex_t));
+  if (!rules->pattern[n])
+    return RULEXDB_EMALLOC;
 
   /* Compile pattern */
   rc = regcomp(rules->pattern[n], strtok(rule_src, " "),
 	       REG_EXTENDED | REG_ICASE);
   if (rc) /* Pattern compiling failure */
     {
-      emsgsize = regerror(rc, rules->pattern[n], NULL, 0);
-      s = xcalloc(emsgsize, sizeof(char));
-      (void)regerror(rc, rules->pattern[n], s, emsgsize);
-      (void)fprintf(stderr, "Rule %i from %s: %s\n", n + 1, rules->db_name, s);
-      free(s);
       regfree(rules->pattern[n]);
       free(rules->pattern[n]);
       rules->pattern[n] = NULL;
@@ -546,7 +502,10 @@ RULEXDB *rulexdb_open(const char *path, int mode)
       * or NULL otherwise.
       */
 {
-  RULEXDB *rulexdb = xcalloc(1, sizeof(RULEXDB));
+  RULEXDB *rulexdb = calloc(1, sizeof(RULEXDB));
+
+  if (!rulexdb)
+    return NULL;
 
   /* Create database environment */
   if (db_env_create(&rulexdb->env, 0))
@@ -674,10 +633,7 @@ int rulexdb_subscribe_rule(RULEXDB *rulexdb, const char *src,
   inVal.size = strlen(src) + 1;
   rc = rules->db->put(rules->db, NULL, &inKey, &inVal, n ? 0 : DB_APPEND);
   if (rc)
-    {
-      db_error(rules->db, rc, db_writing);
-      return RULEXDB_FAILURE;
-    }
+    return RULEXDB_FAILURE;
   return RULEXDB_SUCCESS;
 }
 
@@ -733,7 +689,6 @@ int rulexdb_remove_rule(RULEXDB *rulexdb, int rule_type, int n)
     {
       if (rc == DB_NOTFOUND)
 	return RULEXDB_SPECIAL;
-      db_error(rules->db, rc, db_writing);
       return RULEXDB_FAILURE;
     }
   return RULEXDB_SUCCESS;
@@ -812,7 +767,6 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
       default:
 	break;
     }
-  db_error(*db, rc, db_writing);
   return RULEXDB_FAILURE;
 }
 
@@ -996,7 +950,6 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
       if (rc)
 	{
 	  dbc = NULL;
-	  db_error(*db, rc, db_reading);
 	  return RULEXDB_FAILURE;
 	}
       else (*db)->app_private = dbc;
@@ -1019,7 +972,6 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
       default:
 	break;
     }
-  db_error(*db, rc, db_reading);
   return RULEXDB_FAILURE;
 }
 
@@ -1053,7 +1005,6 @@ int rulexdb_remove_item(RULEXDB *rulexdb, const char *key, int item_type)
     {
       if (rc == DB_NOTFOUND)
 	return RULEXDB_SPECIAL;
-      db_error(*db, rc, db_writing);
       return RULEXDB_FAILURE;
     }
   return RULEXDB_SUCCESS;
@@ -1090,7 +1041,6 @@ int rulexdb_remove_this_item(RULEXDB *rulexdb, int item_type)
     {
       if (rc == DB_NOTFOUND)
 	return RULEXDB_SPECIAL;
-      db_error(*db, rc, db_writing);
       return RULEXDB_FAILURE;
     }
   return RULEXDB_SUCCESS;
@@ -1158,10 +1108,7 @@ int rulexdb_discard_dictionary(RULEXDB *rulexdb, int item_type)
     }
   rc = (*db)->truncate(*db, NULL, &n, 0);
   if (rc)
-    {
-      db_error(*db, rc, db_writing);
-      return RULEXDB_FAILURE;
-    }
+    return RULEXDB_FAILURE;
   return n;
 }
 
@@ -1183,10 +1130,7 @@ int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type)
   if (!rules->db) return RULEXDB_EACCESS;
   rc = rules->db->truncate(rules->db, NULL, &n, 0);
   if (rc)
-    {
-      db_error(rules->db, rc, db_writing);
-      return RULEXDB_FAILURE;
-    }
+    return RULEXDB_FAILURE;
   return n;
 }
 
