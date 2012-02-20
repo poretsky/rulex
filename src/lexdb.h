@@ -233,7 +233,7 @@ extern int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int f
  *
  * Searching is performed in the following order:
  * Specified word is searched in the exceptions dictionary.
- * If it succeeds, the result is returned and procedure
+ * If found, the result is returned and procedure
  * exits successfully. Otherwise the word is treated
  * as an implicit form and program tries to guess it's base
  * and find it in the lexbases dictionary. If this process
@@ -243,14 +243,14 @@ extern int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int f
  * If no match succeeds, then program exits with RULEXDB_SPECIAL code,
  * returning original word as a result.
  *
- * If this process appears not fully unsuccessful and some information
- * was found in the database, then the resulting string
+ * If this process appears to be not fully unsuccessful and some
+ * information was found in the database, then the resulting string
  * is matched against correction rules and the first matched one
  * is applied if any.
  *
- * The last argument specified which steps of the described
+ * The last argument specifies which steps of the described
  * process are to be performed. It consists of following flags
- * which can be joined by "or" operation:
+ * which may be joined by "or" operation:
  * RULEXDB_EXCEPTIONS - search the word in the exceptions dictionary.
  * RULEXDB_FORMS - try to treat specified word as an implicit form.
  * RULEXDB_RULES - try to apply general rules.
