@@ -900,7 +900,10 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
       db = choose_dictionary(rulexdb, NULL, RULEXDB_EXCEPTION);
       if (!db) return RULEXDB_EPARM;
       if (*db)
-	rc = db_get(*db, key, value);
+	{
+	  rc = db_get(*db, key, value);
+	  if (rc < 0) return rc;
+	}
     }
 
   /* The second stage: treating the word as an implicit form */
@@ -916,7 +919,11 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 	      {
 		i = rulexdb_lexbase(rulexdb, key, s, i);
 		if (!i) break;
-		if (i < 0) return i;
+		if (i < 0)
+		  {
+		    free(s);
+		    return i;
+		  }
 		if (strlen(key) < strlen(s))
 		  {
 		    for (j = strlen(key); j < strlen(s); j++)
@@ -925,6 +932,11 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 		  }
 		else value[strlen(key)] = 0;
 		rc = db_get(*db, s, value);
+		if (rc < 0)
+		  {
+		    free(s);
+		    return rc;
+		  }
 	      }
 	  else return RULEXDB_EMALLOC;
 	  free(s);
