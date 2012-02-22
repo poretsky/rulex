@@ -341,8 +341,9 @@ static int lexguess(RULEXDB *rulexdb, const char *s, char *t)
   int i;
   regmatch_t match[2];
 
-  if (rules_init(&rulexdb->rules))
-    return RULEXDB_FAILURE;
+  i = rules_init(&rulexdb->rules);
+  if (i) return i;
+
   for (i = 0; i < rulexdb->rules.nrules; i++)
     if (!rule_load(&rulexdb->rules, i))
       if (!regexec(rulexdb->rules.pattern[i], s, 2, match, 0))
@@ -355,7 +356,7 @@ static int lexguess(RULEXDB *rulexdb, const char *s, char *t)
   return RULEXDB_SPECIAL;
 }
 
-static void postcorrect(RULEXDB *rulexdb, char *s)
+static int postcorrect(RULEXDB *rulexdb, char *s)
      /*
       * This routine performs some additional word corrections
       * according to the correction rules from the database if needed.
@@ -365,15 +366,16 @@ static void postcorrect(RULEXDB *rulexdb, char *s)
   char *r, *t, *orig;
   regmatch_t match[10];
 
-  if (rules_init(&rulexdb->correctors))
-    return;
+  i = rules_init(&rulexdb->correctors);
+  if (i) return i;
+
   for (i = 0; i < rulexdb->correctors.nrules; i++)
     if (!rule_load(&rulexdb->correctors, i))
       if (!regexec(rulexdb->correctors.pattern[i], s, 10, match, 0))
 	{
 	  t = s + match[0].rm_so;
 	  orig = strdup(t);
-	  if (!orig) break;
+	  if (!orig) return RULEXDB_EMALLOC;
 	  for (r = rulexdb->correctors.replacement[i]; *r; r++)
 	    if (((*r) >= '0') && ((*r) <= '9'))
 	      {
@@ -395,7 +397,7 @@ static void postcorrect(RULEXDB *rulexdb, char *s)
 	  *t = 0;
 	  free(orig);
 	}
-  return;
+  return RULEXDB_SUCCESS;
 }
 
 static DB **choose_dictionary(RULEXDB *rulexdb, const char *key, int item_type)
@@ -782,12 +784,13 @@ int rulexdb_lexbase(RULEXDB *rulexdb, const char *s, char *t, int n)
       * In the case of error an appropriate error code is returned.
       */
 {
-  int i, rc = 0;
+  int i, rc;
   regmatch_t match[2];
 
   if ((n < 1) || (!rulexdb) || (!s) || (!t)) return RULEXDB_EPARM;
-  if (rules_init(&rulexdb->lexclasses))
-    return RULEXDB_FAILURE;
+  rc = rules_init(&rulexdb->lexclasses);
+  if (rc) return rc;
+
   for (i = n - 1; i < rulexdb->lexclasses.nrules; i++)
     if ((rc = rule_load(&rulexdb->lexclasses, i)))
       break;
@@ -907,7 +910,7 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 
   /* Applying a post-correction if needed */
   if (!rc)
-    postcorrect(rulexdb, value);
+    rc = postcorrect(rulexdb, value);
 
   return rc;
 }
@@ -965,7 +968,7 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
 	(void)strcpy(value, key);
 	rulexdb_unpack_data(value, inVal.data, inVal.size);
 	if (item_type == RULEXDB_EXCEPTION)
-	  postcorrect(rulexdb, value);
+	  return postcorrect(rulexdb, value);
 	return RULEXDB_SUCCESS;
       case DB_NOTFOUND:
 	return RULEXDB_SPECIAL;
