@@ -1,0 +1,101 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_SEARCH 3 "February 20, 2012"
+.SH NAME
+rulexdb_search \- search rulex database for specified word
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_search(RULEXDB *" rulexdb ", const char *" key
+", char *" value ", int " flags );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_search ()
+function searches the database referenced by
+.I rulexdb
+argument and tries to guess pronunciation for the word specified by
+string pointed by
+.I key
+argument according to the acquired info. The resulting string is
+ placed into the buffer pointed by
+.I value
+argument. This buffer must have enough space for it. When no useful
+ info is found, the original word is copied to the
+.I value
+buffer and
+.B RULEXDB_SPECIAL
+code is returned.
+.PP
+At first search is performed in the \fBExplicit\fP dictionary. If it
+ succeeds, the result is returned and procedure exits
+ successfully. Otherwise the word is treated as an implicit form and
+ program tries to guess it's base and find it in the \fBImplicit\fP
+ dictionary. If this process succeeds, the pronunciation string is
+ constructed according to the acquired data and procedure exits
+ successfully. At last, the word is matched against general rules. If
+ no match succeeds, then program exits with
+.B RULEXDB_SPECIAL
+code, returning the original word as a result.
+.PP
+If this process appears to be not fully unsuccessful and some
+information was found in the database, then the resulting string is
+matched against correction rules and the first matched one is applied
+if any.
+.PP
+The last argument specifies which steps of the described process are
+to be performed. It consists of the following flags which may be
+.RI bitwise- or 'd
+to form wanted search mode:
+.TP
+.B RULEXDB_EXCEPTIONS
+Search the word in the exceptions dictionary.
+.TP
+.B RULEXDB_FORMS
+Try to treat specified word as an implicit form.
+.TP
+.B RULEXDB_RULES
+Try to apply general rules.
+.TP
+Zero value (no flags) means that full search (all stages) should be
+performed.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_search ()
+function returns
+.B RULEXDB_SUCCESS
+which is zero upon success, positive value
+.B RULEXDB_SPECIAL
+when specified word was not found, or
+negative error code if something is wrong.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EMALLOC
+Internal memory allocation error.
+.TP
+.B RULEXDB_EINVKEY
+Invalid key specified.
+.TP
+.B RULEXDB_EPARM
+Invalid parameters are specified.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

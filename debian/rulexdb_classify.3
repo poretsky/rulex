@@ -1,0 +1,57 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_CLASSIFY 3 "February 21, 2012"
+.SH NAME
+rulexdb_classify \- test specified word whether it represents a lexical base
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_classify(RULEXDB *" rulexdb ", const char *" s );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_classify ()
+function tests the word pointed by
+.I s
+argument trying to determine if it can be treated as a lexical base
+according to the rulex database referenced by
+.I rulexdb
+argument.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_classify ()
+function returns
+.B RULEXDB_SUCCESS
+which is zero when the word represents no lexical base,
+positive value
+.B RULEXDB_SPECIAL
+when the word can be treated as a lexical base, or
+negative error code if something is wrong.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EMALLOC
+Internal memory allocation error.
+.TP
+.B RULEXDB_EPARM
+Invalid parameters are specified.
+.SH SEE ALSO
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

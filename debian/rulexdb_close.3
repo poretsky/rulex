@@ -1,0 +1,33 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_CLOSE 3 "February 19, 2012"
+.SH NAME
+rulexdb_close \- close a rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "void rulexdb_open(RULEXDB *" rulexdb );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_close ()
+function closes the database referenced by it's argument, flushes all
+cached data if any, frees all associated resources and closes the
+underlying file.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

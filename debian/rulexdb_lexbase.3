@@ -1,0 +1,60 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_LEXBASE 3 "February 20, 2012"
+.SH NAME
+rulexdb_lexbase \- try to find lexical base for the specified word
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_lexbase(RULEXDB *" rulexdb ", const char *" s
+", char *" t ", int " n );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_lexbase ()
+function scans \fBClassifiers\fP ruleset starting from
+.I n
+which must be positive trying to match the word pointed by
+.IR s .
+When match succeeds, the lexical base is constructed in memory area
+ pointed by
+.IR t ,
+which must have enough space for it, and the number of matched rule or
+0 if no match found is returned.
+.PP
+The argument
+.I rulexdb
+references the rulex database to search in.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_lexbase ()
+function returns the number of matched rule that is always positive, 0
+when no match found, or negative error code.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EMALLOC
+Internal memory allocation error.
+.TP
+.B RULEXDB_EPARM
+Invalid parameters are specified.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

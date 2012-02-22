@@ -1,0 +1,99 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_SUBSCRIBE_ITEM 3 "February 19, 2012"
+.SH NAME
+rulexdb_subscribe_item \- put new dictionary item into the rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_subscribe_item(RULEXDB *" rulexdb ", const char *"
+key ", const char *" value ", int " item_type ", int " overwrite );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_subscribe_item ()
+function inserts new item into one of the dictionary datasets in the
+database referenced by
+.I rulexdb
+argument.
+.PP
+The argument
+.I key
+points to a text string containing the original word.
+.PP
+The argument
+.I value
+points to the corresponding pronunciation string.
+.PP
+The argument
+.I item_type
+specifies target dataset. It may accept one of the following values:
+.TP
+.B RULEXDB_LEXBASE
+The item represents a lexical base, therefore should be inserted into
+the \fBImplicit\fP dictionary.
+.TP
+.B RULEXDB_EXCEPTION
+Explicit item that should be inserted into the \fBExplicit\fP
+dictionary.
+.TP
+.B RULEXDB_DEFAULT
+Target dictionary should be guessed according to specified key: if it
+represents any lexical base, then \fBImplicit\fP dictionary will be
+chosen, otherwise the \fBExplicit\fP dictionary will be used. If key
+word is recognized as a lexical base, but the record for this key
+already exist in the \fBImplicit\fP dictionary, then \fBExplicit\fP
+dictionary will be tried instead.
+.PP
+The argument
+.I overwrite
+If true (non-zero) the new item will replace already existing one with
+the same key if any. Otherwise the new item will not be stored.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_subscribe_item ()
+function returns
+.B RULEXDB_SUCCESS
+which is zero when specified rule was successfully removed, positive
+value
+.B RULEXDB_SPECIAL
+when specified key already exists in the dictionary, or
+negative error code otherwise.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EINVKEY
+Invalid key specified.
+.TP
+.B RULEXDB_EINVREC
+Invalid pronunciation string specified.
+.TP
+.B RULEXDB_EPARM
+The argument
+.I rulexdb
+or
+.I item_type
+has an invalid value.
+.TP
+.B RULEXDB_EACCESS
+The database is not opened for updating.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

@@ -1,0 +1,75 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_REMOVE_THIS_ITEM 3 "February 21, 2012"
+.SH NAME
+rulexdb_remove_this_item \- remove sequentially retrieved item from the rulex dictionary
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_remove_this_item(RULEXDB *" rulexdb ", int " item_type );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_remove_this_item ()
+function removes the last accessed via
+.BR rulexdb_seq (3)
+lexical item from the dictionary dataset defined by
+.I item_type
+argument that may accept one of the following values:
+.TP
+.B RULEXDB_LEXBASE
+Remove item from the \fBImplicit\fP dictionary.
+.TP
+.B RULEXDB_EXCEPTION
+Remove item from the \fBExplicit\fP dictionary.
+.PP
+Note that the data type must be specified explicitly. The value
+.B RULEXDB_DEFAULT
+is not allowed here.
+.PP
+The argument
+.I rulexdb
+references the database to deal with.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_remove_this_item ()
+function returns
+.B RULEXDB_SUCCESS
+which is zero when specified item was successfully removed, positive
+value
+.B RULEXDB_SPECIAL
+when this record is already deleted, or negative error code in the
+case of other failure.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EPARM
+The argument
+.I rulexdb
+or
+.I item_type
+has an invalid value.
+.TP
+.B RULEXDB_EACCESS
+The database is not opened for updating or the dataset was never
+accessed sequentially yet.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

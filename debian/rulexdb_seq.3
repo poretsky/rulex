@@ -1,0 +1,91 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_SEQ 3 "February 20, 2012"
+.SH NAME
+rulexdb_seq \- sequential retrieving dictionary items from the rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_search(RULEXDB *" rulexdb ", char *" key
+", char *" value ", int " item_type ", int " mode );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_seq ()
+function sequentially fetches lexical records one by one. It's
+operations are not disturbed by the key-based search.
+.PP
+The argument
+.I rulexdb
+references the rulex database.
+.PP
+The arguments
+.I key
+and
+.I value
+must point to the buffers with enough space for retrieved data.
+.PP
+The argument
+.I item_type
+specifies the dictionary dataset from which data will be retrieved. It
+may accept one of the following values:
+.TP
+.B RULEXDB_LEXBASE
+Extract data from the \fBImplicit\fP dictionary.
+.TP
+.B RULEXDB_EXCEPTION
+Extract data from the \fBExplicit\fP dictionary.
+.PP
+Note that the data type must be specified explicitly. The value
+.B RULEXDB_DEFAULT
+is not allowed here.
+.PP
+When fetching data from the \fBExplicit\fP dictionary the correction
+rules will be applied. To prevent this feature you can specify
+.B RULEXDB_EXCEPTION_RAW
+instead of
+.BR RULEXDB_EXCEPTION .
+.PP
+The
+.I mode
+argument specifies direction of the dictionary scanning. Allowed
+ values are:
+.BR DB_FIRST ", " DB_NEXT ", " DB_PREV ", or " DB_LAST
+as defined for the underlying database library.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_seq ()
+function returns
+.B RULEXDB_SUCCESS
+which is zero upon success, positive value
+.B RULEXDB_SPECIAL
+when no more records can be fetched, or negative error code if
+something is wrong.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EMALLOC
+Internal memory allocation error.
+.TP
+.B RULEXDB_EPARM
+Invalid parameters are specified.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

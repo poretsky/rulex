@@ -1,0 +1,116 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_OPEN 3 "February 19, 2012"
+.SH NAME
+rulexdb_open \- open or create a rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "RULEXDB *rulexdb_open(const char *" path ", int " mode );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_open ()
+function opens the rulex database in the file whose name is the string
+pointed to by
+.I path
+and allocates and initializes all necessary internal data structures
+associated with it.
+.PP
+The argument
+.I mode
+specifies a database access mode. It may accept one of the following
+values:
+.TP
+.B RULEXDB_SEARCH
+Open the database only for searching (read only mode).
+.TP
+.B RULEXDB_UPDATE
+Open existing database for searching and updating (read and write
+mode).
+.TP
+.B RULEXDB_CREATE
+Create new database and open it for updating and searching.
+.SH "DATABASE STRUCTURE"
+The rulex database consists of two dictionaries and three sets
+of rules. The \fBExplicit\fP dictionary contains the words that
+are described individually and do not imply any information for
+other forms. This dictionary is looked up first if the search
+includes this stage. The \fBImplicit\fP dictionary contains
+words in some basic form. This dictionary is used to construct
+pronunciation string for various forms of these words. The basic
+form of a word is guessed according to the rules from the
+\fBClassifiers\fP ruleset. This is the second stage of search
+process. If these stages do not bring a result or are not performed
+the rules from the \fBGeneral\fP ruleset are used to guess stressing
+word. If no one of these rules can be applied than no guessing
+is made and search process fails.
+.PP
+Externally all the data are represented textually. For the Russian
+letters the \fBkoi8\-r\fP character set is used and only lower case
+is allowed.
+.PP
+Each dictionary record consists of two fields. The first field
+contains Russian word that serves as a key when searching. Only
+lowercase Russian letters are allowed here. The second field provides
+pronunciation string for this word. The pronunciation string
+is the word itself, but written in such a manner as it should
+be pronounced. There are three additional symbols allowed
+in the pronunciation string along with the lowercase
+Russian letters. The "+" sign can be used to point the stressed
+letter. It should be placed just after that letter. The "=" sign
+is used in some cases just in the same manner to point so-called
+weak stress. The "-" sign can serve as a separator in some complex
+words. All other symbols are treated as illegal.
+.PP
+There are three rulesets in the database: \fBGeneral\fP rules,
+\fBClassifiers\fP and \fBCorrectors\fP. Externally all these rules
+are represented by records consisting of one or two fields. The first
+field always contains a regular expression which is matched against
+the word to make a decision whether this rule can be applied.
+.PP
+The only task of \fBGeneral\fP rules is to guess stress
+in the words when dictionary lookup fails. The rules are tried
+sequentially until match or the list exhaustion. If match succeeds
+then the "+" sign is inserted into the word right after the first
+subexpression match to point stressing position.
+ These rules do not contain a second field.
+.PP
+For the \fBClassifiers\fP ruleset each rule is checked one by one
+until match occurs. Then the part from the beginning of the word
+through to the end of the first subexpression match is extracted
+and if a second field is present it is appended to the extracted
+part as a suffix. The resulting string is treated as a basic form
+of the word, so it is looked up in the \fBImplicit\fP dictionary.
+If nothing is found the process continues
+until the ruleset will be exceeded.
+.PP
+The rules from \fBCorrectors\fP ruleset are applied
+to the pronunciation strings instead of the original words.
+The second field in these rules specifies a regular replacement
+string where digits serve as subexpression numbers.
+.SH "RETURN VALUE"
+Upon successful completion
+.BR rulexdb_open ()
+return a
+.I RULEXDB
+pointer that should be used in other database access functions for
+referencing the database.
+Otherwise, NULL is returned.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.

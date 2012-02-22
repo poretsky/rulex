@@ -1,0 +1,62 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_FETCH_RULE 3 "February 19, 2012"
+.SH NAME
+rulexdb_fetch_rule \- extract specified rule from the rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "char *rulexdb_fetch_rule(RULEXDB *" rulexdb ", int " rule_type
+", int " position );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_fetch_rule ()
+function retrieves a rule identified by it's type and position in the
+ruleset from the rulex database
+referenced by
+.I rulexdb
+argument.
+.PP
+The argument
+.I rule_type
+specifies the rule type. It may accept one of the following values:
+.TP
+.B RULEXDB_LEXCLASS
+The rule is the word classifier and belongs to the \fBClassifiers\fP
+dataset.
+.TP
+.B RULEXDB_RULE
+The requested rule should be extracted from the \fBGeneral\fP rules
+dataset.
+.TP
+.B RULEXDB_CORRECTOR
+The rule is a correction rule that belongs to the \fBCorrectors\fP
+dataset.
+.PP
+The argument
+.I position
+defines position of the requested rule in the ruleset.
+.SH "RETURN VALUE"
+Upon success, the
+.BR rulexdb_fetch_rule ()
+function returns pointer to the textual representation of the
+extracted rule. This pointer remains valid until the next database
+operation. Otherwise, NULL is returned.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.
