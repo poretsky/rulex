@@ -2,7 +2,7 @@ Source: rulex
 Section: sound
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
-Build-Depends: debhelper (>= 5), libdb-dev
+Build-Depends: debhelper (>= 5), libdb-dev, libtool (>= 1.5.2)
 Standards-Version: 3.7.3
 
 Package: rulex
@@ -15,3 +15,20 @@ Description: Russian pronunciation dictionary
  TTS engine Ru_tts. When it is installed you can instruct Ru_tts
  to use the pronunciation dictionary by the command line switch
  "-s /usr/share/freespeech/rulex.db".
+
+Package: librulexdb0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Russian pronunciation dictionary access library
+ .
+ This package contains the shared library.
+
+Package: librulexdb-dev
+Section: libdevel
+Architecture: any
+Depends: librulexdb0 (= ${binary:Version}), libdb-dev, libc6-dev
+Suggests: rulex
+Description: Russian pronunciation dictionary access library
+ .
+ This package contains the development files.
