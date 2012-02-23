@@ -1,3 +1,9 @@
+rulex (3.1) unstable; urgency=low
+
+  * Fixed some man pages.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 24 Feb 2012 01:01:38 +0400
+
 rulex (3.0) unstable; urgency=low
 
   * Split off the library containing all database specific
