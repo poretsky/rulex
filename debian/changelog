@@ -2,8 +2,9 @@ rulex (3.0) unstable; urgency=low
 
   * Split off the library containing all database specific
     functionality.
+  * A few lexicon additions and fixes.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 22 Feb 2012 23:16:45 +0400
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Thu, 23 Feb 2012 07:34:06 +0400
 
 rulex (2.5) unstable; urgency=low
 
