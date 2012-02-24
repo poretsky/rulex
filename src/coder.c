@@ -42,7 +42,7 @@
 }
 
 /* List of valid letters */
-static unsigned char alphabet[] = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+static char alphabet[] = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
 
 /* Statistical model for keys packing */
 static SYMBOL letter[] =
@@ -114,7 +114,7 @@ int rulexdb_pack_key(const char *s, char *t)
   for (i = 0; i < 256; i++)
     table[i] = -1;
   for (i = 0; i < strlen(alphabet) + 1; i++)
-    table[alphabet[i]] = (char)i;
+    table[(unsigned char)alphabet[i]] = (char)i;
 
   /* Packing data */
   t[0] = 0;

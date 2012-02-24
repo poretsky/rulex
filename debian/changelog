@@ -2,8 +2,9 @@ rulex (3.1) unstable; urgency=low
 
   * Fixed some man pages.
   * Added libtool archive file to the development package.
+  * More attention to the compiler warnings.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 24 Feb 2012 06:20:41 +0400
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 24 Feb 2012 06:37:29 +0400
 
 rulex (3.0) unstable; urgency=low
 

@@ -10,7 +10,7 @@ includedir = ${prefix}/include
 
 # Compiling options
 CC = gcc
-CFLAGS = -O2
+CFLAGS = -Wall -O2 -D_REENTRANT
 LFLAGS = 
 LIBS = -ldb
 
