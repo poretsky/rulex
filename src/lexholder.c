@@ -31,6 +31,8 @@
 #define NO_DB_FILE 2
 
 
+static const char *charset = "ru_RU.koi8r";
+
 static const char *usage =
 "Lexical database holding utility.\n\n"
 
@@ -108,7 +110,11 @@ int main(int argc, char *argv[])
   int verbose = 0, quiet = 0, rules_data = 0;
   int replace_mode = 0, dataset = RULEXDB_DEFAULT, search_mode = 0;
 
-  (void)setlocale(LC_CTYPE, "ru_RU.koi8r");
+  if (!setlocale(LC_CTYPE, charset))
+    {
+      fprintf(stderr, "Cannot set \"%s\" locale.\n", charset);
+      return EXIT_FAILURE;
+    }
 
   /* Parse command line */
   if(argc==1)
