@@ -1,0 +1,21 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEX 1 "September 22, 2012"
+.SH NAME
+rulex \- Simple Russian text markup utility for better pronunciation
+.SH SYNOPSIS
+.B rulex
+.RI <dictionary> [<logfile>]
+.SH DESCRIPTION
+\fBrulex\fP reads text from standard input, markups it according to
+specified dictionary and writes to the standard output. It is
+generally intended for use in conjunction with the \fBru_tts\fP
+speech synthesizer or pronunciation database testing.
+.PP
+The first command line argument specifies path to the pronunciation
+database. It is mandatory. The second argument is optional. It
+specifies file where all unknown words will be collected.
+.SH SEE ALSO
+.BR lexholder\-ru (1),
+.BR ru_tts (1).
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.
