@@ -3,11 +3,11 @@ Section: sound
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
 Build-Depends: debhelper (>= 5), libdb-dev, libtool (>= 1.5.2)
-Standards-Version: 3.7.3
+Standards-Version: 3.9.3
 
 Package: rulex
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: ru-tts
 Conflicts: ru-tts (<< 2.0)
 Description: Russian pronunciation dictionary
@@ -19,7 +19,7 @@ Description: Russian pronunciation dictionary
 Package: librulexdb0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Russian pronunciation dictionary access library
  .
  This package contains the shared library.
@@ -27,7 +27,7 @@ Description: Russian pronunciation dictionary access library
 Package: librulexdb-dev
 Section: libdevel
 Architecture: any
-Depends: librulexdb0 (= ${binary:Version}), libdb-dev, libc6-dev
+Depends: librulexdb0 (= ${binary:Version}), libdb-dev, libc6-dev, ${misc:Depends}
 Suggests: rulex
 Description: Russian pronunciation dictionary access library
  .
