@@ -1,3 +1,14 @@
+rulex (3.2) unstable; urgency=low
+
+  * Added postinst script that generates ru_RU.koi8r locale if
+    necessary.
+  * The lexholder-ru utility raises an error if ru_RU.koi8r locale is
+    unavailable.
+  * Added rulex utility.
+  * Updated packaging standard compliance.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 23 Sep 2012 15:51:21 +0400
+
 rulex (3.1) unstable; urgency=low
 
   * Fixed some man pages.
