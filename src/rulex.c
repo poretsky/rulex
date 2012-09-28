@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "rulexdb.h"
+#include "lexdb.h"
 
 
 static const char *charset = "ru_RU.koi8r";
