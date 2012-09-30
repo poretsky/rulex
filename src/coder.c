@@ -201,7 +201,7 @@ int rulexdb_unpack_key(const char *key, unsigned int keylen, char *t, unsigned i
 	  count = (short int)((((long int)(code - low) + 1) * scale - 1)
 			      / range);
 	  /* Find the corresponding symbol */
-	  for (i = strlen(alphabet) + 1; i > 0; i--)
+	  for (i = strlen(alphabet); i > 0; i--)
 	    if (count >= letter[i].low)
 	      break;
 	  if (!alphabet[i]) /* End of string */
@@ -239,6 +239,7 @@ int rulexdb_unpack_key(const char *key, unsigned int keylen, char *t, unsigned i
 		    }
 		}
 	    }
+          code &= 0xffff;
 	}
     }
 
