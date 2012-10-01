@@ -1,3 +1,13 @@
+rulex (3.3.0lucid1) lucid; urgency=low
+
+  * Corrected dependencies.
+  * Slightly improved pronunciation data.
+  * Some diagnostic messages made more informative.
+  * Fixed pretty silly error in lexholder utility.
+  * Packaged individually for different distributions.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 01 Oct 2012 06:13:33 +0400
+
 rulex (3.2) unstable; urgency=low
 
   * Added postinst script that generates ru_RU.koi8r locale if

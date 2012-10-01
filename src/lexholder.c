@@ -112,7 +112,9 @@ int main(int argc, char *argv[])
 
   if (!setlocale(LC_CTYPE, charset))
     {
-      fprintf(stderr, "Cannot set \"%s\" locale.\n", charset);
+      fprintf(stderr, "Cannot set %s locale.\n", charset);
+      fprintf(stderr, "Probably you have to generate it by command:\n");
+      fprintf(stderr, "localedef -f KOI8-R -i ru_RU ru_RU.KOI8-R\n");
       return EXIT_FAILURE;
     }
 
