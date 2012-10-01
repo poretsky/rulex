@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "rulexdb.h"
+#include "lexdb.h"
 
 
 static const char *charset = "ru_RU.koi8r";
@@ -67,7 +67,9 @@ int main(int argc, char **argv)
   alphabet = symbols + 2;
   if (!setlocale(LC_CTYPE, charset))
     {
-      fprintf(stderr, "Cannot set \"%s\" locale.\n", charset);
+      fprintf(stderr, "Cannot set %s locale.\n", charset);
+      fprintf(stderr, "Probably you have to generate it by command:\n");
+      fprintf(stderr, "localedef -f KOI8-R -i ru_RU ru_RU.KOI8-R\n");
       return EXIT_FAILURE;
     }
 

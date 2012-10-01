@@ -35,6 +35,7 @@ esac
 if ! localedef --list-archive | grep ru_RU.koi8r >/dev/null 2>&1; then
     echo "Generating ru_RU.koi8r locale..."
     localedef -f KOI8-R -i ru_RU ru_RU.KOI8-R
+    echo "Done."
 fi
 
 # dh_installdeb will replace this with shell code automatically
