@@ -1,3 +1,9 @@
+rulex (3.3.1lucid1) lucid; urgency=low
+
+  * Dictionary fixes.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 22 Mar 2013 23:25:28 +0400
+
 rulex (3.3.0lucid1) lucid; urgency=low
 
   * Corrected dependencies.
