@@ -1,3 +1,9 @@
+rulex (3.3.2) unstable; urgency=low
+
+  * A few dictionary fixes and additions.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 27 Nov 2013 23:19:28 +0400
+
 rulex (3.2) unstable; urgency=low
 
   * Added postinst script that generates ru_RU.koi8r locale if
