@@ -1,3 +1,9 @@
+rulex (3.3.6squeeze1) squeeze; urgency=low
+
+  * Dictionary update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 09 Jul 2016 15:51:15 +0300
+
 rulex (3.3.5squeeze1) squeeze; urgency=low
 
   * Minor dictionary fixes and enhancements.
