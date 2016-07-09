@@ -1,3 +1,9 @@
+rulex (3.3.6precise1) precise; urgency=low
+
+  * Dictionary update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 09 Jul 2016 15:56:47 +0300
+
 rulex (3.3.5precise1) precise; urgency=low
 
   * Minor dictionary fixes and enhancements.
