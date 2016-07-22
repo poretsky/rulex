@@ -1,3 +1,9 @@
+rulex (3.3.7) unstable; urgency=low
+
+  * Lexical database improvement.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 22 Jul 2016 23:10:44 +0300
+
 rulex (3.3.6) unstable; urgency=low
 
   * Dictionary update.
