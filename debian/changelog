@@ -1,3 +1,9 @@
+rulex (3.3.10precise1) precise; urgency=low
+
+  * Lexical database corrections and additions.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Thu, 24 Nov 2016 20:59:32 +0300
+
 rulex (3.3.9precise1) precise; urgency=low
 
   * Lexical database corrections.
