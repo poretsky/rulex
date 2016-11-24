@@ -1,3 +1,9 @@
+rulex (3.3.10squeeze1) squeeze; urgency=low
+
+  * Lexical database corrections and additions.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Thu, 24 Nov 2016 20:55:36 +0300
+
 rulex (3.3.9squeeze1) squeeze; urgency=low
 
   * Lexical database corrections.
