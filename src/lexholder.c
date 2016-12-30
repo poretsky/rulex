@@ -506,11 +506,17 @@ int main(int argc, char *argv[])
 	  }
       if (!quiet)
 	{
-	  (void)fprintf(stderr, "%i redundant record", n);
+	  if (n)
+	    (void)fprintf(stderr, "%i redundant record", n);
+	  else (void)fputs("No redundant record", stderr);
 	  if (n == 1)
 	    (void)fputs(" has", stderr);
 	  else (void)fputs("s have", stderr);
-	  (void)fputs(" been removed from the database\n", stderr);
+	  (void)fputs(" been ", stderr);
+	  if (n)
+	    (void)fputs("removed from the database", stderr);
+	  else (void)fputs("encountered", stderr);
+	  (void)fputc('\n', stderr);
 	}
       rulexdb_close(db);
       return EXIT_SUCCESS;
