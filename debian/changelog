@@ -1,3 +1,9 @@
+rulex (3.4.1wheezy1) wheezy; urgency=low
+
+  * Lexical database corrections.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 20 Jan 2017 22:59:44 +0300
+
 rulex (3.4.0wheezy1) wheezy; urgency=low
 
   * Overall lexical database revision.
