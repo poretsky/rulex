@@ -1,3 +1,9 @@
+rulex (3.4.2squeeze1) squeeze; urgency=low
+
+  * Lexical database fix.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 12 Mar 2017 00:12:21 +0300
+
 rulex (3.4.1squeeze1) squeeze; urgency=low
 
   * Lexical database corrections.
