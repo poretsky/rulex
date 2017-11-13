@@ -2,7 +2,7 @@ Source: rulex
 Section: sound
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
-Build-Depends: debhelper (>= 5), libdb-dev, libtool (>= 1.5.2), locales
+Build-Depends: debhelper (>= 9), libdb-dev, libtool (>= 1.5.2), locales
 Standards-Version: 3.9.8
 
 Package: rulex
