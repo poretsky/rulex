@@ -1,8 +1,9 @@
 rulex (3.4.6trusty1) trusty; urgency=low
 
   * Distribution specific build.
+  * Bump standards version.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:37:15 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:40:10 +0300
 
 rulex (3.4.6) unstable; urgency=low
 

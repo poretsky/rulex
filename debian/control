@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
 Build-Depends: debhelper (>= 5), libdb-dev, libtool (>= 1.5.2), locales
-Standards-Version: 3.9.3
+Standards-Version: 3.9.5
 
 Package: rulex
 Architecture: any
