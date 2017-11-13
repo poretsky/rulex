@@ -1,8 +1,9 @@
 rulex (3.4.6xenial1) xenial; urgency=low
 
   * Distribution specific build.
+  * Bump standards version.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:41:23 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:42:27 +0300
 
 rulex (3.4.6) unstable; urgency=low
 
