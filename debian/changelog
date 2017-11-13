@@ -2,8 +2,9 @@ rulex (3.4.6jessie1) jessie; urgency=low
 
   * Distribution specific build.
   * Bump standards version.
+  * Build dependencies fix.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:44:46 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 23:40:20 +0300
 
 rulex (3.4.6) unstable; urgency=low
 
