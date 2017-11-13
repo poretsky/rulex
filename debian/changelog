@@ -3,8 +3,9 @@ rulex (3.4.6stretch1) stretch; urgency=low
   * Distribution specific build.
   * Bump standards version.
   * Debhelper compatibility level fix.
+  * Build dependencies fix.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:48:56 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 23:46:16 +0300
 
 rulex (3.4.6) unstable; urgency=low
 
