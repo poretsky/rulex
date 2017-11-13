@@ -10,8 +10,8 @@ includedir = ${prefix}/include
 
 # Compiling options
 CC = gcc
-CFLAGS = -Wall -O2 -D_REENTRANT
-LFLAGS = 
+CFLAGS += -Wall -O2 -D_REENTRANT
+LFLAGS = $(LDFLAGS)
 LIBS = -ldb
 
 all: lexholder rulex
