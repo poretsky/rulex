@@ -1,3 +1,9 @@
+rulex (3.4.6stretch1) stretch; urgency=low
+
+  * Distribution specific build.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 13 Nov 2017 22:45:49 +0300
+
 rulex (3.4.6) unstable; urgency=low
 
   * Lexical database correction
