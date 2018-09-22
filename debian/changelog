@@ -1,3 +1,9 @@
+rulex (3.4.8trusty1) trusty; urgency=low
+
+  * Lexical database update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 22 Sep 2018 18:35:46 +0300
+
 rulex (3.4.7trusty1) trusty; urgency=low
 
   * Lexical database update.
