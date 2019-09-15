@@ -1,3 +1,9 @@
+rulex (3.4.9jessie1) jessie; urgency=low
+
+  * Lexical database update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 15 Sep 2019 07:40:35 +0300
+
 rulex (3.4.8jessie1) jessie; urgency=low
 
   * Lexical database update.
