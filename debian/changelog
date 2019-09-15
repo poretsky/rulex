@@ -1,3 +1,9 @@
+rulex (3.4.9wheezy1) wheezy; urgency=low
+
+  * Lexical database update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 15 Sep 2019 07:51:06 +0300
+
 rulex (3.4.8wheezy1) wheezy; urgency=low
 
   * Lexical database update.
