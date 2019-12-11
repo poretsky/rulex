@@ -1,3 +1,9 @@
+rulex (3.4.10stretch1) stretch; urgency=low
+
+  * Lexical database update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 11 Dec 2019 22:47:47 +0300
+
 rulex (3.4.9stretch1) stretch; urgency=low
 
   * Lexical database update.
