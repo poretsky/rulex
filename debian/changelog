@@ -1,3 +1,9 @@
+rulex (3.4.10bionic1) bionic; urgency=low
+
+  * Distribution specific build.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 11 Dec 2019 22:58:10 +0300
+
 rulex (3.4.10) unstable; urgency=low
 
   * Lexical database update.
