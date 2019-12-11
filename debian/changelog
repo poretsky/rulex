@@ -1,3 +1,9 @@
+rulex (3.4.10xenial1) xenial; urgency=low
+
+  * Lexical database update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 11 Dec 2019 22:42:57 +0300
+
 rulex (3.4.9xenial1) xenial; urgency=low
 
   * Lexical database update.
