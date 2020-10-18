@@ -1,3 +1,9 @@
+rulex (3.4.11focal1) focal; urgency=low
+
+  * Distribution specific build.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 18 Oct 2020 16:08:58 +0300
+
 rulex (3.4.11) unstable; urgency=low
 
   * Lexical database update.
