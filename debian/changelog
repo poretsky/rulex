@@ -1,3 +1,10 @@
+rulex (3.5.0precise1) precise; urgency=low
+
+  * Shared library API restriction. Only explicitly declared entries are
+    exported.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 25 Oct 2020 15:09:17 +0300
+
 rulex (3.4.11precise1) precise; urgency=low
 
   * Lexical database update.
