@@ -1,3 +1,10 @@
+rulex (3.5.0trusty1) trusty; urgency=low
+
+  * Shared library API restriction. Only explicitly declared entries are
+    exported.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 25 Oct 2020 15:07:57 +0300
+
 rulex (3.4.11trusty1) trusty; urgency=low
 
   * Lexical database update.
