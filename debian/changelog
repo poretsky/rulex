@@ -1,3 +1,10 @@
+rulex (3.5.0focal1) focal; urgency=low
+
+  * Shared library API restriction. Only explicitly declared entries are
+    exported.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 25 Oct 2020 15:04:42 +0300
+
 rulex (3.4.11focal1) focal; urgency=low
 
   * Distribution specific build.
