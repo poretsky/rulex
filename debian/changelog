@@ -1,3 +1,10 @@
+rulex (3.5.0xenial1) xenial; urgency=low
+
+  * Shared library API restriction. Only explicitly declared entries are
+    exported.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 25 Oct 2020 15:06:55 +0300
+
 rulex (3.4.11xenial1) xenial; urgency=low
 
   * Lexical database update.
