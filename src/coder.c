@@ -97,7 +97,7 @@ static int validate_pair(char prev, char next)
 }
 
 
-int rulexdb_pack_key(const char *s, char *t)
+int pack_key(const char *s, char *t)
      /*
       * This routine packs string pointed by s using arithmetic coding
       * and places result to the string pointed by t.
@@ -172,7 +172,7 @@ int rulexdb_pack_key(const char *s, char *t)
   return l;
 }
 
-int rulexdb_unpack_key(const char *key, unsigned int keylen, char *t, unsigned int reslen)
+int unpack_key(const char *key, unsigned int keylen, char *t, unsigned int reslen)
      /*
       * This routine unpacks given key and stores the resulting string
       * in memory pointed by t. The reslen holds the size of this area.
@@ -253,7 +253,7 @@ int rulexdb_unpack_key(const char *key, unsigned int keylen, char *t, unsigned i
 }
 
 
-int rulexdb_pack_data(const char *s, const char *t, char *r)
+int pack_data(const char *s, const char *t, char *r)
      /*
       * This routine packs data field for corresponding key.
       * It takes two strings s and t and forms a special string in r
@@ -425,7 +425,7 @@ int rulexdb_pack_data(const char *s, const char *t, char *r)
   return l;
 }
 
-void rulexdb_unpack_data(char *s, const char *diffs, int diffs_size)
+void unpack_data(char *s, const char *diffs, int diffs_size)
      /*
       * This routine unpacks data field for corresponding key.
       * It takes the original key string pointer as it's first argument
