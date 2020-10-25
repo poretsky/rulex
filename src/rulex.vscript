@@ -1,0 +1,4 @@
+RULEX_0 {
+  global: rulexdb_*;
+  local: *;
+};
