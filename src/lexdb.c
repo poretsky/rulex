@@ -140,7 +140,7 @@ static int db_get(DB *db, const char *key, char *value)
 
   (void)memset(&inKey, 0, sizeof(DBT));
   (void)memset(&inVal, 0, sizeof(DBT));
-  inKey.size = rulexdb_pack_key(key, packed_key);
+  inKey.size = pack_key(key, packed_key);
   if ((signed int)(inKey.size) <= 0)
     return RULEXDB_EINVKEY;
   inKey.data = packed_key;
@@ -148,7 +148,7 @@ static int db_get(DB *db, const char *key, char *value)
   switch (rc)
     {
       case 0:
-	rulexdb_unpack_data(value, inVal.data, inVal.size);
+	unpack_data(value, inVal.data, inVal.size);
 	return RULEXDB_SUCCESS;
       case DB_NOTFOUND:
 	return RULEXDB_SPECIAL;
@@ -735,10 +735,10 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
   if (!(*db)) return RULEXDB_EACCESS;
   (void)memset(&inKey, 0, sizeof(DBT));
   (void)memset(&inVal, 0, sizeof(DBT));
-  inKey.size = rulexdb_pack_key(key, packed_key);
+  inKey.size = pack_key(key, packed_key);
   if ((signed int)(inKey.size) <= 0)
     return RULEXDB_EINVKEY;
-  inVal.size = rulexdb_pack_data(key, value, packed_data);
+  inVal.size = pack_data(key, value, packed_data);
   if ((signed int)(inVal.size) < 0)
     return RULEXDB_EINVREC;
   if (!inVal.size)
@@ -963,10 +963,10 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
   switch (rc)
     {
       case 0:
-	if (rulexdb_unpack_key(inKey.data, inKey.size, key, RULEXDB_MAX_KEY_SIZE))
+	if (unpack_key(inKey.data, inKey.size, key, RULEXDB_MAX_KEY_SIZE))
 	  return RULEXDB_FAILURE;
 	(void)strcpy(value, key);
-	rulexdb_unpack_data(value, inVal.data, inVal.size);
+	unpack_data(value, inVal.data, inVal.size);
 	if (item_type == RULEXDB_EXCEPTION)
 	  return postcorrect(rulexdb, value);
 	return RULEXDB_SUCCESS;
@@ -999,7 +999,7 @@ int rulexdb_remove_item(RULEXDB *rulexdb, const char *key, int item_type)
   if (!db) return RULEXDB_EPARM;
   if (!(*db)) return RULEXDB_EACCESS;
   (void)memset(&inKey, 0, sizeof(DBT));
-  inKey.size = rulexdb_pack_key(key, packed_key);
+  inKey.size = pack_key(key, packed_key);
   if ((signed int)(inKey.size) <= 0)
     return RULEXDB_EINVKEY;
   inKey.data = packed_key;
