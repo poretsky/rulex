@@ -1,3 +1,10 @@
+rulex (3.6.0bionic1) bionic; urgency=low
+
+  * Lexical database update.
+  * Licensed under LGPL 2.1.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Thu, 30 Sep 2021 12:48:18 +0300
+
 rulex (3.5.0bionic1) bionic; urgency=low
 
   * Shared library API restriction. Only explicitly declared entries are
