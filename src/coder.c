@@ -46,47 +46,82 @@
 }
 
 /* List of valid letters */
-static char alphabet[] = "¡¬◊«ƒ≈£÷⁄… ÀÃÕŒœ–“”‘’∆»√ﬁ€›ﬂŸÿ‹¿—";
+static const char alphabet[] =
+  {
+    0xC1, 0xC2, 0xD7, /* –∞, –±, –≤, */
+    0xC7, 0xC4, 0xC5, /* –≥, –¥, –µ, */
+    0xA3, 0xD6, 0xDA, /* —ë, –∂, –∑, */
+    0xC9, 0xCA, 0xCB, /* –∏, –π, –∫, */
+    0xCC, 0xCD, 0xCE, /* –ª, –º, –Ω, */
+    0xCF, 0xD0, 0xD2, /* –æ, –ø, —Ä, */
+    0xD3, 0xD4, 0xD5, /* —Å, —Ç, —É, */
+    0xC6, 0xC8, 0xC3, /* —Ñ, —Ö, —Ü, */
+    0xDE, 0xDB, 0xDD, /* —á, —à, —â, */
+    0xDF, 0xD9, 0xD8, /* —ä, —ã, —å, */
+    0xDC, 0xC0, 0xD1, /* —ç, —é, —è */
+    0
+  };
+
+/* Special groups */
+static const char group1[] = { 0xD8, 0xDF, 0 }; /* —ä, —å */
+static const char group2[] =
+  {
+    '+', '-', '=',
+    0xC1, 0xC5, 0xA3, /* –∞, –µ, —ë, */
+    0xC9, 0xCA, /* –∏, –π, */
+    0xCF, 0xD5, /* –æ, —É, */
+    0xDF, 0xD9, 0xD8, /* —ä, —ã, —å, */
+    0xDC, 0xC0, 0xD1, /* —ç, —é, —è */
+    0
+  };
+static const char group3[] = { 0xD8, 0xD9, 0xDF, 0 }; /* —å, —ã, —ä */
+static const char group4[] = { 0xD8, '-', 0xDF, 0 }; /* —å, -, —ä */
+static const char vowels[] =
+  {
+    0xC1, 0xC5, 0xA3, 0xC9, 0xCF, /* –∞, –µ, —ë, –∏, –æ, */
+    0xD5, 0xD9, 0xDC, 0xC0, 0xD1, /* —É, —ã, —ç, —é, —è */
+    0
+  };
 
 /* Statistical model for keys packing */
-static SYMBOL letter[] =
+static const SYMBOL letter[] =
   {
-    { 0, 185 }, /* ¡ */
-    { 185, 219 }, /* ¬ */
-    { 219, 320 }, /* ◊ */
-    { 320, 354 }, /* « */
-    { 354, 404 }, /* ƒ */
-    { 404, 580 }, /* ≈ */
-    { 580, 582 }, /* £ */
-    { 582, 598 }, /* ÷ */
-    { 598, 637 }, /* ⁄ */
-    { 637, 797 }, /* … */
-    { 797, 828 }, /*   */
-    { 828, 900 }, /* À */
-    { 900, 995 }, /* Ã */
-    { 995, 1068 }, /* Õ */
-    { 1068, 1214 }, /* Œ */
-    { 1214, 1419 }, /* œ */
-    { 1419, 1488 }, /* – */
-    { 1488, 1609 }, /* “ */
-    { 1609, 1724 }, /* ” */
-    { 1724, 1838 }, /* ‘ */
-    { 1838, 1900 }, /* ’ */
-    { 1900, 1907 }, /* ∆ */
-    { 1907, 1929 }, /* » */
-    { 1929, 1939 }, /* √ */
-    { 1939, 1965 }, /* ﬁ */
-    { 1965, 1991 }, /* € */
-    { 1991, 2005 }, /* › */
-    { 2005, 2006 }, /* ﬂ */
-    { 2006, 2053 }, /* Ÿ */
-    { 2053, 2089 }, /* ÿ */
-    { 2089, 2091 }, /* ‹ */
-    { 2091, 2114 }, /* ¿ */
-    { 2114, 2162 }, /* — */
+    { 0, 185 }, /* –∞ */
+    { 185, 219 }, /* –± */
+    { 219, 320 }, /* –≤ */
+    { 320, 354 }, /* –≥ */
+    { 354, 404 }, /* –¥ */
+    { 404, 580 }, /* –µ */
+    { 580, 582 }, /* —ë */
+    { 582, 598 }, /* –∂ */
+    { 598, 637 }, /* –∑ */
+    { 637, 797 }, /* –∏ */
+    { 797, 828 }, /* –π */
+    { 828, 900 }, /* –∫ */
+    { 900, 995 }, /* –ª */
+    { 995, 1068 }, /* –º */
+    { 1068, 1214 }, /* –Ω */
+    { 1214, 1419 }, /* –æ */
+    { 1419, 1488 }, /* –ø */
+    { 1488, 1609 }, /* —Ä */
+    { 1609, 1724 }, /* —Å */
+    { 1724, 1838 }, /* —Ç */
+    { 1838, 1900 }, /* —É */
+    { 1900, 1907 }, /* —Ñ */
+    { 1907, 1929 }, /* —Ö */
+    { 1929, 1939 }, /* —Ü */
+    { 1939, 1965 }, /* —á */
+    { 1965, 1991 }, /* —à */
+    { 1991, 2005 }, /* —â */
+    { 2005, 2006 }, /* —ä */
+    { 2006, 2053 }, /* —ã */
+    { 2053, 2089 }, /* —å */
+    { 2089, 2091 }, /* —ç */
+    { 2091, 2114 }, /* —é */
+    { 2114, 2162 }, /* —è */
     { 2162, 2390 } /* EOS */
   };
-static unsigned short int scale = 2390;
+static const unsigned short int scale = 2390;
 
 static int validate_pair(char prev, char next)
      /*
@@ -94,8 +129,8 @@ static int validate_pair(char prev, char next)
       * Returns 0 on valid pair or -1 otherwise.
       */
 {
-  if (next && index("ÿﬂ", next))
-    if (index("+-=¡≈£… œ’ﬂŸÿ‹¿—", prev))
+  if (next && index(group1, next))
+    if (index(group2, prev))
       return -1;
   return 0;
 }
@@ -130,7 +165,7 @@ int pack_key(const char *s, char *t)
 	  if (validate_pair(s[i - 1], s[i]))
 	    return -1;
 	}
-      else if (index("ÿŸﬂ", s[i]))
+      else if (index(group3, s[i]))
 	return -1;
       j = (int)table[s[i] & 0xff];
       if (j < 0)
@@ -270,7 +305,7 @@ int pack_data(const char *s, const char *t, char *r)
   char *d, *w;
 
   /* Detect some illegal sequences in t */
-  if (index("ÿ-ﬂ", t[0]))
+  if (index(group4, t[0]))
     return -1;
   for (i = 1; i < strlen(t); i++)
     if (validate_pair(t[i - 1], t[i]))
@@ -289,12 +324,12 @@ int pack_data(const char *s, const char *t, char *r)
       switch (w[i])
 	{
 	  case '+':
-	    if (i && index("¡≈£…œ’Ÿ‹¿—", w[i - 1]))
+	    if (i && index(vowels, w[i - 1]))
 	      r[l++] = MAJOR_STRESS | i;
 	    else rc = 1;
 	    break;
 	  case '=':
-	    if (i && index("¡≈£…œ’Ÿ‹¿—", w[i - 1]))
+	    if (i && index(vowels, w[i - 1]))
 	      r[l++] = MINOR_STRESS | i;
 	    else rc =1;
 	    break;
