@@ -1,3 +1,9 @@
+rulex (3.6.1wheezy1) wheezy; urgency=low
+
+  * Lexical data minor fixes and additions.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 20 Feb 2022 22:28:11 +0300
+
 rulex (3.6.0wheezy1) wheezy; urgency=low
 
   * Lexical database update.
