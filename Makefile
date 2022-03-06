@@ -7,6 +7,7 @@ export
 DESTDIR = 
 prefix = /usr/local
 docdir = ${prefix}/share/doc/rulex
+mandir = ${prefix}/share/man
 
 all: lexholder db
 
@@ -23,6 +24,10 @@ install-lexholder: lexholder
 	$(MAKE) -e -C src install
 	install -d ${DESTDIR}${docdir}
 	install -m 0644 -p README README.ru ${DESTDIR}${docdir}
+	install -d ${DESTDIR}${mandir}/man1
+	install -m 0644 -p manpages/*.1 ${DESTDIR}${mandir}/man1
+	install -d ${DESTDIR}${mandir}/man3
+	install -m 0644 -p manpages/*.3 ${DESTDIR}${mandir}/man3
 
 .PHONY: install
 install: install-lexholder db
