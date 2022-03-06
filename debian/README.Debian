@@ -1,11 +1,10 @@
 rulex for Debian
 ----------------
 
-This package contains Russian pronunciation dictionary along with the
-lexical database holding utility lexholder-ru. It is primarily
-intended for use along with the Ru_tts software speech
-synthesizer. For Ru_tts to make use of the pronunciation dictionary
-call it with "-s /usr/share/freespeech/rulex.db" switch in the command line.
+This package contains Russian pronunciation dictionary support
+binaries: text preprocessor rulex and lexical database holding
+utility lexholder-ru. The lexical database itself is provided
+as a separate package rulex-data.
 
 See README file and lexholder-ru man page for more details.
 
