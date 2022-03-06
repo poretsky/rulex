@@ -1,3 +1,10 @@
+rulex (3.7.0-1precise1) precise; urgency=medium
+
+  * Debian packaging stuff is separated from the general source.
+  * Separate package for architecture independent data.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 07 Mar 2022 02:00:44 +0300
+
 rulex (3.6.1precise1) precise; urgency=low
 
   * Lexical data minor fixes and additions.
