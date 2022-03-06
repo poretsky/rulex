@@ -1,3 +1,10 @@
+rulex (3.7.0-1jessie1) jessie; urgency=medium
+
+  * Debian packaging stuff is separated from the general source.
+  * Separate package for architecture independent data.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 07 Mar 2022 01:58:33 +0300
+
 rulex (3.6.1jessie1) jessie; urgency=low
 
   * Lexical data minor fixes and additions.
