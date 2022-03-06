@@ -17,12 +17,13 @@ configure-stamp:
 
 build: build-arch build-indep
 build-arch: build-stamp
+	$(MAKE) -s lexholder prefix=/usr
+
 build-indep: build-stamp
+	$(MAKE) -s prefix=/usr
 
 build-stamp: configure-stamp 
 	dh_testdir
-
-	$(MAKE) -s prefix=/usr
 
 	touch $@
 
@@ -46,16 +47,35 @@ install: build
 	sed -i "/dependency_libs/ s/'.*'/''/" $(CURDIR)/debian/tmp/usr/lib/librulexdb.la
 
 
+install-arch: build-arch
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+
+	$(MAKE) -s install-lexholder prefix=/usr DESTDIR=$(CURDIR)/debian/tmp
+	sed -i "/dependency_libs/ s/'.*'/''/" $(CURDIR)/debian/tmp/usr/lib/librulexdb.la
+
+
 # Build architecture-independent files here.
 binary-indep: build install
-# We have nothing to do by default.
+	dh_testdir
+	dh_testroot
+	dh_install -i
+	dh_installchangelogs 
+	dh_installdocs
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol -i
+	dh_md5sums
+	dh_builddeb -i
 
 
 # Build architecture-dependent files here.
-binary-arch: build install
+binary-arch: build-arch install-arch
 	dh_testdir
 	dh_testroot
-	dh_install
+	dh_install -a
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installman
@@ -67,9 +87,9 @@ binary-arch: build install
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
-	dh_gencontrol
+	dh_gencontrol -a
 	dh_md5sums
-	dh_builddeb
+	dh_builddeb -a
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+.PHONY: build build-arch clean binary-indep binary-arch binary install install-arch configure
