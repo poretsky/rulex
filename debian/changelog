@@ -1,3 +1,9 @@
+rulex (3.7.1-1bionic1) bionic; urgency=medium
+
+  * Lexical database update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 09 Jul 2022 23:15:00 +0300
+
 rulex (3.7.0-1bionic1) bionic; urgency=medium
 
   * Debian packaging stuff is separated from the general source.
