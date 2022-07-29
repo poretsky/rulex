@@ -1,3 +1,10 @@
+rulex (3.7.2-1focal1) focal; urgency=medium
+
+  * Lexical database update.
+  * Switch to dpkg-source 3.0 format.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 29 Jul 2022 10:46:17 +0300
+
 rulex (3.7.1-1focal1) focal; urgency=medium
 
   * Lexical database update.
