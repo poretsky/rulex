@@ -1,3 +1,9 @@
+rulex (3.7.3-1bionic1) bionic; urgency=medium
+
+  * Lexical database enhancement.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 26 Oct 2022 15:02:09 +0300
+
 rulex (3.7.2-1bionic1) bionic; urgency=medium
 
   * Lexical database update.
