@@ -1,3 +1,9 @@
+rulex (3.7.3-2focal1) focal; urgency=medium
+
+  * Fixed packaging in a pristine environment.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 02 Nov 2022 20:22:10 +0300
+
 rulex (3.7.3-1focal1) focal; urgency=medium
 
   * Lexical database enhancement.
