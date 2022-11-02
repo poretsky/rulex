@@ -1,3 +1,9 @@
+rulex (3.7.3-2bionic1) bionic; urgency=medium
+
+  * Fixed packaging in a pristine environment.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 02 Nov 2022 20:22:10 +0300
+
 rulex (3.7.3-1bionic1) bionic; urgency=medium
 
   * Lexical database enhancement.
