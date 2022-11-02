@@ -18,7 +18,9 @@ build-arch: build-stamp
 	$(MAKE) -s lexholder prefix=/usr
 
 build-indep: build-stamp
-	$(MAKE) -s prefix=/usr
+	mkdir -p debian/locale
+	localedef -f KOI8-R -i ru_RU debian/locale/ru_RU.koi8r
+	$(MAKE) -s prefix=/usr LOCPATH=$(CURDIR)/debian/locale
 
 build-stamp: configure-stamp 
 	dh_testdir
@@ -30,6 +32,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
+	rm -rf debian/locale
 
 	$(MAKE) -s clean
 
