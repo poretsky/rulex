@@ -33,6 +33,7 @@
 #include <string.h>
 #include "coder.h"
 
+#define index strchr
 #define turnout(bit) \
 { \
   if (bit) \
