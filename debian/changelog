@@ -1,3 +1,11 @@
+rulex (3.7.4-1xenial1) xenial; urgency=medium
+
+  * Redefine index to strchr as latter is standard C function and is
+    used more broadly.
+  * Lexical data update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sun, 04 Dec 2022 15:21:02 +0300
+
 rulex (3.7.3-2xenial1) xenial; urgency=medium
 
   * Fixed packaging in a pristine environment.
