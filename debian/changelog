@@ -1,0 +1,5 @@
+rulex (3.7.4-1jammy1) jammy; urgency=medium
+
+  * Initial release for Ubuntu Jammy.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 07 Jan 2023 18:27:05 +0300
