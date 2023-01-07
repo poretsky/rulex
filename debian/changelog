@@ -1,0 +1,5 @@
+rulex (3.7.4-1bullseye1) bullseye; urgency=medium
+
+  * Release for Debian Bullseye.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 11 Jan 2023 06:25:27 +0300
