@@ -1,3 +1,9 @@
+rulex (3.7.5-1bullseye1) bullseye; urgency=medium
+
+  * Minor lexical data update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 25 Jan 2023 16:03:41 +0300
+
 rulex (3.7.4-1bullseye1) bullseye; urgency=medium
 
   * Release for Debian Bullseye.
