@@ -1,3 +1,9 @@
+rulex (3.7.5-1focal1) focal; urgency=medium
+
+  * Minor lexical data update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 25 Jan 2023 16:03:41 +0300
+
 rulex (3.7.4-1focal1) focal; urgency=medium
 
   * Redefine index to strchr as latter is standard C function and is
