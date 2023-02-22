@@ -1,3 +1,9 @@
+rulex (3.7.6-1bionic1) bionic; urgency=medium
+
+  * Minor lexical data correction.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 22 Feb 2023 14:24:31 +0300
+
 rulex (3.7.5-1bionic1) bionic; urgency=medium
 
   * Minor lexical data update.
