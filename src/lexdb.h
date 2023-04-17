@@ -25,7 +25,11 @@
 #ifndef RULEXDB_H
 #define RULEXDB_H
 
+#ifdef _WIN32
+#include <pcre2posix.h>
+#else
 #include <regex.h>
+#endif
 #include <db.h>
 
 /* BEGIN_C_DECLS should be used at the beginning of C declarations,
