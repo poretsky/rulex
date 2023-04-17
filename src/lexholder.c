@@ -31,7 +31,11 @@
 #define NO_DB_FILE 2
 
 
-static const char *charset = "ru_RU.koi8r";
+#ifdef _WIN32
+  static const char *charset = "Russian_Russia.20866";
+#else
+  static const char *charset = "ru_RU.koi8r";
+#endif
 
 static const char *usage =
 "Lexical database holding utility.\n\n"
