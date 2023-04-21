@@ -32,9 +32,9 @@
 
 
 #ifdef _WIN32
-  static const char *charset = "Russian_Russia.20866";
+static const char *charset = "Russian_Russia.20866";
 #else
-  static const char *charset = "ru_RU.koi8r";
+static const char *charset = "ru_RU.koi8r";
 #endif
 
 static const char *usage =
