@@ -74,6 +74,7 @@ BEGIN_C_DECLS
 #define RULEXDB_EXCEPTIONS 1
 #define RULEXDB_FORMS 2
 #define RULEXDB_RULES 4
+#define RULEXDB_NOPREFIX 0x80
 
 /* Data sets */
 #define RULEXDB_DEFAULT 0
@@ -83,6 +84,7 @@ BEGIN_C_DECLS
 #define RULEXDB_RULE 4
 #define RULEXDB_CORRECTOR 5
 #define RULEXDB_EXCEPTION_RAW 6
+#define RULEXDB_PREFIX 7
 
 
 /* Data structures */
@@ -101,6 +103,7 @@ typedef struct /* Lexical database handler */
 {
   RULEX_RULESET rules; /* General rules */
   RULEX_RULESET lexclasses; /* Lexical class defining rules */
+  RULEX_RULESET prefixes; /* Word prefixes */
   RULEX_RULESET correctors; /* Correction rules */
   DB *lexicon_db; /* Dictionary of lexical bases */
   DB *exceptions_db; /* Dictionary of exceptions */
@@ -146,7 +149,8 @@ extern int rulexdb_subscribe_rule(RULEXDB *rulexdb, const char *src,
  * Arguments description:
  * rulexdb - pointer to the opened lexical database handler structure;
  * src - text representation of the rule;
- * rule_type - rule type (RULEXDB_LEXCLASS, RULEXDB_RULE or RULEXDB_CORRECTOR);
+ * rule_type - specifies the ruleset
+ *             (RULEXDB_LEXCLASS, RULEXDB_RULE, RULEXDB_PREFIX or RULEXDB_CORRECTOR);
  * n - rule number. If 0, this rule is appended at the end of ruleset,
  *     otherwise the new rule will be inserted at the specified position.
  *
@@ -164,8 +168,8 @@ extern char * rulexdb_fetch_rule(RULEXDB *rulexdb, int rule_type, int n);
  *
  * Arguments description:
  * rulexdb - points to the opened lexical database handler structure;
- * rule_type - Specifies the ruleset
- *             (RULEXDB_LEXCLASS, RULEXDB_RULE or RULEXDB_CORRECTOR);
+ * rule_type - specifies the ruleset
+ *             (RULEXDB_LEXCLASS, RULEXDB_RULE, RULEXDB_PREFIX or RULEXDB_CORRECTOR);
  * n - rule number in the ruleset.
  */
 
@@ -176,7 +180,7 @@ extern int rulexdb_remove_rule(RULEXDB *rulexdb, int rule_type, int n);
  * Arguments description:
  * rulexdb - points to the opened lexical database handler structure;
  * rule_type - specifies the ruleset
- *             (RULEXDB_LEXCLASS, RULEXDB_RULE or RULEXDB_CORRECTOR);
+ *             (RULEXDB_LEXCLASS, RULEXDB_RULE, RULEXDB_PREFIX or RULEXDB_CORRECTOR);
  * n - rule number in the ruleset.
  *
  * Returns 0 (RULEXDB_SUCCESS) on success, RULEXDB_SPECIAL when
@@ -256,12 +260,17 @@ extern int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int f
  * is matched against correction rules and the first matched one
  * is applied if any.
  *
+ * When no information is found, the word is matched against
+ * prefix rules and the process is repeated for the word stem
+ * with the matched prefix stripped off.
+ *
  * The last argument specifies which steps of the described
  * process are to be performed. It consists of following flags
  * which may be joined by "or" operation:
  * RULEXDB_EXCEPTIONS - search the word in the exceptions dictionary.
  * RULEXDB_FORMS - try to treat specified word as an implicit form.
  * RULEXDB_RULES - try to apply general rules.
+ * RULEXDB_NOPREFIX - skip prefix detection.
  * Zero value (no flags) means that full search (all stages)
  * should be performed.
  */
