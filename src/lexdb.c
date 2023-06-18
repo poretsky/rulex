@@ -47,6 +47,7 @@ static const char *lexicon_db_name = "Lexbases";
 static const char *exceptions_db_name = "Exceptions";
 static const char *rules_db_name = "General";
 static const char *lexclasses_db_name = "Lexclasses";
+static const char *prefixes_db_name = "Prefixes";
 static const char *corrections_db_name = "Corrections";
 
 
@@ -474,6 +475,9 @@ static RULEX_RULESET *choose_ruleset(RULEXDB *rulexdb, int rule_type)
       case RULEXDB_LEXCLASS:
 	rules = &rulexdb->lexclasses;
 	break;
+      case RULEXDB_PREFIX:
+	rules = &rulexdb->prefixes;
+	break;
       case RULEXDB_CORRECTOR:
 	rules = &rulexdb->correctors;
 	break;
@@ -535,6 +539,8 @@ RULEXDB *rulexdb_open(const char *path, int mode)
   rulexdb->rules.db_name = rules_db_name;
   rulexdb->lexclasses.env = rulexdb->env;
   rulexdb->lexclasses.db_name = lexclasses_db_name;
+  rulexdb->prefixes.env = rulexdb->env;
+  rulexdb->prefixes.db_name = prefixes_db_name;
   rulexdb->correctors.env = rulexdb->env;
   rulexdb->correctors.db_name = corrections_db_name;
   rulexdb->mode = mode;
@@ -585,6 +591,7 @@ void rulexdb_close(RULEXDB *rulexdb)
 {
   rules_release(&rulexdb->rules);
   rules_release(&rulexdb->lexclasses);
+  rules_release(&rulexdb->prefixes);
   rules_release(&rulexdb->correctors);
   if (rulexdb->lexicon_db)
     db_close(rulexdb->lexicon_db);
@@ -606,7 +613,8 @@ int rulexdb_subscribe_rule(RULEXDB *rulexdb, const char *src,
       * Arguments description:
       * rulexdb - pointer to the opened lexical database handler structure;
       * src - text representation of the rule;
-      * rule_type - rule type (RULEXDB_LEXCLASS, RULEXDB_RULE or RULEXDB_CORRECTOR);
+      * rule_type - specifies the ruleset
+      *             (RULEXDB_LEXCLASS, RULEXDB_RULE, RULEXDB_PREFIX or RULEXDB_CORRECTOR);
       * n - rule number. If 0, this rule is appended at the end of ruleset,
       *     otherwise the new rule will be inserted at the specified position.
       *
@@ -653,8 +661,8 @@ char * rulexdb_fetch_rule(RULEXDB *rulexdb, int rule_type, int n)
       *
       * Arguments description:
       * rulexdb - points to the opened lexical database handler structure;
-      * rule_type - Specifies the ruleset
-      *             (RULEXDB_LEXCLASS, RULEXDB_RULE or RULEXDB_CORRECTOR);
+      * rule_type - specifies the ruleset
+      *             (RULEXDB_LEXCLASS, RULEXDB_RULE, RULEXDB_PREFIX or RULEXDB_CORRECTOR);
       * n - rule number in the ruleset.
       */
 {
@@ -672,7 +680,7 @@ int rulexdb_remove_rule(RULEXDB *rulexdb, int rule_type, int n)
       * Arguments description:
       * rulexdb - points to the opened lexical database handler structure;
       * rule_type - specifies the ruleset
-      *             (RULEXDB_LEXCLASS, RULEXDB_RULE or RULEXDB_CORRECTOR);
+      *             (RULEXDB_LEXCLASS, RULEXDB_RULE, RULEXDB_PREFIX or RULEXDB_CORRECTOR);
       * n - rule number in the ruleset.
       *
       * Returns 0 (RULEXDB_SUCCESS) on success, RULEXDB_SPECIAL when
@@ -839,12 +847,17 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
       * is matched against correction rules and the first matched one
       * is applied if any.
       *
+      * When no information is found, the word is matched against
+      * prefix rules and the process is repeated for the word stem
+      * with the matched prefix stripped off.
+      *
       * The last argument specifies which steps of the described
       * process are to be performed. It consists of following flags
       * which may be joined by "or" operation:
       * RULEXDB_EXCEPTIONS - search the word in the exceptions dictionary.
       * RULEXDB_FORMS - try to treat specified word as an implicit form.
       * RULEXDB_RULES - try to apply general rules.
+      * RULEXDB_NOPREFIX - skip prefix detection.
       * Zero value (no flags) means that full search (all stages)
       * should be performed.
       */
@@ -915,6 +928,38 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
   /* Applying a post-correction if needed */
   if (!rc)
     rc = postcorrect(rulexdb, value);
+
+  if (!(flags & RULEXDB_NOPREFIX) && rc == RULEXDB_SPECIAL)
+    {
+      s = malloc(strlen(key));
+      if (s)
+        {
+          if (!rules_init(&rulexdb->prefixes))
+            {
+              regmatch_t match;
+              for (i = 0; i < rulexdb->prefixes.nrules; i++)
+                if (!rule_load(&rulexdb->prefixes, i))
+                  if ((!regexec(rulexdb->prefixes.pattern[i], key, 1, &match, 0)) &&
+                      (!match.rm_so) &&
+                      (match.rm_eo < strlen(key)))
+                    {
+                      if (rulexdb->prefixes.replacement[i])
+                        (void)strcpy(s, rulexdb->prefixes.replacement[i]);
+                      else *s = 0;
+                      j = strlen(s);
+                      (void)strcat(s, key + match.rm_eo);
+                      if (!flags)
+                        flags = RULEXDB_EXCEPTIONS | RULEXDB_FORMS | RULEXDB_RULES;
+                      flags |= RULEXDB_NOPREFIX;
+                      rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, flags);
+                      (void)strncpy(value, key, match.rm_eo);
+                      break;
+                    }
+            }
+          free(s);
+        }
+      else rc = RULEXDB_EMALLOC;
+    }
 
   return rc;
 }
