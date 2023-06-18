@@ -14,7 +14,7 @@ install: lexicon
 	install -D -m 0644 -p $< ${DESTDIR}${datadir}/rulex.db
 
 lexicon: explicit.dict implicit.dict \
- general.rules lexicon.rules correction.rules
+ general.rules lexicon.rules prefix.rules correction.rules
 	@rm -f lexicon
 	@echo "Inserting explicit dictionary:"
 	../src/lexholder -f explicit.dict -X lexicon
@@ -24,6 +24,8 @@ lexicon: explicit.dict implicit.dict \
 	../src/lexholder -f lexicon.rules -L lexicon
 	@echo "Inserting general rules:"
 	../src/lexholder -f general.rules -G lexicon
+	@echo "Inserting prefix rules:"
+	../src/lexholder -f prefix.rules -P lexicon
 	@echo "Inserting correction rules:"
 	../src/lexholder -f correction.rules -C lexicon
 
@@ -43,6 +45,9 @@ extract:
 	@echo "Extracting lexical classification rules:"
 	@rm -f lexicon.rules
 	../src/lexholder -f lexicon.rules -L -l lexicon
+	@echo "Extracting prefix rules:"
+	@rm -f prefix.rules
+	../src/lexholder -f prefix.rules -P -l lexicon
 	@echo "Extracting correction rules:"
 	@rm -f correction.rules
 	../src/lexholder -f correction.rules -C -l lexicon
