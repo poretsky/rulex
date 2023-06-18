@@ -41,7 +41,7 @@ path is not required.
 .br
 List database content in textual form. This action requires
 the dataset to be specified explicitly by one of the \fB\-X\fP,
-\fB\-M\fP, \fB\-G\fP, \fB\-L\fP or \fB\-C\fP options.
+\fB\-M\fP, \fB\-G\fP, \fB\-L\fP, \fB\-P\fP or \fB\-C\fP options.
 .TP
 .B \-s <key>
 .br
@@ -85,13 +85,14 @@ by the search mode options described below.
 .br
 Delete record for specified key. This action requires the dataset
 to be specified explicitly by one of the \fB\-X\fP, \fB\-M\fP,
-\fB\-G\fP, \fB\-L\fP or \fB\-C\fP options. For rules it's number
-in the ruleset is used as a key.
+\fB\-G\fP, \fB\-L\fP, \fB\-P\fP or \fB\-C\fP options. For rules it's
+number in the ruleset is used as a key.
 .TP
 .B \-D
 .br
 Discard the dataset. The dataset must be chosen by one of the
-\fB\-X\fP, \fB\-M\fP, \fB\-G\fP, \fB\-L\fP or \fB\-C\fP options.
+\fB\-X\fP, \fB\-M\fP, \fB\-G\fP, \fB\-L\fP, \fB\-P\fP or \fB\-C\fP
+options.
 .TP
 .B \-c
 .br
@@ -122,6 +123,10 @@ General rules.
 .B \-L
 .br
 Lexical classification rules.
+.TP
+.B \-P
+.br
+Prefix detection rules.
 .TP
 .B \-C
 .br
@@ -176,7 +181,7 @@ Externally all the data are represented textually. For the Russian
 letters the \fBkoi8\-r\fP character set is used and only lower case
 is allowed.
 .PP
-The database itself consists of two dictionaries and three sets
+The database itself consists of two dictionaries and four sets
 of rules. The \fBExplicit\fP dictionary contains the words that
 are described individually and do not imply any information for
 other forms. This dictionary is looked up first if the search
@@ -190,7 +195,9 @@ the rules from the \fBGeneral\fP ruleset are used to guess stressing
 word. If no one of these rules can be applied than no guessing
 is made and search process fails. By default, all three stages
 are performed, but it can be specified explicitly which ones
-should be taken in account.
+should be taken in account. In the case of fail \fBPrefix detection\fP
+rules are applied to the word and if a prefix is detected search
+process is repeated for the stripped form.
 .PP
 Externally dictionary data are represented by text lines
 consisting of two fields separated by space. The first field is
@@ -206,12 +213,12 @@ is used in some cases just in the same manner to point so-called
 weak stress. The "-" sign can serve as a separator in some complex
 words. All other symbols are treated as illegal.
 .PP
-There are three rulesets in the database: \fBGeneral\fP rules,
-\fBClassifiers\fP and \fBCorrectors\fP. Externally all these rules
-are represented by strings consisting of one or two fields separated
-by space. The first field always contains a regular expression
-which is matched against the word to make a decision
-whether this rule can be applied.
+There are four rulesets in the database: \fBGeneral\fP rules,
+\fBClassifiers\fP, \fBPrefix detectors\fP and
+\fBCorrectors\fP. Externally all these rules are represented by
+strings consisting of one or two fields separated by space. The first
+field always contains a regular expression which is matched against
+the word to make a decision whether this rule can be applied.
 .PP
 The only task of \fBGeneral\fP rules is to guess stress
 in the words when dictionary lookup fails. The rules are tried
@@ -228,6 +235,13 @@ part as a suffix. The resulting string is treated as a basic form
 of the word, so it is looked up in the \fBImplicit\fP dictionary.
 If nothing is found the process continues
 until the ruleset will be exceeded.
+.PP
+When nothing is found in the database for a word in its original form,
+\fBPrefix detection\fP rules are applied to it sequentially up to the
+first match. The matched prefix is stripped and replaced by the
+replacement string if any. Then the search process is repeated for the
+result word. If it succeeds then stripped prefix is restored in the
+pronunciation string.
 .PP
 The rules from \fBCorrectors\fP ruleset are applied
 to the pronunciation strings instead of the original words.
