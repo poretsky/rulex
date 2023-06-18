@@ -80,6 +80,7 @@ static const char *usage =
 "-X -- Explicit dictionary\n"
 "-G -- General rules\n"
 "-L -- Lexical classification rules\n"
+"-P -- Prefix detection rules\n"
 "-C -- Correction rules\n\n"
 
 "The next group contains options devoted to search mode specification.\n"
@@ -129,7 +130,7 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
   ret = NO_DB_FILE;
-  while((n = getopt(argc,argv,"f:b:s:d:t:CDGLMXgmxclrqvh")) != -1)
+  while((n = getopt(argc,argv,"f:b:s:d:t:CDGLMPXgmxclrqvh")) != -1)
     switch(n)
       {
 	case 'X':
@@ -162,6 +163,12 @@ int main(int argc, char *argv[])
 	    ret = CS_CONFLICT;
 	  rules_data = 1;
 	  dataset = RULEXDB_LEXCLASS;
+	  break;
+	case 'P':
+	  if (dataset != RULEXDB_DEFAULT)
+	    ret = CS_CONFLICT;
+	  rules_data = 1;
+	  dataset = RULEXDB_PREFIX;
 	  break;
 	case 'C':
 	  if (dataset != RULEXDB_DEFAULT)
