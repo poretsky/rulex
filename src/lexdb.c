@@ -929,33 +929,35 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
   if (!rc)
     rc = postcorrect(rulexdb, value);
 
-  if (!(flags & RULEXDB_NOPREFIX) && rc == RULEXDB_SPECIAL)
+  /* Prefix detection stage */
+  if ((rc == RULEXDB_SPECIAL) &&
+      (flags != RULEXDB_EXCEPTIONS) &&
+      !(flags & RULEXDB_NOPREFIX) &&
+      !rules_init(&rulexdb->prefixes))
     {
       s = malloc(strlen(key));
       if (s)
         {
-          if (!rules_init(&rulexdb->prefixes))
-            {
-              regmatch_t match;
-              for (i = 0; i < rulexdb->prefixes.nrules; i++)
-                if (!rule_load(&rulexdb->prefixes, i))
-                  if ((!regexec(rulexdb->prefixes.pattern[i], key, 1, &match, 0)) &&
-                      (!match.rm_so) &&
-                      (match.rm_eo < strlen(key)))
-                    {
-                      if (rulexdb->prefixes.replacement[i])
-                        (void)strcpy(s, rulexdb->prefixes.replacement[i]);
-                      else *s = 0;
-                      j = strlen(s);
-                      (void)strcat(s, key + match.rm_eo);
-                      if (!flags)
-                        flags = RULEXDB_EXCEPTIONS | RULEXDB_FORMS | RULEXDB_RULES;
-                      flags |= RULEXDB_NOPREFIX;
-                      rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, flags);
-                      (void)strncpy(value, key, match.rm_eo);
-                      break;
-                    }
-            }
+          regmatch_t match;
+          if (flags)
+            flags &= ~RULEXDB_EXCEPTIONS;
+          else flags = RULEXDB_FORMS | RULEXDB_RULES;
+          flags |= RULEXDB_NOPREFIX;
+          for (i = 0; i < rulexdb->prefixes.nrules; i++)
+            if ((!rule_load(&rulexdb->prefixes, i)) &&
+                (!regexec(rulexdb->prefixes.pattern[i], key, 1, &match, 0)) &&
+                (!match.rm_so) &&
+                (match.rm_eo < strlen(key)))
+              {
+                if (rulexdb->prefixes.replacement[i])
+                  (void)strcpy(s, rulexdb->prefixes.replacement[i]);
+                else *s = 0;
+                j = strlen(s);
+                (void)strcat(s, key + match.rm_eo);
+                rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, flags);
+                (void)strncpy(value, key, match.rm_eo);
+                break;
+              }
           free(s);
         }
       else rc = RULEXDB_EMALLOC;
