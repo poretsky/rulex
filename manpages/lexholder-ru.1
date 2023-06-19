@@ -197,7 +197,8 @@ is made and search process fails. By default, all three stages
 are performed, but it can be specified explicitly which ones
 should be taken in account. In the case of fail \fBPrefix detection\fP
 rules are applied to the word and if a prefix is detected search
-process is repeated for the stripped form.
+process is repeated for the stripped form. The \fBExplicit\fP
+dictionary is not consulted during this second pass.
 .PP
 Externally dictionary data are represented by text lines
 consisting of two fields separated by space. The first field is
@@ -239,8 +240,9 @@ until the ruleset will be exceeded.
 When nothing is found in the database for a word in its original form,
 \fBPrefix detection\fP rules are applied to it sequentially up to the
 first match. The matched prefix is stripped and replaced by the
-replacement string if any. Then the search process is repeated for the
-result word. If it succeeds then stripped prefix is restored in the
+replacement string if any. Then the search process with the
+\fBExplicit\fP dictionary masked off is repeated for the result
+word. If it succeeds then stripped prefix is restored in the
 pronunciation string.
 .PP
 The rules from \fBCorrectors\fP ruleset are applied
