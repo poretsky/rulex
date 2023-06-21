@@ -51,13 +51,13 @@ static const char *usage =
 "output. This behaviour can be changed by the \"-f\" switch.\n\n"
 
 "All command line options described below are arranged\n"
-"into several groups by it's functionality.\n\n"
+"into several groups by its functionality.\n\n"
 
 "The first group consists of options specifying an action to be done.\n"
 "These options are mutually exclusive. We can do only one action\n"
 "per invocation. If no action is specified, the program reads\n"
-"it's standard input (or a file specified by \"-f\" option)\n"
-"and stores it's content in the database. Here are the other actions:\n\n"
+"its standard input (or a file specified by \"-f\" option)\n"
+"and stores its content in the database. Here are the other actions:\n\n"
 
 "-h -- Print this help (the only option not requiring the database path)\n"
 "-l -- List database content\n"
