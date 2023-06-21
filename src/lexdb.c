@@ -1172,7 +1172,7 @@ int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type)
       * This routine deletes all data from specified ruleset.
       * Returns number of deleted records or negative error code.
       * Rule type specifies target ruleset
-      * (RULEXDB_RULE, RULEXDB_LEXCLASS or RULEXDB_CORRECTOR).
+      * (RULEXDB_RULE, RULEXDB_LEXCLASS, RULEXDB_PREFIX or RULEXDB_CORRECTOR).
       */
 {
   int rc;
@@ -1192,9 +1192,9 @@ const char *rulexdb_dataset_name(int item_type)
       * Get pointer to the dataset name string.
       *
       * Item type here may specify a dictionary (RULEXDB_EXCEPTION
-      * or RULEXDB_LEXBASE) as well as a ruleset (RULEXDB_RULES, RULEXDB_LEXCLASS
-      * or RULEXDB_CORRECTOR). The dictionary or ruleset must be specified
-      * explicitly (RULEXDB_DEFAULT is not allowed here).
+      * or RULEXDB_LEXBASE) as well as a ruleset (RULEXDB_RULES, RULEXDB_LEXCLASS,
+      * RULEXDB_PREFIX or RULEXDB_CORRECTOR). The dictionary or ruleset
+      * must be specified explicitly (RULEXDB_DEFAULT is not allowed here).
       *
       * For unknown item type returns NULL;
       */
