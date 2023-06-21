@@ -930,7 +930,7 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
           if (s)
             {
               regmatch_t match;
-              for (i = 0; i < rulexdb->prefixes.nrules; i++)
+              for (i = 0; (rc == RULEXDB_SPECIAL) && (i < rulexdb->prefixes.nrules); i++)
                 if ((!rule_load(&rulexdb->prefixes, i)) &&
                     (!regexec(rulexdb->prefixes.pattern[i], key, 1, &match, 0)) &&
                     (!match.rm_so) &&
@@ -943,7 +943,6 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
                     (void)strcat(s, key + match.rm_eo);
                     rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, RULEXDB_FORMS | RULEXDB_NOPREFIX);
                     (void)strncpy(value, key, match.rm_eo);
-                    break;
                   }
               free(s);
             }
