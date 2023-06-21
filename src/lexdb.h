@@ -74,7 +74,6 @@ BEGIN_C_DECLS
 #define RULEXDB_EXCEPTIONS 1
 #define RULEXDB_FORMS 2
 #define RULEXDB_RULES 4
-#define RULEXDB_NOPREFIX 0x80
 
 /* Data sets */
 #define RULEXDB_DEFAULT 0
@@ -270,7 +269,6 @@ extern int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int f
  * RULEXDB_EXCEPTIONS - search the word in the exceptions dictionary.
  * RULEXDB_FORMS - try to treat specified word as an implicit form.
  * RULEXDB_RULES - try to apply general rules.
- * RULEXDB_NOPREFIX - skip prefix detection.
  * Zero value (no flags) means that full search (all stages)
  * should be performed.
  */
