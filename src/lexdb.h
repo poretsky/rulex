@@ -348,6 +348,19 @@ extern int rulexdb_discard_dictionary(RULEXDB *rulexdb, int item_type);
  * RULEXDB_DEFAULT is not allowed here.
  */
 
+extern int rulexdb_load_ruleset(RULEXDB *rulexdb, int rule_type);
+/*
+ * Load ruleset data.
+ *
+ * This routine initializes specified ruleset
+ * and preloads all its data.
+ * Returns number of loaded records or negative error code.
+ * Rule type specifies target ruleset
+ * (RULEXDB_RULE, RULEXDB_LEXCLASS, RULEXDB_PREFIX or RULEXDB_CORRECTOR).
+ *
+ * Loaded ruleset cannot be modified.
+ */
+
 extern int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type);
 /*
  * Discard the ruleset.

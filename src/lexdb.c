@@ -459,6 +459,29 @@ static DB **choose_dictionary(RULEXDB *rulexdb, const char *key, int item_type)
   return db;
 }
 
+static RULEX_RULESET *get_ruleset_handler(RULEXDB *rulexdb, int rule_type)
+     /*
+      * Get ruleset handler pointer for specified rule type.
+      * Returns NULL for unknown type.
+      */
+{
+  if (!rulexdb) return NULL;
+  switch (rule_type)
+    {
+      case RULEXDB_RULE:
+	return &rulexdb->rules;
+      case RULEXDB_LEXCLASS:
+	return &rulexdb->lexclasses;
+      case RULEXDB_PREFIX:
+	return &rulexdb->prefixes;
+      case RULEXDB_CORRECTOR:
+	return &rulexdb->correctors;
+      default:
+	break;
+    }
+  return NULL;
+}
+
 static RULEX_RULESET *choose_ruleset(RULEXDB *rulexdb, int rule_type)
      /*
       * Choose ruleset and open it if necessary.
@@ -467,26 +490,8 @@ static RULEX_RULESET *choose_ruleset(RULEXDB *rulexdb, int rule_type)
       * or NULL otherwise.
       */
 {
-  RULEX_RULESET *rules;
+  RULEX_RULESET *rules = get_ruleset_handler(rulexdb, rule_type);
 
-  if (!rulexdb) return NULL;
-  switch (rule_type)
-    {
-      case RULEXDB_RULE:
-	rules = &rulexdb->rules;
-	break;
-      case RULEXDB_LEXCLASS:
-	rules = &rulexdb->lexclasses;
-	break;
-      case RULEXDB_PREFIX:
-	rules = &rulexdb->prefixes;
-	break;
-      case RULEXDB_CORRECTOR:
-	rules = &rulexdb->correctors;
-	break;
-      default:
-	return NULL;
-    }
   if (!rules->db)
     rules->db = db_open(rules->env, rules->db_name,
 			RULES_DB_TYPE, rulexdb->mode);
@@ -1163,6 +1168,31 @@ int rulexdb_discard_dictionary(RULEXDB *rulexdb, int item_type)
   if (rc)
     return RULEXDB_FAILURE;
   return n;
+}
+
+int rulexdb_load_ruleset(RULEXDB *rulexdb, int rule_type)
+     /*
+      * Load ruleset data.
+      *
+      * This routine initializes specified ruleset
+      * and preloads all its data.
+      * Returns number of loaded records or negative error code.
+      * Rule type specifies target ruleset
+      * (RULEXDB_RULE, RULEXDB_LEXCLASS, RULEXDB_PREFIX or RULEXDB_CORRECTOR).
+      *
+      * Loaded ruleset cannot be modified.
+      */
+{
+  int i, rc;
+  RULEX_RULESET *rules = get_ruleset_handler(rulexdb, rule_type);
+
+  if (!rules) return RULEXDB_EPARM;
+  rc = rules_init(rules);
+  if (!rc)
+    for (i = 0; (i < rules->nrules) && !rc; i++)
+      rc = rule_load(rules, i);
+
+  return rc ? rc : rules->nrules;
 }
 
 int rulexdb_discard_ruleset(RULEXDB *rulexdb, int rule_type)
