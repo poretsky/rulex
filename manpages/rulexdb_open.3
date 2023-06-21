@@ -32,7 +32,7 @@ mode).
 .B RULEXDB_CREATE
 Create new database and open it for updating and searching.
 .SH "DATABASE STRUCTURE"
-The rulex database consists of two dictionaries and three sets
+The rulex database consists of two dictionaries and four sets
 of rules. The \fBExplicit\fP dictionary contains the words that
 are described individually and do not imply any information for
 other forms. This dictionary is looked up first if the search
@@ -40,11 +40,11 @@ includes this stage. The \fBImplicit\fP dictionary contains
 words in some basic form. This dictionary is used to construct
 pronunciation string for various forms of these words. The basic
 form of a word is guessed according to the rules from the
-\fBClassifiers\fP ruleset. This is the second stage of search
-process. If these stages do not bring a result or are not performed
-the rules from the \fBGeneral\fP ruleset are used to guess stressing
-word. If no one of these rules can be applied than no guessing
-is made and search process fails.
+\fBClassifiers\fP and \fBPrefix detectors\fP rulesets. This is the
+second stage of search process. If these stages do not bring a result
+or are not performed the rules from the \fBGeneral\fP ruleset are used
+to guess stressing word. If no one of these rules can be applied than
+no guessing is made and search process fails.
 .PP
 Externally all the data are represented textually. For the Russian
 letters the \fBkoi8\-r\fP character set is used and only lower case
@@ -63,11 +63,12 @@ is used in some cases just in the same manner to point so-called
 weak stress. The "-" sign can serve as a separator in some complex
 words. All other symbols are treated as illegal.
 .PP
-There are three rulesets in the database: \fBGeneral\fP rules,
-\fBClassifiers\fP and \fBCorrectors\fP. Externally all these rules
-are represented by records consisting of one or two fields. The first
-field always contains a regular expression which is matched against
-the word to make a decision whether this rule can be applied.
+There are four rulesets in the database: \fBGeneral\fP rules,
+\fBClassifiers\fP, \fBPrefix detectors\fP and
+\fBCorrectors\fP. Externally all these rules are represented by
+records consisting of one or two fields. The first field always
+contains a regular expression which is matched against the word to
+make a decision whether this rule can be applied.
 .PP
 The only task of \fBGeneral\fP rules is to guess stress
 in the words when dictionary lookup fails. The rules are tried
@@ -84,6 +85,13 @@ part as a suffix. The resulting string is treated as a basic form
 of the word, so it is looked up in the \fBImplicit\fP dictionary.
 If nothing is found the process continues
 until the ruleset will be exceeded.
+.PP
+When nothing is found in the database for a word in its original form,
+\fBPrefix detection\fP rules are applied to it sequentially up to the
+first match. The matched prefix is stripped and replaced by the
+replacement string if any. Then the result word is searched in the
+\fBImplicit\fP dictionary. In the case of success the original prefix
+is restored in the pronunciation string.
 .PP
 The rules from \fBCorrectors\fP ruleset are applied
 to the pronunciation strings instead of the original words.
