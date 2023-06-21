@@ -8,7 +8,7 @@ lexholder\-ru \- rulex database holding utility
 .SH DESCRIPTION
 \fBlexholder\-ru\fP is a small utility intended for use from the
 command line or shell-scripts. It allows to construct, test, manage
-and query lexical database as well as extract it's content
+and query lexical database as well as extract its content
 in textual form.
 .PP
 This database is primarily intended for use along with the Russian
@@ -23,13 +23,13 @@ This behaviour can be changed by the \fB\-f\fP switch.
 .SH OPTIONS
 All options recognized in the command line are described below.
 For more convenience they are arranged into several groups
-by it's functionality.
+by its functionality.
 .PP
 The first group consists of options specifying an action to be done.
 These options are mutually exclusive. We can do only one action
 per invocation. If no action is specified, the program reads
-it's standard input (or a file specified by \fB\-f\fP option)
-and stores it's content in the database. Here are the other actions:
+its standard input (or a file specified by \fB\-f\fP option)
+and stores its content in the database. Here are the other actions:
 .TP
 .B \-h
 .br
@@ -46,7 +46,7 @@ the dataset to be specified explicitly by one of the \fB\-X\fP,
 .B \-s <key>
 .br
 Search specified key in the lexical database. If the word is found
-program exits successfully and outputs it's pronunciation string,
+program exits successfully and outputs its pronunciation string,
  otherwise prints the lowercased original word and exits
 with non-zero exit code. This action is affected by
 the search mode options described below.
@@ -73,7 +73,7 @@ concerning the operation result.
 Test the database against specified dictionary. Test dictionary file
 is read line by line. Each line is treated as a record consisting
 of two fields separated by space. The first field represents
-a key word and the second one gives it's pronunciation string.
+a key word and the second one gives its pronunciation string.
 If this pronunciation string differs from the one obtained from
 the database, then this record is printed to the standard output
 or written to the file specified by \fB\-f\fP option. Specifying
@@ -85,7 +85,7 @@ by the search mode options described below.
 .br
 Delete record for specified key. This action requires the dataset
 to be specified explicitly by one of the \fB\-X\fP, \fB\-M\fP,
-\fB\-G\fP, \fB\-L\fP, \fB\-P\fP or \fB\-C\fP options. For rules it's
+\fB\-G\fP, \fB\-L\fP, \fB\-P\fP or \fB\-C\fP options. For rules its
 number in the ruleset is used as a key.
 .TP
 .B \-D
