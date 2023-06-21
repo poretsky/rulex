@@ -160,7 +160,7 @@ int pack_key(const char *s, char *t)
   t[0] = 0;
   for (i = 0; i <= strlen(s); i++)
     {
-      /* Get the next symbol and check it's validity */
+      /* Get the next symbol and check its validity */
       if (i)
 	{
 	  if (validate_pair(s[i - 1], s[i]))
@@ -468,7 +468,7 @@ int pack_data(const char *s, const char *t, char *r)
 void unpack_data(char *s, const char *diffs, int diffs_size)
      /*
       * This routine unpacks data field for corresponding key.
-      * It takes the original key string pointer as it's first argument
+      * It takes the original key string pointer as its first argument
       * and transforms it according to given diffs.
       */
 {
