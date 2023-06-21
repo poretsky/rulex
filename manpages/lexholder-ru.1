@@ -235,8 +235,8 @@ If nothing is found the process continues
 until the ruleset will be exceeded.
 .PP
 When nothing is found in the database for a word in its original form,
-\fBPrefix detection\fP rules are applied to it sequentially up to the
-first match. The matched prefix is stripped and replaced by the
+\fBPrefix detection\fP rules are applied to it sequentially until
+match occurs. The matched prefix is stripped and replaced by the
 replacement string if any. Then the result word is searched in the
 \fBImplicit\fP dictionary. In the case of success the original prefix
 is restored in the pronunciation string.
