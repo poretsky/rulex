@@ -94,7 +94,7 @@ extern int pack_data(const char *s, const char *t, char *r);
 extern void unpack_data(char *s, const char *diffs, int diffs_size);
 /*
  * This routine unpacks data field for corresponding key.
- * It takes the original key string pointer as it's first argument
+ * It takes the original key string pointer as its first argument
  * and transforms it according to given diffs.
  */
 

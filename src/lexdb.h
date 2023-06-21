@@ -134,7 +134,7 @@ extern RULEXDB *rulexdb_open(const char *path, int mode);
 extern void rulexdb_close(RULEXDB *rulexdb);
 /*
  * Close lexical database and free all resources
- * allocated for it's sake.
+ * allocated for its sake.
  */
 
 extern int rulexdb_subscribe_rule(RULEXDB *rulexdb, const char *src,
@@ -161,7 +161,7 @@ extern char * rulexdb_fetch_rule(RULEXDB *rulexdb, int rule_type, int n);
 /*
  * Extract specified rule from lexical database.
  *
- * This routine retrieves rule in it's text representation
+ * This routine retrieves rule in its text representation
  * and return pointer to it or NULL when failure. This pointer
  * remains valid only until next database operation.
  *
@@ -196,7 +196,7 @@ extern int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key,
  * Arguments description:
  * rulexdb - points to the opened lexical database handler structure;
  * key - the original word;
- * value - it's pronunciation;
+ * value - its pronunciation;
  * item_type - target dictionary specification
  *             (RULEXDB_LEXBASE, RULEXDB_EXCEPTION or RULEXDB_DEFAULT);
  * overwrite - if true (non-zero) the new item will replace
@@ -246,7 +246,7 @@ extern int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int f
  * Specified word is searched in the exceptions dictionary.
  * If found, the result is returned and procedure
  * exits successfully. Otherwise the word is treated
- * as an implicit form and program tries to guess it's base
+ * as an implicit form and program tries to guess its base
  * and find it in the lexbases dictionary. If this process
  * succeeds, the pronunciation string is constructed
  * according to the acquired data and procedure exits successfully.
@@ -279,7 +279,7 @@ extern int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value,
  * Sequential retrieving dictionary items.
  *
  * This routine sequentially fetches lexical records one by one.
- * It's operations are not disturbed by the key-based search.
+ * its operations are not disturbed by the key-based search.
  *
  * Arguments key and value must point to the buffers with enough space
  * for retrieved data. Argument item_type specifies the dictionary.
