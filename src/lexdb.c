@@ -35,6 +35,9 @@
 
 /* Local constants */
 
+/* Internal flag for the recursive call of rulexdb_search() */
+#define RULEXDB_NOPREFIX 0x80
+
 /* Data storage methods */
 #define LEXICON_DB_TYPE DB_BTREE
 #define RULES_DB_TYPE DB_RECNO
@@ -857,9 +860,11 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
       * RULEXDB_EXCEPTIONS - search the word in the exceptions dictionary.
       * RULEXDB_FORMS - try to treat specified word as an implicit form.
       * RULEXDB_RULES - try to apply general rules.
-      * RULEXDB_NOPREFIX - skip prefix detection.
       * Zero value (no flags) means that full search (all stages)
       * should be performed.
+      *
+      * RULEXDB_NOPREFIX - internal flag used in the recursive call
+      * for the words with prefix stripped.
       */
 {
   int i, j, rc = RULEXDB_SPECIAL;
@@ -915,6 +920,35 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 	  else return RULEXDB_EMALLOC;
 	  free(s);
 	}
+
+      /* Prefix detection stage */
+      if ((rc == RULEXDB_SPECIAL) &&
+          !(flags & RULEXDB_NOPREFIX) &&
+          !rules_init(&rulexdb->prefixes))
+        {
+          s = malloc(strlen(key));
+          if (s)
+            {
+              regmatch_t match;
+              for (i = 0; i < rulexdb->prefixes.nrules; i++)
+                if ((!rule_load(&rulexdb->prefixes, i)) &&
+                    (!regexec(rulexdb->prefixes.pattern[i], key, 1, &match, 0)) &&
+                    (!match.rm_so) &&
+                    (match.rm_eo < strlen(key)))
+                  {
+                    if (rulexdb->prefixes.replacement[i])
+                      (void)strcpy(s, rulexdb->prefixes.replacement[i]);
+                    else *s = 0;
+                    j = strlen(s);
+                    (void)strcat(s, key + match.rm_eo);
+                    rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, RULEXDB_FORMS | RULEXDB_NOPREFIX);
+                    (void)strncpy(value, key, match.rm_eo);
+                    break;
+                  }
+              free(s);
+            }
+          else rc = RULEXDB_EMALLOC;
+        }
     }
 
   /* The last resort: trying to use a general rule */
@@ -926,42 +960,8 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
     }
 
   /* Applying a post-correction if needed */
-  if (!rc)
+  if (!rc && !(flags & RULEXDB_NOPREFIX))
     rc = postcorrect(rulexdb, value);
-
-  /* Prefix detection stage */
-  if ((rc == RULEXDB_SPECIAL) &&
-      (flags != RULEXDB_EXCEPTIONS) &&
-      !(flags & RULEXDB_NOPREFIX) &&
-      !rules_init(&rulexdb->prefixes))
-    {
-      s = malloc(strlen(key));
-      if (s)
-        {
-          regmatch_t match;
-          if (flags)
-            flags &= ~RULEXDB_EXCEPTIONS;
-          else flags = RULEXDB_FORMS | RULEXDB_RULES;
-          flags |= RULEXDB_NOPREFIX;
-          for (i = 0; i < rulexdb->prefixes.nrules; i++)
-            if ((!rule_load(&rulexdb->prefixes, i)) &&
-                (!regexec(rulexdb->prefixes.pattern[i], key, 1, &match, 0)) &&
-                (!match.rm_so) &&
-                (match.rm_eo < strlen(key)))
-              {
-                if (rulexdb->prefixes.replacement[i])
-                  (void)strcpy(s, rulexdb->prefixes.replacement[i]);
-                else *s = 0;
-                j = strlen(s);
-                (void)strcat(s, key + match.rm_eo);
-                rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, flags);
-                (void)strncpy(value, key, match.rm_eo);
-                break;
-              }
-          free(s);
-        }
-      else rc = RULEXDB_EMALLOC;
-    }
 
   return rc;
 }
