@@ -189,16 +189,13 @@ includes this stage. The \fBImplicit\fP dictionary contains
 words in some basic form. This dictionary is used to construct
 pronunciation string for various forms of these words. The basic
 form of a word is guessed according to the rules from the
-\fBClassifiers\fP ruleset. This is the second stage of search
-process. If these stages do not bring a result or are not performed
-the rules from the \fBGeneral\fP ruleset are used to guess stressing
-word. If no one of these rules can be applied than no guessing
-is made and search process fails. By default, all three stages
-are performed, but it can be specified explicitly which ones
-should be taken in account. In the case of fail \fBPrefix detection\fP
-rules are applied to the word and if a prefix is detected search
-process is repeated for the stripped form. The \fBExplicit\fP
-dictionary is not consulted during this second pass.
+\fBClassifiers\fP and \fBPrefix detectors\fP rulesets. This is the
+second stage of search process. If these stages do not bring a result
+or are not performed the rules from the \fBGeneral\fP ruleset are used
+to guess stressing word. If no one of these rules can be applied than
+no guessing is made and search process fails. By default, all three
+stages are performed, but it can be specified explicitly which ones
+should be taken in account.
 .PP
 Externally dictionary data are represented by text lines
 consisting of two fields separated by space. The first field is
@@ -240,10 +237,9 @@ until the ruleset will be exceeded.
 When nothing is found in the database for a word in its original form,
 \fBPrefix detection\fP rules are applied to it sequentially up to the
 first match. The matched prefix is stripped and replaced by the
-replacement string if any. Then the search process with the
-\fBExplicit\fP dictionary masked off is repeated for the result
-word. If it succeeds then stripped prefix is restored in the
-pronunciation string.
+replacement string if any. Then the result word is searched in the
+\fBImplicit\fP dictionary. In the case of success the original prefix
+is restored in the pronunciation string.
 .PP
 The rules from \fBCorrectors\fP ruleset are applied
 to the pronunciation strings instead of the original words.
