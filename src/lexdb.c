@@ -792,6 +792,36 @@ int rulexdb_subscribe_item(RULEXDB *rulexdb, const char *key, const char * value
   return RULEXDB_FAILURE;
 }
 
+int rulexdb_retrieve_item(RULEXDB *rulexdb, const char *key, char *value, int item_type)
+     /*
+      * Retrieve an item from the lexical database.
+      *
+      * Arguments description:
+      * rulexdb - points to the opened lexical database handler structure;
+      * key - the word to retrieve item for;
+      * value - memory area for its pronunciation string;
+      * item_type - target dictionary specification
+      *             (RULEXDB_LEXBASE, RULEXDB_EXCEPTION or RULEXDB_DEFAULT);
+      *
+      * If item type is specified as RULEXDB_DEFAULT, then target dictionary
+      * will be guessed according to specified key: if it represents
+      * any lexical base, then lexbases dictionary will be chosen,
+      * otherwise the exceptions dictionary will be used.
+      *
+      * Returns 0 (RULEXDB_SUCCESS) on success, RULEXDB_SPECIAL when
+      * specified key does not exist in the dictionary,
+      * or an appropriate error code when failure.
+      */
+{
+  DB **db = choose_dictionary(rulexdb, key, item_type);
+
+  if (!db) return RULEXDB_EPARM;
+  if (!(*db)) return RULEXDB_FAILURE;
+
+  (void)strcpy(value, key);
+  return db_get(*db, key, value);
+}
+
 int rulexdb_lexbase(RULEXDB *rulexdb, const char *s, char *t, int n)
      /*
       * Try to find lexical base for the specified word.
