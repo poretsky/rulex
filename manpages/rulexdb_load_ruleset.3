@@ -1,0 +1,67 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_DISCARD_RULESET 3 "June 21, 2023"
+.SH NAME
+rulexdb_load_ruleset \- load specified ruleset from a rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_discard_ruleset(RULEXDB *" rulexdb ", int " rule_type );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_load_ruleset ()
+function preloads all data for the ruleset specified by
+.I rule_type
+argument that may accept one of the following values:
+.TP
+.B RULEXDB_LEXCLASS
+Load the \fBClassifiers\fP ruleset.
+.TP
+.B RULEXDB_PREFIX
+Load the \fBPrefix detectors\fP ruleset.
+.TP
+.B RULEXDB_RULE
+Load the \fBGeneral\fP ruleset.
+.TP
+.B RULEXDB_CORRECTOR
+Load the \fBCorrectors\fP ruleset.
+.PP
+The argument
+.I rulexdb
+references the database to deal with.
+.PP
+Loaded ruleset cannot be modified.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_load_ruleset ()
+function returns number of loaded records or negative error code.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EPARM
+Invalid arguments are specified.
+.TP
+.B RULEXDB_EACCESS
+The database cannot be initialized for loading.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.
