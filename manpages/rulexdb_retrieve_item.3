@@ -1,0 +1,88 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.TH RULEXDB_RETRIEVE_ITEM 3 "June 22, 2023"
+.SH NAME
+rulexdb_retrieve_item \- retrieve an item from the rulex database
+.SH SYNOPSIS
+.nf
+.B #include <rulexdb.h>
+.sp
+.BI "int rulexdb_retrieve_item(RULEXDB *" rulexdb \
+", const char *" key ", char *" value ", int " item_type );
+.fi
+.SH DESCRIPTION
+The
+.BR rulexdb_retrieve_item ()
+function retrieves an item from one of the dictionary datasets in the
+database referenced by
+.I rulexdb
+argument.
+.PP
+The argument
+.I key
+points to a text string containing the word to be fetched.
+.PP
+The argument
+.I value
+points to the memory area where corresponding pronunciation string
+will be placed.
+.PP
+The argument
+.I item_type
+specifies target dataset. It may accept one of the following values:
+.TP
+.B RULEXDB_LEXBASE
+The item should be fetched from the \fBImplicit\fP dictionary and,
+therefore, it represents a lexical base.
+.TP
+.B RULEXDB_EXCEPTION
+The item representing an exception should be fetched from the
+\fBExplicit\fP dictionary.
+.TP
+.B RULEXDB_DEFAULT
+Target dictionary should be guessed according to the key specified: if
+it represents any lexical base, then \fBImplicit\fP dictionary will be
+chosen, otherwise the \fBExplicit\fP dictionary will be used.
+.SH "RETURN VALUE"
+The
+.BR rulexdb_retrieve_item ()
+function returns
+.B RULEXDB_SUCCESS
+which is zero when specified item was successfully retrieved, positive
+value
+.B RULEXDB_SPECIAL
+when specified key does not exist in the dictionary, or
+negative error code otherwise.
+.SH ERRORS
+.TP
+.B RULEXDB_FAILURE
+Referenced database has not been opened, internal data structures are
+corrupted or some other general failure has occurred.
+.TP
+.B RULEXDB_EINVKEY
+Invalid key specified.
+.TP
+.B RULEXDB_EPARM
+The argument
+.I rulexdb
+or
+.I item_type
+has an invalid value.
+.SH SEE ALSO
+.BR rulexdb_classify (3),
+.BR rulexdb_close (3),
+.BR rulexdb_dataset_name (3),
+.BR rulexdb_discard_dictionary (3),
+.BR rulexdb_discard_ruleset (3),
+.BR rulexdb_fetch_rule (3),
+.BR rulexdb_lexbase (3),
+.BR rulexdb_load_ruleset (3),
+.BR rulexdb_open (3),
+.BR rulexdb_remove_item (3),
+.BR rulexdb_remove_rule (3),
+.BR rulexdb_remove_this_item (3),
+.BR rulexdb_search (3),
+.BR rulexdb_seq (3),
+.BR rulexdb_subscribe_item (3),
+.BR rulexdb_subscribe_rule (3)
+.SH AUTHOR
+Igor B. Poretsky <poretsky@mlbox.ru>.
