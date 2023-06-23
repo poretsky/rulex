@@ -499,12 +499,43 @@ int main(int argc, char *argv[])
       n = 0;
       search_mode = RULEXDB_FORMS | RULEXDB_RULES;
       if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_LEXBASE))
-	for (ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_FIRST);
-	     ret == RULEXDB_SUCCESS;
-	     ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_NEXT))
-	  if (rulexdb_classify(db, key) == RULEXDB_SUCCESS)
-	    if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
-	      n++;
+        {
+          regmatch_t match;
+          (void)rulexdb_load_ruleset(db, RULEXDB_PREFIX);
+          for (ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_FIRST);
+               ret == RULEXDB_SUCCESS;
+               ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_NEXT))
+            if (rulexdb_classify(db, key) == RULEXDB_SUCCESS)
+              {
+                if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
+                  n++;
+              }
+            else
+              {
+                for (i = 0; i < db->prefixes.nrules; i++)
+                  if ((!regexec(db->prefixes.pattern[i], key, 1, &match, 0)) &&
+                      (!match.rm_so) &&
+                      (match.rm_eo < strlen(key)))
+                    {
+                      char stem[RULEXDB_BUFSIZE];
+                      if (db->prefixes.replacement[i])
+                        (void)strcpy(stem, db->prefixes.replacement[i]);
+                      else stem[0] = 0;
+                      k = strlen(stem);
+                      (void)strcat(stem, key + match.rm_eo);
+                      if (!rulexdb_retrieve_item(db, stem, line + match.rm_eo - k, RULEXDB_LEXBASE))
+                        {
+                          (void)strncpy(line, key, match.rm_eo);
+                          if (!strcmp(line, value))
+                            {
+                              if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
+                                n++;
+                              break;
+                            }
+                        }
+                    }
+              }
+        }
       if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_EXCEPTION))
 	for (ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, DB_FIRST);
 	     ret == RULEXDB_SUCCESS;
