@@ -958,7 +958,6 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
 
       /* Prefix detection stage */
       if ((rc == RULEXDB_SPECIAL) &&
-          !(flags & RULEXDB_NOPREFIX) &&
           !rules_init(&rulexdb->prefixes))
         {
           s = malloc(strlen(key));
