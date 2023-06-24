@@ -510,7 +510,7 @@ int main(int argc, char *argv[])
                 if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
                   n++;
               }
-            else
+            else if (dataset == RULEXDB_LEXBASE)
               {
                 for (i = 0; i < db->prefixes.nrules; i++)
                   if ((!regexec(db->prefixes.pattern[i], key, 1, &match, 0)) &&
