@@ -96,9 +96,15 @@ options.
 .TP
 .B \-c
 .br
-Clean the database removing redundant entries from dictionaries.
+Clean the database removing redundant entries from dictionaries. By
+default all records that surely do not affect any search result are
+removed. These are the entries of the \fBImplicit\fP dictionary that do
+not represent any lexical base and the entries of the \fBExplicit\fP
+dictionary that in fact duplicate the result of usual lookup process.
 If one of the \fB\-X\fP or \fB\-M\fP options is specified as well,
-then only that chosen dictionary will be cleaned.
+then only that chosen dictionary will be cleaned. If the
+\fBImplicit\fP dictionary is chosen, the extensive cleanup is
+performed for it, that can drop some useful records. Be careful.
 .PP
 The next group of options is responsible for choosing the dataset.
 These options are mutually exclusive and affect deletion, insertion
