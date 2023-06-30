@@ -102,6 +102,41 @@ static const char *usage =
 "-v -- Be more verbose than usual (print final statistical information)\n\n";
 
 
+static int detect_implicit(RULEXDB *db, char *key, char *value)
+{
+  regmatch_t match;
+  char s[RULEXDB_BUFSIZE], t[RULEXDB_BUFSIZE];
+  int i, k;
+
+  for (i = 0; i < db->prefixes.nrules; i++)
+    if ((!regexec(db->prefixes.pattern[i], key, 1, &match, 0)) &&
+        (!match.rm_so) &&
+        (match.rm_eo < strlen(key)))
+      {
+        if (db->prefixes.replacement[i])
+          (void)strcpy(s, db->prefixes.replacement[i]);
+        else s[0] = 0;
+        k = strlen(s);
+        (void)strcat(s, key + match.rm_eo);
+        if (rulexdb_retrieve_item(db, s, t + match.rm_eo - k, RULEXDB_LEXBASE))
+          {
+            if (db->prefixes.replacement[i])
+              (void)strcpy(t, db->prefixes.replacement[i]);
+            else t[0] = 0;
+            (void)strcat(t, value + match.rm_eo);
+            k = detect_implicit(db, s, t);
+            if (k) return k;
+          }
+        else
+          {
+            (void)strncpy(t, key, match.rm_eo);
+            return strcmp(t, value) ? -1 : 1;
+          }
+      }
+  return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
   RULEXDB *db;
@@ -500,8 +535,8 @@ int main(int argc, char *argv[])
       search_mode = RULEXDB_FORMS | RULEXDB_RULES;
       if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_LEXBASE))
         {
-          regmatch_t match;
-          (void)rulexdb_load_ruleset(db, RULEXDB_PREFIX);
+          if (dataset == RULEXDB_LEXBASE)
+            (void)rulexdb_load_ruleset(db, RULEXDB_PREFIX);
           for (ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_FIRST);
                ret == RULEXDB_SUCCESS;
                ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_NEXT))
@@ -512,28 +547,9 @@ int main(int argc, char *argv[])
               }
             else if (dataset == RULEXDB_LEXBASE)
               {
-                for (i = 0; i < db->prefixes.nrules; i++)
-                  if ((!regexec(db->prefixes.pattern[i], key, 1, &match, 0)) &&
-                      (!match.rm_so) &&
-                      (match.rm_eo < strlen(key)))
-                    {
-                      char stem[RULEXDB_BUFSIZE];
-                      if (db->prefixes.replacement[i])
-                        (void)strcpy(stem, db->prefixes.replacement[i]);
-                      else stem[0] = 0;
-                      k = strlen(stem);
-                      (void)strcat(stem, key + match.rm_eo);
-                      if (!rulexdb_retrieve_item(db, stem, line + match.rm_eo - k, RULEXDB_LEXBASE))
-                        {
-                          (void)strncpy(line, key, match.rm_eo);
-                          if (!strcmp(line, value))
-                            {
-                              if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
-                                n++;
-                              break;
-                            }
-                        }
-                    }
+                if ((detect_implicit(db, key, value) > 0) &&
+                    !rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
+                  n++;
               }
         }
       if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_EXCEPTION))
