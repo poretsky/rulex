@@ -36,7 +36,7 @@ dbcleanup: lexicon
 	../src/lexholder -c${dataset} lexicon
 
 clean:
-	rm -f  lexicon
+	rm -f  lexicon lexicon.dump
 
 extract:
 	@echo "Extracting general rules:"
