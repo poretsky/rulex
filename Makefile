@@ -11,6 +11,9 @@ mandir = ${prefix}/share/man
 
 all: lexholder db
 
+test: lexholder db
+	$(MAKE) -e -C data $@
+
 .PHONY: lexholder
 lexholder:
 	$(MAKE) -e -C src all
