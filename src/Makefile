@@ -24,7 +24,7 @@ rulex: rulex.o librulexdb.la
 	libtool --mode=link ${CC} ${LFLAGS} -o $@ $^
 
 librulexdb.la: coder.lo lexdb.lo
-	libtool --mode=link ${CC} ${LFLAGS} ${solib_LFLAGS} -o $@ $^ -rpath ${libdir} ${LIBS} -version-info 0:1:0
+	libtool --mode=link ${CC} ${LFLAGS} ${solib_LFLAGS} -o $@ $^ -rpath ${libdir} ${LIBS} -version-info 1:0:1
 
 install: lexholder rulex librulexdb.la
 	libtool --mode=install install -D -p -s librulexdb.la ${DESTDIR}${libdir}/librulexdb.la
