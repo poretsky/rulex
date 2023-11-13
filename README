@@ -9,7 +9,7 @@ can instruct Ru_tts to use the dictionary by the command line switch
 "-s /usr/local/share/freespeech/rulex.db".
 
 
-The lexical database consists of two dictionaries and three sets of
+The lexical database consists of two dictionaries and four sets of
 rules. Subdirectory data contains source files of all these datasets
 along with the test dictionary in source format. Dictionary source
 format is as follows:
@@ -74,7 +74,7 @@ Note 2. The lexical data storage format was changed in RuLex version
 2.0. The new format can not be used by Ru_tts older than 2.0.
 
 Note 3. The lexholder-ru utility does not free disk space when
-deleting and modifying records in the database. Moreover, the database
+database records are modified or  deleted. Moreover, the database
 size can grow dramatically during multiple updates. More compact
 representation in this case can be achieved by the following steps:
 
