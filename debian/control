@@ -8,7 +8,6 @@ Standards-Version: 4.3.0
 Package: rulex
 Architecture: any
 Depends: locales, ${shlibs:Depends}, ${misc:Depends}
-Recommends: rulex-data (>= 3.7)
 Description: Russian pronunciation dictionary support binaries
  RuLex database is primarily intended for use along with the
  Ru_tts speech synthesizer in order to improve its pronunciation.
@@ -21,6 +20,7 @@ Description: Russian pronunciation dictionary support binaries
 Package: rulex-data
 Architecture: all
 Depends: ${misc:Depends}
+Recommends: librulexdb0 (>= 3.8)
 Replaces: rulex (<< 3.7)
 Breaks: rulex (<< 3.7)
 Enhances: ru-tts
@@ -38,6 +38,7 @@ Package: librulexdb0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: rulex-data (>= 3.8)
 Description: Russian pronunciation dictionary access library
  RuLex database is primarily intended for use along with the
  Ru_tts speech synthesizer in order to improve its pronunciation.
