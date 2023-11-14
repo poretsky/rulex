@@ -8,7 +8,6 @@ Standards-Version: 3.9.8
 Package: rulex
 Architecture: any
 Depends: locales, ${shlibs:Depends}, ${misc:Depends}
-Recommends: rulex-data (>= 3.7)
 Description: Russian pronunciation dictionary support binaries
  RuLex database is primarily intended for use along with the
  Ru_tts speech synthesizer in order to improve its pronunciation.
@@ -21,21 +20,28 @@ Description: Russian pronunciation dictionary support binaries
 Package: rulex-data
 Architecture: all
 Depends: ${misc:Depends}
+Recommends: librulexdb0 (>= 3.8)
 Replaces: rulex (<< 3.7)
 Breaks: rulex (<< 3.7)
 Enhances: ru-tts
 Conflicts: ru-tts (<< 2.0)
 Description: Russian pronunciation dictionary
- This package is aimed primarily for use together with the Russian
- TTS engine Ru_tts. When it is installed you can instruct Ru_tts
- to use the pronunciation dictionary by the command line switch
- "-s /usr/share/freespeech/rulex.db".
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
+ .
+ This package contains the database itself. It is aimed primarily for
+ use together with the Russian TTS engine Ru_tts. When it is installed
+ you can instruct Ru_tts to use the pronunciation dictionary by the
+ command line switch "-s /usr/share/freespeech/rulex.db".
 
 Package: librulexdb0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: rulex-data (>= 3.8)
 Description: Russian pronunciation dictionary access library
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
  .
  This package contains the shared library.
 
@@ -45,5 +51,7 @@ Architecture: any
 Depends: librulexdb0 (= ${binary:Version}), libdb-dev, libc6-dev, ${misc:Depends}
 Suggests: rulex
 Description: Russian pronunciation dictionary access library
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
  .
  This package contains the development files.
