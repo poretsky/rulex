@@ -1,3 +1,12 @@
+rulex (3.8.0-1bionic1) bionic; urgency=medium
+
+  * Prefix detection as a part of morphological analysis.
+  * Enhanced lexholder utility functions.
+  * Lexical database update.
+  * Documentation update.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Tue, 14 Nov 2023 15:16:25 +0300
+
 rulex (3.7.6-1bionic1) bionic; urgency=medium
 
   * Minor lexical data correction.
