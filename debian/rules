@@ -4,93 +4,25 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+%:
+	dh $@
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	# Add here commands to configure the package.
-
-	touch $@
-
-
-build: build-arch build-indep
-build-arch: build-stamp
+override_dh_auto_build-arch:
 	$(MAKE) -s lexholder prefix=/usr
 
-build-indep: build-stamp
+override_dh_auto_build-indep:
 	mkdir -p debian/locale
 	localedef -f KOI8-R -i ru_RU debian/locale/ru_RU.koi8r
 	$(MAKE) -s prefix=/usr LOCPATH=$(CURDIR)/debian/locale
 
-build-stamp: configure-stamp 
-	dh_testdir
-
-	touch $@
-
-
-clean:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp
+override_dh_auto_clean:
 	rm -rf debian/locale
-
 	$(MAKE) -s clean
 
-	dh_clean 
-
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_prep
-
+override_dh_auto_install:
 	$(MAKE) -s install prefix=/usr DESTDIR=$(CURDIR)/debian/tmp
 	sed -i "/dependency_libs/ s/'.*'/''/" $(CURDIR)/debian/tmp/usr/lib/librulexdb.la
 
-
-install-arch: build-arch
-	dh_testdir
-	dh_testroot
-	dh_prep
-
+override_dh_auto_install-arch:
 	$(MAKE) -s install-lexholder prefix=/usr DESTDIR=$(CURDIR)/debian/tmp
 	sed -i "/dependency_libs/ s/'.*'/''/" $(CURDIR)/debian/tmp/usr/lib/librulexdb.la
-
-
-# Build architecture-independent files here.
-binary-indep: build install
-	dh_testdir
-	dh_testroot
-	dh_install -i
-	dh_installchangelogs 
-	dh_installdocs
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_gencontrol -i
-	dh_md5sums
-	dh_builddeb -i
-
-
-# Build architecture-dependent files here.
-binary-arch: build-arch install-arch
-	dh_testdir
-	dh_testroot
-	dh_install -a
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installman
-	dh_installexamples
-	dh_link
-	dh_strip
-	dh_compress
-	dh_makeshlibs
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol -a
-	dh_md5sums
-	dh_builddeb -a
-
-binary: binary-indep binary-arch
-.PHONY: build build-arch clean binary-indep binary-arch binary install install-arch configure
