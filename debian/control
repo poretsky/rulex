@@ -42,7 +42,7 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: rulex-data (>= 3.8)
-Description: Russian pronunciation dictionary access library
+Description: Russian pronunciation dictionary access library (runtime)
  RuLex database is primarily intended for use along with the
  Ru_tts speech synthesizer in order to improve its pronunciation.
  .
@@ -53,7 +53,7 @@ Section: libdevel
 Architecture: any
 Depends: librulexdb0 (= ${binary:Version}), libdb-dev, libc6-dev, ${misc:Depends}
 Suggests: rulex
-Description: Russian pronunciation dictionary access library
+Description: Russian pronunciation dictionary access library (development)
  RuLex database is primarily intended for use along with the
  Ru_tts speech synthesizer in order to improve its pronunciation.
  .
