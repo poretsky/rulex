@@ -5,6 +5,7 @@ Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
 Build-Depends: debhelper-compat (= 12), libdb-dev, libtool-bin, locales
 Standards-Version: 4.5.0
 Homepage: https://github.com/poretsky/rulex
+Rules-Requires-Root: no
 
 Package: rulex
 Architecture: any
