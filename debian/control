@@ -7,6 +7,7 @@ Standards-Version: 4.5.1
 Homepage: https://github.com/poretsky/rulex
 Vcs-Browser: https://github.com/poretsky/rulex
 Vcs-Git: https://github.com/poretsky/rulex.git
+Rules-Requires-Root: no
 
 Package: rulex
 Architecture: any
