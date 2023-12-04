@@ -8,6 +8,8 @@
 	dh $@
 
 override_dh_auto_build-arch:
+	mkdir -p debian/locale
+	localedef -f KOI8-R -i ru_RU debian/locale/ru_RU.koi8r
 	$(MAKE) -s lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_build-indep:
