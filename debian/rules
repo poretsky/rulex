@@ -15,6 +15,9 @@ override_dh_auto_build-indep:
 	localedef -f KOI8-R -i ru_RU debian/locale/ru_RU.koi8r
 	$(MAKE) -s prefix=/usr LOCPATH=$(CURDIR)/debian/locale
 
+override_dh_auto_test:
+	$(MAKE) LOCPATH=$(CURDIR)/debian/locale test
+
 override_dh_auto_clean:
 	rm -rf debian/locale
 	$(MAKE) -s clean
