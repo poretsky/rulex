@@ -52,7 +52,7 @@ Package: librulexdb-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: librulexdb0 (= ${binary:Version}), libdb-dev, libc6-dev, ${misc:Depends}
+Depends: librulexdb0 (= ${binary:Version}), libdb-dev, ${misc:Depends}
 Suggests: rulex
 Description: Russian pronunciation dictionary access library (development)
  RuLex database is primarily intended for use along with the
