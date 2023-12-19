@@ -10,7 +10,7 @@ includedir = ${prefix}/include
 
 # Compiling options
 CC = gcc
-CFLAGS ?= -Wall -O2 -D_REENTRANT
+CFLAGS ?= -Wall -O2
 LDFLAGS ?=
 LIBS = -ldb
 solib_LFLAGS = -Wl,--version-script=rulex.vscript
