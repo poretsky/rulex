@@ -10,22 +10,22 @@ export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 	dh $@
 
 override_dh_auto_build-arch:
-	$(MAKE) -s lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
+	$(MAKE) lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_build-indep:
 	mkdir -p debian/locale
 	localedef -f KOI8-R -i ru_RU debian/locale/ru_RU.koi8r
-	$(MAKE) -s prefix=/usr LOCPATH=$(CURDIR)/debian/locale
+	$(MAKE) prefix=/usr LOCPATH=$(CURDIR)/debian/locale
 
 override_dh_auto_test:
 	$(MAKE) LOCPATH=$(CURDIR)/debian/locale test
 
 override_dh_auto_clean:
 	rm -rf debian/locale
-	$(MAKE) -s clean
+	$(MAKE) clean
 
 override_dh_auto_install:
-	$(MAKE) -s install prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) install prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
 
 override_dh_auto_install-arch:
-	$(MAKE) -s install-lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) install-lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
