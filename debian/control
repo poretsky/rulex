@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
 Build-Depends: debhelper (>= 9), libdb-dev, libtool-bin, locales
 Standards-Version: 4.1.4
+Homepage: https://github.com/poretsky/rulex
 
 Package: rulex
 Architecture: any
