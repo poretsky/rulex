@@ -8,7 +8,7 @@
 	dh $@
 
 override_dh_auto_build-arch:
-	$(MAKE) -s lexholder prefix=/usr
+	$(MAKE) -s lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_build-indep:
 	mkdir -p debian/locale
@@ -23,9 +23,7 @@ override_dh_auto_clean:
 	$(MAKE) -s clean
 
 override_dh_auto_install:
-	$(MAKE) -s install prefix=/usr DESTDIR=$(CURDIR)/debian/tmp
-	sed -i "/dependency_libs/ s/'.*'/''/" $(CURDIR)/debian/tmp/usr/lib/librulexdb.la
+	$(MAKE) -s install prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
 
 override_dh_auto_install-arch:
-	$(MAKE) -s install-lexholder prefix=/usr DESTDIR=$(CURDIR)/debian/tmp
-	sed -i "/dependency_libs/ s/'.*'/''/" $(CURDIR)/debian/tmp/usr/lib/librulexdb.la
+	$(MAKE) -s install-lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
