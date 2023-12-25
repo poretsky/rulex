@@ -16,7 +16,9 @@ override_dh_auto_build-indep:
 	$(MAKE) -s prefix=/usr LOCPATH=$(CURDIR)/debian/locale
 
 override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	$(MAKE) LOCPATH=$(CURDIR)/debian/locale test
+endif
 
 override_dh_auto_clean:
 	rm -rf debian/locale
