@@ -1,8 +1,23 @@
 rulex (3.8.2-0jammy1) jammy; urgency=medium
 
   * New upstream release.
+  * Build using dh sequencer.
+  * Added homepage.
+  * Excluded .la file.
+  * More simple and straightforward packaging rules.
+  * Clarified short descriptions.
+  * DEP5 compliant debian/copyright file.
+  * Use "Breaks" instead of "Conflicts" relationship in dependencies.
+  * Debhelper compatibility level update.
+  * Multiarch respected.
+  * Added debian/watch file.
+  * Hardening issue addressed.
+  * Standards version bumped to 4.6.0.1.
+  * Fix from Debian TTS team: Running make test with built locale.
+  * Fix from debian TTS team: Drop libc6-dev build-dep since it already
+    comes from build-essential, and its name depends on the arch.
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 25 Dec 2023 01:48:51 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Mon, 25 Dec 2023 08:36:39 +0300
 
 rulex (3.8.0-1jammy1) jammy; urgency=medium
 
