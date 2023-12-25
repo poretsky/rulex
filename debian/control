@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
 Build-Depends: debhelper-compat (= 12), libdb-dev, libtool-bin, locales
-Standards-Version: 4.1.4
+Standards-Version: 4.5.0
 Homepage: https://github.com/poretsky/rulex
 
 Package: rulex
