@@ -1,3 +1,9 @@
+rulex (3.8.2-0focal2) focal; urgency=medium
+
+  * Fix arch:any builds.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 06 Jan 2024 00:56:15 +0300
+
 rulex (3.8.2-0focal1) focal; urgency=medium
 
   * New upstream release.
