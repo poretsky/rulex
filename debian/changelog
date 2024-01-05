@@ -1,3 +1,9 @@
+rulex (3.8.2-0bionic2) bionic; urgency=medium
+
+  * Fix arch:any builds.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 06 Jan 2024 00:56:15 +0300
+
 rulex (3.8.2-0bionic1) bionic; urgency=medium
 
   * New upstream release.
