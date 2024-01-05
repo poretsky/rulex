@@ -1,3 +1,9 @@
+rulex (3.8.2-0jammy2) jammy; urgency=medium
+
+  * Fix arch:any builds.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Sat, 06 Jan 2024 00:56:15 +0300
+
 rulex (3.8.2-0jammy1) jammy; urgency=medium
 
   * New upstream release.
