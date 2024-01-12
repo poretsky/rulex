@@ -1,3 +1,9 @@
+rulex (3.8.3-0xenial1) xenial; urgency=medium
+
+  * New upstream release.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 12 Jan 2024 17:03:21 +0300
+
 rulex (3.8.2-0xenial2) xenial; urgency=medium
 
   * Fix arch:any builds.
