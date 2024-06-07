@@ -33,7 +33,11 @@ test: lexicon lexicon.test
 	../src/lexholder -v -f lexicon.dump -t lexicon.test lexicon
 
 dbcleanup: lexicon
-	../src/lexholder -c${dataset} lexicon
+	../src/lexholder -c lexicon
+
+extensive-dbcleanup: dbcleanup
+	../src/lexholder -cM lexicon
+	../src/lexholder -rf fixes.dict -M lexicon
 
 clean:
 	rm -f  lexicon lexicon.dump
