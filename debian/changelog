@@ -1,5 +1,5 @@
-rulex (3.8.3-1) unstable; urgency=medium
+rulex (3.8.4-1) unstable; urgency=medium
 
   * Packaged for Debian. (Closes: #1055898)
 
- -- Igor B. Poretsky <poretsky@mlbox.ru>  Tue, 19 Dec 2023 23:13:00 +0300
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 07 Jun 2024 08:54:32 +0300
