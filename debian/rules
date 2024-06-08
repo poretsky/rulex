@@ -14,10 +14,10 @@ debian/locale/ru_RU.koi8r:
 	localedef -f KOI8-R -i ru_RU $@
 
 override_dh_auto_build-arch: debian/locale/ru_RU.koi8r
-	$(MAKE) lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_build -- lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 override_dh_auto_build-indep: debian/locale/ru_RU.koi8r
-	$(MAKE) prefix=/usr LOCPATH=$(CURDIR)/debian/locale
+	dh_auto_build -- prefix=/usr LOCPATH=$(CURDIR)/debian/locale
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
