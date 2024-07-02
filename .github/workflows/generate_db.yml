@@ -19,11 +19,13 @@ jobs:
       - name: Install dependencies.
         run: |
           sudo apt -q -y update
-          sudo apt -q -y install libdb-dev libtool-bin
+          sudo apt -q -y install libdb-dev autoconf-archive
 
       - name: Generate_lexicon_db.
         run: |
           sudo locale-gen ru_RU.KOI8-R
+          autoreconf -ifs
+          ./configure
           make
           mv data/lexicon data/rulex.db
 
