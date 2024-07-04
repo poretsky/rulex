@@ -1,3 +1,10 @@
+rulex (3.8.5-0bionic1) bionic; urgency=medium
+
+  * New upstream release.
+  * Fixed cross-building.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 05 Jul 2024 17:27:36 +0300
+
 rulex (3.8.4-0bionic1) bionic; urgency=medium
 
   * New upstream release.
