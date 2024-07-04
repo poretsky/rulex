@@ -1,6 +1,6 @@
 		   RUSSIAN PRONUNCIATION DICTIONARY
 
-If you prefer reading this info in Russian, you find it in the
+If you prefer reading this info in Russian, you will find it in the
 separate file README.ru.
 
 Russian pronunciation dictionary RuLex is aimed primarily for use
@@ -27,7 +27,13 @@ may be used as well. The "-" sign can serve as a separator in some
 complex words.
 
 For Ru_tts synthesizer could use the lexical database it must be
-compiled. This is as simple as
+compiled. Since this project uses GNU Autoconf tools, it mustbe
+configured at first by commands:
+
+autoreconf -ifs
+./configure
+
+Then the dictionary creation is as simple as
 
 make db
 
