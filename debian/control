@@ -2,7 +2,7 @@ Source: rulex
 Section: sound
 Priority: optional
 Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
-Build-Depends: debhelper (>= 9), libdb-dev, libtool-bin, locales
+Build-Depends: debhelper (>= 9), dh-autoreconf, autoconf-archive, locales, libdb-dev, libdb5.3:native
 Standards-Version: 3.9.7
 Homepage: https://github.com/poretsky/rulex
 

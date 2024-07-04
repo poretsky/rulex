@@ -4,7 +4,7 @@ Upstream-Contact: Igor B. Poretsky <poretsky@mlbox.ru>
 Source: https://github.com/poretsky/rulex
 
 Files: *
-Copyright: 2005-2023 Igor B. Poretsky <poretsky@mlbox.ru>
+Copyright: 2005-2024 Igor B. Poretsky <poretsky@mlbox.ru>
 License: LGPL-2.1+
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -39,3 +39,12 @@ License: GPL-2+
  .
  On Debian systems, the complete text of the GNU General Public
  License version 2 can be found in /usr/share/common-licenses/GPL-2.
+
+Files: m4/ax_berkeley_db.m4
+Copyright: 2008 Vaclav Slavik <vaclav.slavik@matfyz.cz>
+           2014 Kirill A. Korinskiy <catap@catap.ru>
+License: FSFAP
+ Copying and distribution of this file, with or without modification,
+ are permitted in any medium without royalty provided the copyright
+ notice and this notice are preserved.  This file is offered as-is,
+ without warranty of any kind.
