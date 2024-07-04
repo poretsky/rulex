@@ -22,7 +22,7 @@ override_dh_auto_configure: debian/locale/ru_RU.koi8r
 endif
 
 override_dh_auto_build-arch:
-	dh_auto_build -- -C src
+	dh_auto_build -- -e -C src
 
 override_dh_auto_build-indep: debian/locale/ru_RU.koi8r
 	dh_auto_build -- LOCPATH=$(CURDIR)/debian/locale
