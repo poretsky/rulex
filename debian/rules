@@ -13,23 +13,32 @@ debian/locale/ru_RU.koi8r:
 	mkdir -p debian/locale
 	localedef -f KOI8-R -i ru_RU $@
 
-override_dh_auto_build-arch: debian/locale/ru_RU.koi8r
-	dh_auto_build -- lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
+ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
+override_dh_auto_configure: debian/locale/ru_RU.koi8r
+	mkdir -p native_build
+	cd native_build && ../configure --disable-shared CPPFLAGS= CFLAGS= LDFLAGS= && make db LOCPATH=$(CURDIR)/debian/locale
+	cp native_build/data/lexicon data
+	dh_auto_configure
+endif
+
+override_dh_auto_build-arch:
+	dh_auto_build -- -e -C src
 
 override_dh_auto_build-indep: debian/locale/ru_RU.koi8r
-	dh_auto_build -- prefix=/usr LOCPATH=$(CURDIR)/debian/locale
+	dh_auto_build -- LOCPATH=$(CURDIR)/debian/locale
 
-override_dh_auto_test:
+override_dh_auto_test: debian/locale/ru_RU.koi8r
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	$(MAKE) LOCPATH=$(CURDIR)/debian/locale test
+ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
+	$(MAKE) -C native_build test LOCPATH=$(CURDIR)/debian/locale
+else
+	$(MAKE) test LOCPATH=$(CURDIR)/debian/locale
+endif
 endif
 
 override_dh_auto_clean:
+ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
+	rm -rf native_build
+endif
 	rm -rf debian/locale
-	$(MAKE) clean
-
-override_dh_auto_install:
-	$(MAKE) install prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
-
-override_dh_auto_install-arch:
-	$(MAKE) install-lexholder prefix=/usr libdir=/usr/lib/$(DEB_HOST_MULTIARCH) DESTDIR=$(CURDIR)/debian/tmp
+	dh_auto_clean
