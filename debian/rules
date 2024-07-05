@@ -28,10 +28,12 @@ override_dh_auto_build-indep: debian/locale/ru_RU.koi8r
 	dh_auto_build -- LOCPATH=$(CURDIR)/debian/locale
 
 override_dh_auto_test: debian/locale/ru_RU.koi8r
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 	$(MAKE) -C native_build test LOCPATH=$(CURDIR)/debian/locale
 else
 	$(MAKE) test LOCPATH=$(CURDIR)/debian/locale
+endif
 endif
 
 override_dh_auto_clean:
