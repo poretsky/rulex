@@ -1,3 +1,9 @@
+rulex (3.8.6-0focal1) focal; urgency=medium
+
+  * New upstream release.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 08 Nov 2024 12:17:47 +0300
+
 rulex (3.8.5-0focal1) focal; urgency=medium
 
   * New upstream release.
