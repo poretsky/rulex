@@ -30,7 +30,12 @@
 #else
 #include <regex.h>
 #endif
+
+#ifdef USE_BDB
 #include <db.h>
+#else
+#include <lmdb.h>
+#endif
 
 /* BEGIN_C_DECLS should be used at the beginning of C declarations,
    so that C++ compilers don't mangle their names.  Use END_C_DECLS at
@@ -85,13 +90,31 @@ BEGIN_C_DECLS
 #define RULEXDB_EXCEPTION_RAW 6
 #define RULEXDB_PREFIX 7
 
+#ifdef USE_BDB
+#define RULEXDB_SEQ_FIRST  DB_FIRST
+#define RULEXDB_SEQ_NEXT   DB_NEXT
+#define RULEXDB_SEQ_PREV   DB_PREV
+#define RULEXDB_SEQ_LAST   DB_LAST
+#else
+#define RULEXDB_SEQ_FIRST  MDB_FIRST
+#define RULEXDB_SEQ_NEXT   MDB_NEXT
+#define RULEXDB_SEQ_PREV   MDB_PREV
+#define RULEXDB_SEQ_LAST   MDB_LAST
+#endif
+
 
 /* Data structures */
 
 typedef struct /* Ruleset handler */
 {
+#ifdef USE_BDB
   DB *db; /* Associated database (dataset) */
   DB_ENV *env; /* Pointer to the database environment */
+#else
+  MDB_dbi dbi;
+  int dbi_open;
+  char rule_buf[RULEXDB_BUFSIZE];
+#endif
   const char *db_name; /* Dataset name */
   regex_t **pattern; /* Array of compiled patterns */
   char **replacement; /* Array of replacement strings */
@@ -104,9 +127,20 @@ typedef struct /* Lexical database handler */
   RULEX_RULESET lexclasses; /* Lexical class defining rules */
   RULEX_RULESET prefixes; /* Word prefixes */
   RULEX_RULESET correctors; /* Correction rules */
+#ifdef USE_BDB
   DB *lexicon_db; /* Dictionary of lexical bases */
   DB *exceptions_db; /* Dictionary of exceptions */
   DB_ENV *env; /* Pointer to the database environment */
+#else
+  MDB_dbi lexicon_dbi;
+  int lexicon_dbi_open;
+  MDB_dbi exceptions_dbi;
+  int exceptions_dbi_open;
+  MDB_cursor *lexicon_cursor;
+  MDB_cursor *exceptions_cursor;
+  MDB_env *env;
+  MDB_txn *txn;
+#endif
   int mode; /* Access mode */
 } RULEXDB;
 
@@ -310,8 +344,8 @@ extern int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value,
  * will be applied. To prevent this feature you can specify
  * RULEXDB_EXCEPTION_RAW instead of RULEXDB_EXCEPTION.
  * The last argument specifies direction of the dictionary scanning.
- * Allowed values are: DB_FIRST, DB_NEXT, DB_PREV or DB_LAST
- * as defined for the underlying database library.
+ * Allowed values are: RULEXDB_SEQ_FIRST, RULEXDB_SEQ_NEXT,
+ * RULEXDB_SEQ_PREV or RULEXDB_SEQ_LAST.
  *
  * Returns 0 (RULEXDB_SUCCESS) on success, RULEXDB_SPECIAL when
  * no more records can be fetched, or an appropriate error code

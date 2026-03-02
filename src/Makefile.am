@@ -12,9 +12,15 @@ rulex_LDADD = librulexdb.la
 lexholder_SOURCES = lexholder.c
 lexholder_LDADD = librulexdb.la
 
-librulexdb_la_CPPFLAGS = $(DB_CPPFLAGS)
-librulexdb_la_LDFLAGS = $(DB_LDFLAGS) -version-info 1:0:1
+librulexdb_la_LDFLAGS = -version-info 1:0:1
+
+if USE_BDB
+librulexdb_la_CPPFLAGS = $(DB_CPPFLAGS) -DUSE_BDB
 librulexdb_la_LIBADD = $(DB_LIBS)
+else
+librulexdb_la_CPPFLAGS = $(LMDB_CFLAGS)
+librulexdb_la_LIBADD = $(LMDB_LIBS)
+endif
 
 if HAVE_VSCRIPT
 librulexdb_la_LDFLAGS += $(VSCRIPT_LDFLAGS),@srcdir@/rulex.vscript
