@@ -320,9 +320,9 @@ int main(int argc, char *argv[])
 			      rulexdb_dataset_name(dataset));
               if (RULEXDB_EXCEPTION == dataset)
                 dataset = RULEXDB_EXCEPTION_RAW;
-	      for (ret = rulexdb_seq(db, key, value, dataset, DB_FIRST);
+	      for (ret = rulexdb_seq(db, key, value, dataset, RULEXDB_SEQ_FIRST);
 		   ret == RULEXDB_SUCCESS;
-		   ret = rulexdb_seq(db, key, value, dataset, DB_NEXT))
+		   ret = rulexdb_seq(db, key, value, dataset, RULEXDB_SEQ_NEXT))
 		{
 		  (void)printf("%s %s\n", key, value);
 		  n++;
@@ -537,9 +537,9 @@ int main(int argc, char *argv[])
         {
           if (dataset == RULEXDB_LEXBASE)
             (void)rulexdb_load_ruleset(db, RULEXDB_PREFIX);
-          for (ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_FIRST);
+          for (ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, RULEXDB_SEQ_FIRST);
                ret == RULEXDB_SUCCESS;
-               ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, DB_NEXT))
+               ret = rulexdb_seq(db, key, value, RULEXDB_LEXBASE, RULEXDB_SEQ_NEXT))
             if (rulexdb_classify(db, key) == RULEXDB_SUCCESS)
               {
                 if (!rulexdb_remove_this_item(db, RULEXDB_LEXBASE))
@@ -553,9 +553,9 @@ int main(int argc, char *argv[])
               }
         }
       if ((dataset == RULEXDB_DEFAULT) || (dataset == RULEXDB_EXCEPTION))
-	for (ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, DB_FIRST);
+	for (ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, RULEXDB_SEQ_FIRST);
 	     ret == RULEXDB_SUCCESS;
-	     ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, DB_NEXT))
+	     ret = rulexdb_seq(db, key, value, RULEXDB_EXCEPTION, RULEXDB_SEQ_NEXT))
 	  {
 	    (void)rulexdb_search(db, key, line, search_mode);
 	    if (!strcmp(line, value))
