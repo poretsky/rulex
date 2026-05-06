@@ -12,7 +12,7 @@ rulex_LDADD = librulexdb.la
 lexholder_SOURCES = lexholder.c
 lexholder_LDADD = librulexdb.la
 
-librulexdb_la_LDFLAGS = -version-info 1:0:1
+librulexdb_la_LDFLAGS = -version-info 2:0:0
 
 if USE_BDB
 librulexdb_la_CPPFLAGS = $(DB_CPPFLAGS) -DUSE_BDB
