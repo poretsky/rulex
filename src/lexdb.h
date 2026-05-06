@@ -90,17 +90,11 @@ BEGIN_C_DECLS
 #define RULEXDB_EXCEPTION_RAW 6
 #define RULEXDB_PREFIX 7
 
-#ifdef USE_BDB
-#define RULEXDB_SEQ_FIRST  DB_FIRST
-#define RULEXDB_SEQ_NEXT   DB_NEXT
-#define RULEXDB_SEQ_PREV   DB_PREV
-#define RULEXDB_SEQ_LAST   DB_LAST
-#else
-#define RULEXDB_SEQ_FIRST  MDB_FIRST
-#define RULEXDB_SEQ_NEXT   MDB_NEXT
-#define RULEXDB_SEQ_PREV   MDB_PREV
-#define RULEXDB_SEQ_LAST   MDB_LAST
-#endif
+/* Sequential access modes */
+#define RULEXDB_SEQ_FIRST  1
+#define RULEXDB_SEQ_NEXT   2
+#define RULEXDB_SEQ_PREV   3
+#define RULEXDB_SEQ_LAST   4
 
 
 /* Data structures */

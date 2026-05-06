@@ -1534,10 +1534,30 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
 #ifdef USE_BDB
   DBT inKey, inVal;
   DBC *dbc;
+  int seq_mode;
   DB **db = choose_dictionary(rulexdb, NULL, item_type);
 
   if (!db) return RULEXDB_EPARM;
   if (!(*db)) return RULEXDB_FAILURE;
+
+  switch (mode)
+    {
+      case RULEXDB_SEQ_FIRST:
+        seq_mode = DB_FIRST;
+        break;
+      case RULEXDB_SEQ_NEXT:
+        seq_mode = DB_NEXT;
+        break;
+      case RULEXDB_SEQ_PREV:
+        seq_mode = DB_PREV;
+        break;
+      case RULEXDB_SEQ_LAST:
+        seq_mode = DB_LAST;
+        break;
+      default:
+        return RULEXDB_EPARM;
+    }
+
   dbc = (*db)->app_private;
   /* Initialize cursor if it is not done already */
   if (!dbc)
@@ -1552,7 +1572,7 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
     }
   (void)memset(&inKey, 0, sizeof(DBT));
   (void)memset(&inVal, 0, sizeof(DBT));
-  rc = dbc->c_get(dbc, &inKey, &inVal, mode);
+  rc = dbc->c_get(dbc, &inKey, &inVal, seq_mode);
   switch (rc)
     {
       case 0:
@@ -1570,10 +1590,30 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
     }
 #else
   MDB_val inKey, inVal;
+  MDB_cursor_op seq_mode;
   DictHandle h = choose_dictionary(rulexdb, NULL, item_type);
 
   if (!h.dbi) return RULEXDB_EPARM;
   if (!*(h.dbi_open)) return RULEXDB_FAILURE;
+
+  switch (mode)
+    {
+      case RULEXDB_SEQ_FIRST:
+        seq_mode = MDB_FIRST;
+        break;
+      case RULEXDB_SEQ_NEXT:
+        seq_mode = MDB_NEXT;
+        break;
+      case RULEXDB_SEQ_PREV:
+        seq_mode = MDB_PREV;
+        break;
+      case RULEXDB_SEQ_LAST:
+        seq_mode = MDB_LAST;
+        break;
+      default:
+        return RULEXDB_EPARM;
+    }
+
   if (!*(h.cursor))
     {
       rc = mdb_cursor_open(rulexdb->txn, *(h.dbi), h.cursor);
@@ -1583,7 +1623,7 @@ int rulexdb_seq(RULEXDB *rulexdb, char *key, char *value, int item_type, int mod
 	  return RULEXDB_FAILURE;
 	}
     }
-  rc = mdb_cursor_get(*(h.cursor), &inKey, &inVal, (MDB_cursor_op)mode);
+  rc = mdb_cursor_get(*(h.cursor), &inKey, &inVal, seq_mode);
   switch (rc)
     {
       case 0:
