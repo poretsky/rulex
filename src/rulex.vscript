@@ -1,4 +1,4 @@
-RULEX_0 {
+RULEX_1 {
   global: rulexdb_*;
   local: *;
 };
