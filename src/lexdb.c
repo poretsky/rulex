@@ -843,7 +843,7 @@ RULEXDB *rulexdb_open(const char *path, int mode)
     }
 
   {
-    unsigned int env_flags = MDB_NOSUBDIR;
+    unsigned int env_flags = MDB_NOSUBDIR | MDB_NOLOCK;
     mdb_mode_t file_mode;
     unsigned int txn_flags;
 
