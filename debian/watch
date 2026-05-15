@@ -1,0 +1,7 @@
+Version: 5
+
+Source: https://github.com/poretsky/rulex/tags
+Matching-Pattern: .*?@ANY_VERSION@@ARCHIVE_EXT@
+Filenamemangle: s%(?:.*?)?r?(\d[\d.]*)\.tar\.gz%rulex-$1.tar.gz%
+Repack: yes
+Compression: xz
