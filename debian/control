@@ -1,0 +1,68 @@
+Source: rulex
+Section: sound
+Priority: optional
+Maintainer: Igor B. Poretsky <poretsky@mlbox.ru>
+Build-Depends: autoconf-archive,
+               debhelper-compat (= 13),
+               liblmdb-dev,
+               liblmdb-dev:native,
+               lmdb-utils,
+               locales:native,
+               pkgconf:native
+Standards-Version: 4.6.0.1
+Homepage: https://github.com/poretsky/rulex
+Rules-Requires-Root: no
+
+Package: rulex
+Architecture: any
+Multi-Arch: foreign
+Depends: locales, ${shlibs:Depends}, ${misc:Depends}
+Description: Russian pronunciation dictionary support binaries
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
+ .
+ This package provides additional utilities to deal with the
+ lexical database. These include text preprocessor rulex
+ and lexholder-ru utility that allows one
+ to browse and alter the database content.
+
+Package: rulex-data
+Architecture: all
+Multi-Arch: foreign
+Depends: lmdb-utils, ${misc:Depends}
+Recommends: librulexdb2 (>= 3.9)
+Replaces: rulex (<< 3.7)
+Breaks: rulex (<< 3.7), ru-tts (<< 2.0)
+Enhances: ru-tts
+Description: Russian pronunciation dictionary
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
+ .
+ This package contains the database itself. It is aimed primarily for
+ use together with the Russian TTS engine Ru_tts. When it is installed
+ you can instruct Ru_tts to use the pronunciation dictionary by the
+ command line switch "-s /usr/share/freespeech/rulex.db".
+
+Package: librulexdb2
+Section: libs
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: rulex-data (>= 3.9)
+Description: Russian pronunciation dictionary access library (runtime)
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
+ .
+ This package contains the shared library.
+
+Package: librulexdb-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: librulexdb2 (= ${binary:Version}), liblmdb-dev, ${misc:Depends}
+Suggests: rulex
+Description: Russian pronunciation dictionary access library (development)
+ RuLex database is primarily intended for use along with the
+ Ru_tts speech synthesizer in order to improve its pronunciation.
+ .
+ This package contains the development files.
