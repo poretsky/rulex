@@ -25,12 +25,12 @@ jobs:
         run: |
           sudo locale-gen ru_RU.KOI8-R
           autoreconf -ifs
-          ./configure
+          ./configure --with-bdb
           make
           mv data/lexicon data/rulex.db
 
       - name: Upload rulex.db
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rulex-db
           path: data/rulex.db
