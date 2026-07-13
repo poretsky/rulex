@@ -28,9 +28,10 @@ case "$1" in
         ;;
 esac
 
-cd /usr/share/freespeech
+mkdir -p /usr/lib/freespeech
+cd /usr/lib/freespeech
 rm -f rulex.db
-mdb_load -nf rulex.dump rulex.db 2>/dev/null
+mdb_load -nf /usr/share/freespeech/rulex.dump rulex.db 2>/dev/null
 rm -f rulex.db-lock
 
 
