@@ -29,7 +29,8 @@ case "$1" in
         ;;
 esac
 
-rm -f /usr/share/freespeech/rulex.db
+rm -f /usr/lib/freespeech/rulex.db
+rmdir --ignore-fail-on-non-empty /usr/lib/freespeech
 
 
 # dh_installdeb will replace this with shell code automatically
