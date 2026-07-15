@@ -1,3 +1,11 @@
+rulex (3.9.2-0noble1) noble; urgency=medium
+
+  * New upstream release.
+  * Keep architecture dependent files in /usr/lib subtree.
+  * Compressed data.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 15 Jul 2026 17:09:40 +0300
+
 rulex (3.9.1-0noble1) noble; urgency=medium
 
   * Initial release for Ubuntu Noble.
