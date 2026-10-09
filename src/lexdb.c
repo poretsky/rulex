@@ -1329,26 +1329,33 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
       * is copied to the value buffer and RULEXDB_SPECIAL code
       * is returned.
       *
-      * Searching is performed in the following order:
-      * Specified word is searched in the exceptions dictionary.
-      * If found, the result is returned and procedure
-      * exits successfully. Otherwise the word is treated
-      * as an implicit form and program tries to guess its base
-      * and find it in the lexbases dictionary. If this process
-      * succeeds, the pronunciation string is constructed
-      * according to the acquired data and procedure exits successfully.
-      * At last, the word is matched against general rules.
-      * If no match succeeds, then program exits with RULEXDB_SPECIAL code,
-      * returning original word as a result.
+      * The full search process consists of the following stages:
+      *
+      * 1. The word is searched in the exceptions dictionary.
+      *    If found, execution immediately jumps to the stage 4.
+      *
+      * 2. Otherwise the word is treated as an implicit form
+      *    and program tries to guess its base and find it in
+      *    the lexbases dictionary. If this process succeeds,
+      *    further execution is continued at the stage 4.
+      *
+      * 3. When no information is found, the word is matched
+      *    against prefix rules and the process is repeated
+      *    from the stage 1 for the word stem with the matched
+      *    prefix stripped off.
+      *
+      * 4. the pronunciation string is constructed
+      *    according to the acquired data if any.
+      *
+      * 5. At last, if no info was obtained on previous stages,
+      *    the word is matched against general rules. If no match
+      *    succeeds, then program exits with RULEXDB_SPECIAL code,
+      *    returning original word as a result.
       *
       * If this process appears to be not fully unsuccessful and some
       * information was found in the database, then the resulting string
       * is matched against correction rules and the first matched one
       * is applied if any.
-      *
-      * When no information is found, the word is matched against
-      * prefix rules and the process is repeated for the word stem
-      * with the matched prefix stripped off.
       *
       * The last argument specifies which steps of the described
       * process are to be performed. It consists of following flags
