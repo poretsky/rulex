@@ -27,16 +27,28 @@ buffer and
 .B RULEXDB_SPECIAL
 code is returned.
 .PP
-At first search is performed in the \fBExplicit\fP dictionary. If it
- succeeds, the result is returned and procedure exits
- successfully. Otherwise the word is treated as an implicit form and
- program tries to guess its base and find it in the \fBImplicit\fP
- dictionary. If this process succeeds, the pronunciation string is
- constructed according to the acquired data and procedure exits
- successfully. At last, the word is matched against general rules. If
- no match succeeds, then program exits with
+The full search process consists of the following stages:
+.IP "1." 3
+The word is searched in the \fBExplicit\fP dictionary.
+If found, execution immediately jumps to the stage 4.
+.IP "2." 3
+Otherwise the word is treated as an implicit form and program tries to
+guess its base and find it in the \fBImplicit\fP dictionary.
+If this process succeeds, further execution is continued at the stage 4.
+.IP "3." 3
+When no information is found, the word is matched against prefix rules
+and the process is repeated from the stage 1 for the word stem with the
+matched prefix stripped off.
+.IP "4." 3
+the pronunciation string is constructed according to the acquired data
+if any.
+.IP "5." 3
+At last, if no info was obtained on previous stages, the word is matched
+against general rules.
+If no match succeeds, then program exits with
 .B RULEXDB_SPECIAL
-code, returning the original word as a result.
+code,
+returning original word as a result.
 .PP
 If this process appears to be not fully unsuccessful and some
 information was found in the database, then the resulting string is
