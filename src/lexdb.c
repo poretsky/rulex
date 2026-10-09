@@ -1480,7 +1480,7 @@ int rulexdb_search(RULEXDB *rulexdb, const char * key, char *value, int flags)
                     else *s = 0;
                     j = strlen(s);
                     (void)strcat(s, key + match.rm_eo);
-                    rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, RULEXDB_FORMS | RULEXDB_NOPREFIX);
+                    rc = rulexdb_search(rulexdb, s, value + match.rm_eo - j, RULEXDB_FORMS | RULEXDB_EXCEPTIONS | RULEXDB_NOPREFIX);
                     if (rc == RULEXDB_EINVKEY)
                       rc = RULEXDB_SPECIAL;
                     (void)strncpy(value, key, match.rm_eo);
