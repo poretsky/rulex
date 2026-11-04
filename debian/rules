@@ -34,6 +34,10 @@ else
 	$(MAKE) test LOCPATH=$(CURDIR)/debian/locale
 endif
 
+override_dh_auto_install:
+	dh_auto_install
+	cd $(CURDIR)/debian/tmp/usr/share/freespeech && mdb_dump -naf rulex.dump rulex.db && gzip -n rulex.dump && rm -f rulex.db *-lock
+
 override_dh_auto_clean:
 ifneq ($(DEB_HOST_ARCH),$(DEB_BUILD_ARCH))
 	rm -rf native_build

@@ -1,3 +1,12 @@
+rulex (3.9.2-0xenial1) xenial; urgency=medium
+
+  * New upstream release.
+  * Migration from Berkeley DB to LMDB.
+  * Keep architecture dependent files in /usr/lib subtree.
+  * Compressed data.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Wed, 04 Nov 2026 12:19:08 +0300
+
 rulex (3.8.6-0xenial1) xenial; urgency=medium
 
   * New upstream release.
