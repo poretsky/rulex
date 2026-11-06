@@ -2,7 +2,7 @@
 
 AC_PREREQ(2.69)
 
-AC_INIT([RuLex], [3.9.2])
+AC_INIT([RuLex], [3.10.0])
 AC_CONFIG_SRCDIR([src/rulex.c])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([foreign])
