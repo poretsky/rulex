@@ -1,3 +1,12 @@
+rulex (3.10.0-0bionic1) bionic; urgency=medium
+
+  * New upstream release.
+  * Search strategy enhancement.
+  * A few additions to the lexical database.
+  * Dropped Multi-Arch for rulex-data binary package.
+
+ -- Igor B. Poretsky <poretsky@mlbox.ru>  Fri, 06 Nov 2026 22:32:13 +0300
+
 rulex (3.9.2-0bionic1) bionic; urgency=medium
 
   * New upstream release.
