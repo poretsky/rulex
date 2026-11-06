@@ -28,7 +28,6 @@ Description: Russian pronunciation dictionary support binaries
 
 Package: rulex-data
 Architecture: all
-Multi-Arch: foreign
 Depends: lmdb-utils, ${misc:Depends}
 Recommends: librulexdb2 (>= 3.9)
 Replaces: rulex (<< 3.7)
